@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 public class TrenchConfig {
 	
-	private Plugin plugin;
+	private Plugin plugin = Main.getInstance();
 	
 	Location spawn = new Location(Bukkit.getServer().getWorld(plugin.getConfig().getString("spawn.world")), plugin.getConfig().getInt("spawn.x"), plugin.getConfig().getInt("spawn.y"), plugin.getConfig().getInt("spawn.z"));
 	Location redSpawn = new Location(Bukkit.getServer().getWorld(plugin.getConfig().getString("red.world")), plugin.getConfig().getInt("red.x"), plugin.getConfig().getInt("red.y"), plugin.getConfig().getInt("red.z"));
@@ -14,10 +14,6 @@ public class TrenchConfig {
 	
 	int minPlayer = plugin.getConfig().getInt("minPlayer");
 	int pregameCountdown = plugin.getConfig().getInt("pregameCountdown");
-
-	public TrenchConfig(Plugin instance){
-		plugin = instance;
-	}
 
 
 	public Location getSpawn() {

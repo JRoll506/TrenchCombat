@@ -21,7 +21,7 @@ public class Main extends JavaPlugin {
 	public static Plugin plugin;
 	public static Game game;
 	FileConfiguration config = getConfig();
-	static TrenchConfig trenchConfig= new TrenchConfig(plugin);
+	static TrenchConfig trenchConfig;
 	
 	Location spawn = new Location(Bukkit.getServer().getWorld(config.getString("spawn.world")), config.getInt("spawn.x"), config.getInt("spawn.y"),config.getInt("spawn.z"));
 
@@ -30,6 +30,7 @@ public class Main extends JavaPlugin {
 		saveConfig();
 		this.getConfig().options().copyDefaults(true);
 		plugin = this;
+		trenchConfig= new TrenchConfig();
 		getLogger().info("TrenchWarfare" + "[" + pdf.getVersion() + "]" + " is enabled");
 		getLogger().info("Plugin made by " + pdf.getAuthors());
 		lobby();
@@ -106,13 +107,13 @@ public class Main extends JavaPlugin {
 	}
 
 	public static void messagePlayer(Player player, String string) {
-		String message = plugin.getConfig().getString("messagePrefix") + string;
+		String message = plugin.getConfig().getString("messagePrefix").replace("&", "§") + string;
 		player.sendMessage(message);
 	}
 
 	public static void broadcast(String string, Boolean Value) {
 		if (Value == true) {
-			string = plugin.getConfig().getString("messagePrefix") + string;
+			string = plugin.getConfig().getString("messagePrefix").replace("&", "§") + string;
 		}
 		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
 		for (int i = 0; i < onlinePlayers.length; i++) {
