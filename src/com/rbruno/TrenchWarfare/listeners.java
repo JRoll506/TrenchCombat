@@ -216,7 +216,12 @@ public class listeners implements Listener {
 						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
 						for (int i = 0; i < players.toArray().length; i++) {
-							players.get(i).setFireTicks(100);
+							if (players.get(i) instanceof Player){
+								Player player = (Player) players.get(i);
+								player.setFireTicks(100);
+								player.damage(15F);								
+							}
+
 						}
 					}
 				} else {
@@ -227,7 +232,12 @@ public class listeners implements Listener {
 						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
 						for (int i = 0; i < players.toArray().length; i++) {
-							players.get(i).setFireTicks(100);
+							if (players.get(i) instanceof Player){
+								Player player = (Player) players.get(i);
+								player.setFireTicks(100);
+								player.damage(15F);								
+							}
+
 						}
 					}
 				}
