@@ -1,11 +1,13 @@
 package com.rbruno.TrenchWarfare;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -26,7 +28,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 public class listeners implements Listener {
 
 	public static ArrayList<Player> cooldown = new ArrayList<Player>();
-	
+
 	Location spawn = Main.trenchConfig.getSpawn();
 	Location redSpawn = Main.trenchConfig.getRed();
 	Location blueSpawn = Main.trenchConfig.getBlue();
@@ -66,11 +68,12 @@ public class listeners implements Listener {
 			Main.addPlayer(event.getPlayer());
 		}
 	}
+
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
 		Player player = (Player) event.getPlayer();
 		if (Main.game.redTeam.contains(player)) {
 			Main.game.redTeam.remove(player);
-		} else{
+		} else {
 			Main.game.blueTeam.remove(player);
 		}
 	}
@@ -210,14 +213,22 @@ public class listeners implements Listener {
 					if (tnt.getLocation().getBlockX() < 593) {
 						Main.messagePlayer(player, "To avoid your own team being put in danger you must shoot beyond your trench");
 					} else {
-						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5, false, false);
+						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
+						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
+						for (int i = 0; i < players.toArray().length; i++) {
+							players.get(i).setFireTicks(100);
+						}
 					}
 				} else {
 					//blue
 					if (tnt.getLocation().getBlockX() > 610) {
 						Main.messagePlayer(player, "To avoid your own team being put in danger you must shoot beyond your trench");
 					} else {
-						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5, false, false);
+						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
+						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
+						for (int i = 0; i < players.toArray().length; i++) {
+							players.get(i).setFireTicks(100);
+						}
 					}
 				}
 

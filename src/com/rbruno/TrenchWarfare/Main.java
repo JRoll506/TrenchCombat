@@ -56,7 +56,7 @@ public class Main extends JavaPlugin {
 					tick = 5 * 60;
 					pregameCountdown = false;
 				} else {
-					if(tick >= 5 ||tick%10==0){
+					if(tick <= 5 ||tick%10==0){
 						broadcast(tick + " seconds till game start!", true);
 					}					
 					tick--;
