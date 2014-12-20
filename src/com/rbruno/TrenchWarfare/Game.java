@@ -30,8 +30,8 @@ public class Game {
 	Scoreboard board = manager.getNewScoreboard();
 	Objective objective = board.registerNewObjective("score", "dummy");
 	public Score[] score = { 
-			objective.getScore(ChatColor.BLUE + " Blue"), 
-			objective.getScore(ChatColor.RED + " Red"), 
+			objective.getScore(ChatColor.BLUE + "Blue"), 
+			objective.getScore(ChatColor.RED + "Red"), 
 		};
 
 	public void pickTeams() {
@@ -117,7 +117,8 @@ public class Game {
 		score[0].setScore(blueScore);
 		score[1].setScore(redScore);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		objective.setDisplayName(ChatColor.BOLD + "Trench Warfare");
+		String time = Main.tick - Main.tick%60 + ":" + Main.tick%60;
+		objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 
 		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
 		for (int i = 0; i < onlinePlayers.length; i++) {

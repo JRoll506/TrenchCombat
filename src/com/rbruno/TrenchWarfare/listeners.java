@@ -61,9 +61,10 @@ public class listeners implements Listener {
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		if (Main.gameState == 0 || player.isOp()) return;
-
 		Location location = player.getLocation();
+		if (Main.gameState == 0 || player.isOp()||!(location.getYaw()==90)) return;
+
+
 		if (location.getBlockX() >= 692){
 			player.teleport(new Location(location.getWorld(),691, location.getBlockY(),location.getZ(),location.getYaw(),location.getPitch()));
 		}
@@ -265,7 +266,6 @@ public class listeners implements Listener {
 						for (int i = 0; i < players.toArray().length; i++) {
 							if (players.get(i) instanceof Player) {
 								Player player = (Player) players.get(i);
-								player.setFireTicks(100);
 								player.damage(15F);
 							}
 
@@ -281,7 +281,6 @@ public class listeners implements Listener {
 						for (int i = 0; i < players.toArray().length; i++) {
 							if (players.get(i) instanceof Player) {
 								Player player = (Player) players.get(i);
-								player.setFireTicks(100);
 								player.damage(15F);
 							}
 

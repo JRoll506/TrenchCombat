@@ -1,7 +1,7 @@
 minPlayer: 2
-pregameCountdown: 20
+pregameCountdown: 60
 #in seconds
-gameClock: 5
+gameClock: 10
 #in minutes
 messagePrefix: "&8[&bTrench&8] &c"
 #to be used for broudcasting and messing players
