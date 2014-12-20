@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -23,6 +24,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class listeners implements Listener {
@@ -88,6 +90,7 @@ public class listeners implements Listener {
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = (Player) event.getEntity();
+		event.getDrops().clear();
 		if (Main.gameState == 1) {
 			if (Main.game.redTeam.contains(player)) {
 				Main.game.blueScore = Main.game.blueScore + 10;
@@ -108,9 +111,19 @@ public class listeners implements Listener {
 		Player player = (Player) event.getPlayer();
 		if (Main.gameState == 1) {
 			if (Main.game.redTeam.contains(player)) {
+				ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+				LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
+				lam.setColor(Color.fromRGB(184, 0, 0));
+				lhelmet.setItemMeta(lam);
+				player.getInventory().setChestplate(lhelmet);
 				event.setRespawnLocation(redSpawn);
 				Main.game.giveItems(player);
 			} else {
+				ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+				LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
+				lam.setColor(Color.fromRGB(0, 255, 255));
+				lhelmet.setItemMeta(lam);
+				player.getInventory().setChestplate(lhelmet);
 				event.setRespawnLocation(blueSpawn);
 				Main.game.giveItems(player);
 			}
@@ -149,8 +162,8 @@ public class listeners implements Listener {
 				}
 			}
 		} else if (event.getDamager() instanceof Arrow) {
-			Arrow a = (Arrow) event.getDamager();
-			Player damager = (Player) a.getShooter();
+			Arrow arrow = (Arrow) event.getDamager();
+			Player damager = (Player) arrow.getShooter();
 			if (Main.gameState == 0) {
 				event.setCancelled(true);
 			} else if (Main.game.redTeam.contains(damager)) {
@@ -178,6 +191,7 @@ public class listeners implements Listener {
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
+		if (Main.gameState == 0) return;
 		final Player player = (Player) event.getPlayer();
 		Location location = player.getLocation();
 		Location d = new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ());
@@ -192,9 +206,17 @@ public class listeners implements Listener {
 						fireCannon(player);
 					} else {
 
-						Main.messagePlayer(player, "cannon is reloading!");
+						Main.messagePlayer(player, "Cannon is reloading!");
 					}
 				}
+			} else if (player.getLocation().getBlockX() == 592 || player.getLocation().getBlockX() == 611) {
+				if (Main.game.redTeam.contains(player) && player.getLocation().getBlockX() == 592) {
+					player.setVelocity(player.getLocation().getDirection().multiply(1.2));
+				}
+				if (Main.game.blueTeam.contains(player) && player.getLocation().getBlockX() == 611) {
+					player.setVelocity(player.getLocation().getDirection().multiply(1.2));
+				}
+
 			}
 		} else if (event.getMaterial().name() == "ARROW") {
 			event.setCancelled(true);
@@ -220,10 +242,10 @@ public class listeners implements Listener {
 						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
 						for (int i = 0; i < players.toArray().length; i++) {
-							if (players.get(i) instanceof Player){
+							if (players.get(i) instanceof Player) {
 								Player player = (Player) players.get(i);
 								player.setFireTicks(100);
-								player.damage(15F);								
+								player.damage(15F);
 							}
 
 						}
@@ -236,10 +258,10 @@ public class listeners implements Listener {
 						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
 						for (int i = 0; i < players.toArray().length; i++) {
-							if (players.get(i) instanceof Player){
+							if (players.get(i) instanceof Player) {
 								Player player = (Player) players.get(i);
 								player.setFireTicks(100);
-								player.damage(15F);								
+								player.damage(15F);
 							}
 
 						}
@@ -252,6 +274,6 @@ public class listeners implements Listener {
 			public void run() {
 				Main.game.cooldown.remove(player);
 			}
-		}, 20L);
+		}, 60L);
 	}
 }

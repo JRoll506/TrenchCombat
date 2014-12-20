@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -55,22 +53,12 @@ public class Game {
 	}
 
 	public void addRed(Player player) {
-		ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
-		lam.setColor(Color.fromRGB(184, 0, 0));
-		lhelmet.setItemMeta(lam);
-		player.getInventory().setChestplate(lhelmet);
 		redTeam.add(player);
 		Main.messagePlayer(player, "You have joined the " + ChatColor.RED + "red" + ChatColor.RED + " Team!");
 
 	}
 
 	public void addBlue(Player player) {
-		ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
-		lam.setColor(Color.fromRGB(0, 255, 255));
-		lhelmet.setItemMeta(lam);
-		player.getInventory().setChestplate(lhelmet);
 		blueTeam.add(player);
 		Main.messagePlayer(player, "You have joined the " + ChatColor.BLUE + "blue" + ChatColor.RED + " Team!");
 	}
@@ -81,6 +69,7 @@ public class Game {
 		kit[2].setAmount(64);
 		player.getInventory().clear();
 		player.getInventory().addItem(kit);
+		
 	}
 
 	public void giveItems(Player[] players) {
