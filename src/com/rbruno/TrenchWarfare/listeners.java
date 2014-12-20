@@ -20,6 +20,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -54,6 +55,26 @@ public class listeners implements Listener {
 	public void onPlayerPickupItemEvent(PlayerPickupItemEvent event) {
 		if (!(event.getPlayer().isOp())) {
 			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onPlayerMoveEvent(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		if (Main.gameState == 0 || player.isOp()) return;
+
+		Location location = player.getLocation();
+		if (location.getBlockX() >= 692){
+			player.teleport(new Location(location.getWorld(),691, location.getBlockY(),location.getZ(),location.getYaw(),location.getPitch()));
+		}
+		if (location.getBlockX() <= 511){
+			player.teleport(new Location(location.getWorld(),512, location.getBlockY(),location.getZ(),location.getYaw(),location.getPitch()));
+		}
+		if (location.getBlockZ() <= 86){
+			player.teleport(new Location(location.getWorld(),location.getX(), location.getBlockY(),87,location.getYaw(),location.getPitch()));
+		}
+		if (location.getBlockZ() >= 120){
+			player.teleport(new Location(location.getWorld(),location.getX(), location.getBlockY(),119,location.getYaw(),location.getPitch()));
 		}
 	}
 

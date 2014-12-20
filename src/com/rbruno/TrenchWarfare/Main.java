@@ -28,8 +28,8 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		saveConfig();
 		this.getConfig().options().copyDefaults(true);
+		this.saveDefaultConfig();
 		plugin = this;
 		trenchConfig = new TrenchConfig();
 		getLogger().info("TrenchWarfare" + "[" + pdf.getVersion() + "]" + " is enabled");

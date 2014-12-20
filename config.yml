@@ -7,9 +7,9 @@ messagePrefix: "&8[&bTrench&8] &c"
 #to be used for broudcasting and messing players
 spawn:
    world: "TrenchWarfare"
-   x: 602
-   y: 64
-   z: 70
+   x: 601
+   y: 76
+   z: 68
 red:
    world: "TrenchWarfare"
    x: 514
