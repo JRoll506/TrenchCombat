@@ -1,6 +1,5 @@
 package com.rbruno.TrenchWarfare;
 
-
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
@@ -11,6 +10,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
 
 public class Game {
 	public ArrayList<Player> cooldown = new ArrayList<Player>();
@@ -18,11 +22,19 @@ public class Game {
 	ArrayList<Player> redTeam = new ArrayList<Player>();
 	ArrayList<Player> blueTeam = new ArrayList<Player>();
 
-	public int redScore;
-	public int blueScore;
-	
+	public int redScore = 0;
+	public int blueScore = 0;
+
 	Location redSpawn = Main.trenchConfig.getRed();
 	Location blueSpawn = Main.trenchConfig.getBlue();
+
+	ScoreboardManager manager = Bukkit.getScoreboardManager();
+	Scoreboard board = manager.getNewScoreboard();
+	Objective objective = board.registerNewObjective("score", "dummy");
+	public Score[] score = { 
+			objective.getScore(ChatColor.BLUE + " Blue"), 
+			objective.getScore(ChatColor.RED + " Red"), 
+		};
 
 	public void pickTeams() {
 		int players = 0;
@@ -44,7 +56,7 @@ public class Game {
 
 	public void addRed(Player player) {
 		ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		LeatherArmorMeta lam = (LeatherArmorMeta)lhelmet.getItemMeta();
+		LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
 		lam.setColor(Color.fromRGB(184, 0, 0));
 		lhelmet.setItemMeta(lam);
 		player.getInventory().setChestplate(lhelmet);
@@ -55,7 +67,7 @@ public class Game {
 
 	public void addBlue(Player player) {
 		ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-		LeatherArmorMeta lam = (LeatherArmorMeta)lhelmet.getItemMeta();
+		LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
 		lam.setColor(Color.fromRGB(0, 255, 255));
 		lhelmet.setItemMeta(lam);
 		player.getInventory().setChestplate(lhelmet);
@@ -110,5 +122,18 @@ public class Game {
 			giveItems(player);
 			addBlue(player);
 		}
+	}
+
+	public void setScoreBoard() {
+		score[0].setScore(blueScore);
+		score[1].setScore(redScore);
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		objective.setDisplayName(ChatColor.BOLD + "Trench Warfare");
+
+		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
+		for (int i = 0; i < onlinePlayers.length; i++) {
+			onlinePlayers[i].setScoreboard(board);
+		}
+
 	}
 }

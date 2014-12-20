@@ -17,20 +17,21 @@ public class Main extends JavaPlugin {
 	PluginDescriptionFile pdf = this.getDescription();
 	public static int gameState = 0;
 	private boolean pregameCountdown = false;;
-	private int tick = 20;
+	public static int tick = 20;
 	public static Plugin plugin;
 	public static Game game;
 	FileConfiguration config = getConfig();
 	static TrenchConfig trenchConfig;
 	
-	Location spawn = new Location(Bukkit.getServer().getWorld(config.getString("spawn.world")), config.getInt("spawn.x"), config.getInt("spawn.y"),config.getInt("spawn.z"));
+
+	Location spawn = new Location(Bukkit.getServer().getWorld(config.getString("spawn.world")), config.getInt("spawn.x"), config.getInt("spawn.y"), config.getInt("spawn.z"));
 
 	@Override
 	public void onEnable() {
 		saveConfig();
 		this.getConfig().options().copyDefaults(true);
 		plugin = this;
-		trenchConfig= new TrenchConfig();
+		trenchConfig = new TrenchConfig();
 		getLogger().info("TrenchWarfare" + "[" + pdf.getVersion() + "]" + " is enabled");
 		getLogger().info("Plugin made by " + pdf.getAuthors());
 		lobby();
@@ -56,9 +57,9 @@ public class Main extends JavaPlugin {
 					tick = 5 * 60;
 					pregameCountdown = false;
 				} else {
-					if(tick <= 5 ||tick%10==0){
+					if (tick <= 5 || tick % 10 == 0) {
 						broadcast(tick + " seconds till game start!", true);
-					}					
+					}
 					tick--;
 				}
 			} else {
@@ -99,10 +100,12 @@ public class Main extends JavaPlugin {
 	}
 
 	private void gameStart() {
+
 		game = new Game();
 		game.pickTeams();
 		game.giveItems(getServer().getOnlinePlayers());
 		game.tpPlayers();
+		game.setScoreBoard();
 		broadcast("The war has begun!", true);
 	}
 

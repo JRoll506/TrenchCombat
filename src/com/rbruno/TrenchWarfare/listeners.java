@@ -92,9 +92,13 @@ public class listeners implements Listener {
 			if (Main.game.redTeam.contains(player)) {
 				Main.game.blueScore = Main.game.blueScore + 10;
 				Main.game.redScore = Main.game.redScore - 5;
+				Main.game.score[0].setScore(Main.game.blueScore);
+				Main.game.score[1].setScore(Main.game.redScore);
 			} else {
 				Main.game.redScore = Main.game.redScore + 10;
 				Main.game.blueScore = Main.game.blueScore - 5;
+				Main.game.score[0].setScore(Main.game.blueScore);
+				Main.game.score[1].setScore(Main.game.redScore);
 			}
 		}
 	}
