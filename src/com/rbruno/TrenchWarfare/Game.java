@@ -26,13 +26,13 @@ public class Game {
 	Location redSpawn = Main.trenchConfig.getRed();
 	Location blueSpawn = Main.trenchConfig.getBlue();
 
+	Player redFlagHolder = null;
+	Player blueFlagHolder = null;
+
 	ScoreboardManager manager = Bukkit.getScoreboardManager();
 	Scoreboard board = manager.getNewScoreboard();
 	Objective objective = board.registerNewObjective("score", "dummy");
-	public Score[] score = { 
-			objective.getScore(ChatColor.BLUE + "Blue"), 
-			objective.getScore(ChatColor.RED + "Red"), 
-		};
+	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red"), };
 
 	public void pickTeams() {
 		int players = 0;
@@ -54,13 +54,13 @@ public class Game {
 
 	public void addRed(Player player) {
 		redTeam.add(player);
-		Main.messagePlayer(player, "You have joined the " + ChatColor.RED + "red" + ChatColor.RED + " Team!");
+		Main.messagePlayer(player, "You have joined the " + ChatColor.RED + "Red" + ChatColor.RED + " Team!");
 
 	}
 
 	public void addBlue(Player player) {
 		blueTeam.add(player);
-		Main.messagePlayer(player, "You have joined the " + ChatColor.BLUE + "blue" + ChatColor.RED + " Team!");
+		Main.messagePlayer(player, "You have joined the " + ChatColor.BLUE + "Blue" + ChatColor.RED + " Team!");
 	}
 
 	public void giveItems(Player player) {
@@ -69,7 +69,7 @@ public class Game {
 		kit[2].setAmount(64);
 		player.getInventory().clear();
 		player.getInventory().addItem(kit);
-		
+
 	}
 
 	public void giveItems(Player[] players) {
@@ -96,6 +96,15 @@ public class Game {
 	}
 
 	public void addPlayer(Player player) {
+		score[0].setScore(blueScore);
+		score[1].setScore(redScore);
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+		String second = Main.tick % 60+"";
+		if (Main.tick % 60 <= 9) second = "0" + second;
+		String time = (Main.tick - (Main.tick % 60))/60 + ":" + second;
+		objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
+		player.setScoreboard(board);
+		
 		Player[] redTeamArray = redTeam.toArray(new Player[redTeam.size()]);
 		Player[] blueTeamArray = blueTeam.toArray(new Player[blueTeam.size()]);
 		if (redTeamArray.length == blueTeamArray.length) {
@@ -117,7 +126,9 @@ public class Game {
 		score[0].setScore(blueScore);
 		score[1].setScore(redScore);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		String time = Main.tick - Main.tick%60 + ":" + Main.tick%60;
+		String second = Main.tick % 60+"";
+		if (Main.tick % 60 <= 9) second = "0" + second;
+		String time = (Main.tick - (Main.tick % 60))/60 + ":" + second;
 		objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 
 		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());

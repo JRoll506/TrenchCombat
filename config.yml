@@ -25,3 +25,15 @@ mapBounderies:
    maxX: 692
    minZ: 86
    maxZ: 120
+trenchLocation:
+   red: 592
+   blue: 611
+flag:
+   red:
+     x: 554
+     y: 60
+     z: 100
+   blue:
+     x: 649
+     y: 60
+     z: 106

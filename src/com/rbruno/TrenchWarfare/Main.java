@@ -16,16 +16,13 @@ public class Main extends JavaPlugin {
 
 	PluginDescriptionFile pdf = this.getDescription();
 	public static int gameState = 0;
-	private boolean pregameCountdown = false;;
+	private static boolean pregameCountdown = false;;
 	public static int tick = 20;
 	public static Plugin plugin;
 	public static Game game;
 	FileConfiguration config = getConfig();
 	static TrenchConfig trenchConfig;
-
-	Location spawn = new Location(Bukkit.getServer().getWorld(
-			config.getString("spawn.world")), config.getInt("spawn.x"),
-			config.getInt("spawn.y"), config.getInt("spawn.z"));
+	static Location spawn;
 
 	@Override
 	public void onEnable() {
@@ -33,8 +30,8 @@ public class Main extends JavaPlugin {
 		this.saveDefaultConfig();
 		plugin = this;
 		trenchConfig = new TrenchConfig();
-		getLogger().info(
-				"TrenchWarfare" + "[" + pdf.getVersion() + "]" + " is enabled");
+		spawn = trenchConfig.getSpawn();
+		getLogger().info("TrenchWarfare" + "[" + pdf.getVersion() + "]" + " is enabled");
 		getLogger().info("Plugin made by " + pdf.getAuthors());
 		lobby();
 		getServer().getPluginManager().registerEvents(new listeners(), this);
@@ -56,7 +53,7 @@ public class Main extends JavaPlugin {
 				if (tick == 0) {
 					gameState = 1;
 					gameStart();
-					tick = 5 * 60;
+					tick = trenchConfig.getGameClock() * 60;
 					pregameCountdown = false;
 				} else {
 					if (tick <= 5 || tick % 10 == 0) {
@@ -65,17 +62,17 @@ public class Main extends JavaPlugin {
 					tick--;
 				}
 			} else {
-				if (getServer().getOnlinePlayers().length >= trenchConfig
-						.getMinPlayer()) {
+				if (getServer().getOnlinePlayers().length >= trenchConfig.getMinPlayer()) {
 					tick = trenchConfig.getPregameCountdown();
 					pregameCountdown = true;
 				}
 			}
 		}
 		if (gameState == 1) {
-			String time = (tick - (tick % 60)) / 60 + ":" + tick % 60;
-			game.objective.setDisplayName(ChatColor.YELLOW + "Time: "
-					+ ChatColor.WHITE + time);
+			String second = Main.tick % 60 + "";
+			if (Main.tick % 60 <= 9) second = "0" + second;
+			String time = (Main.tick - (Main.tick % 60))/60 + ":" + second;
+			game.objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 			if (tick % 60 == 0) {
 				broadcast(tick / 60 + " minutes left in game!", true);
 			}
@@ -85,25 +82,37 @@ public class Main extends JavaPlugin {
 				broadcast(tick + " seconds left in game!", true);
 			}
 			if (tick == 0) {
-				broadcast("The game has ended!", true);
-				broadcast("Score: " + ChatColor.BLUE + game.blueScore + " "
-						+ ChatColor.RED + game.redScore, true);
-				gameState = 0;
-				Player[] players = getServer().getOnlinePlayers();
-				if (!(players.length == 0)) {
-					ItemStack[] kit = { new ItemStack(Material.COOKED_BEEF) };
-					kit[0].setAmount(64);
-					for (int i = 0; i < players.length; i++) {
-						players[i].teleport(spawn);
-						players[i].getInventory().clear();
-						players[i].getInventory().addItem(kit);
-					}
-					tick = trenchConfig.getPregameCountdown();
-					pregameCountdown = false;
-				}
+				endGame(false);
 			}
 		}
 
+	}
+	
+	public static void endGame(boolean flag){
+		game.objective.setDisplayName(ChatColor.BOLD + "Pre-Game");
+		if (!(flag)){
+			broadcast("The game has ended!", true);
+			if(game.blueScore<game.redScore){
+				broadcast("Red has won the game!", true);
+			}else{
+				broadcast("Blue has won the game!", true);
+			}
+			broadcast("Score: " + ChatColor.BLUE + game.blueScore + " " + ChatColor.RED + game.redScore, true);
+		} 
+
+		gameState = 0;
+		Player[] players = Main.plugin.getServer().getOnlinePlayers();
+		if (!(players.length == 0)) {
+			ItemStack[] kit = { new ItemStack(Material.COOKED_BEEF) };
+			kit[0].setAmount(64);
+			for (int i = 0; i < players.length; i++) {
+				players[i].teleport(spawn);
+				players[i].getInventory().clear();
+				players[i].getInventory().addItem(kit);
+			}
+			tick = trenchConfig.getPregameCountdown();
+			pregameCountdown = false;
+		}
 	}
 
 	private void gameStart() {
@@ -117,17 +126,13 @@ public class Main extends JavaPlugin {
 	}
 
 	public static void messagePlayer(Player player, String string) {
-		String message = plugin.getConfig().getString("messagePrefix")
-				.replace("&", "ï¿½")
-				+ string;
+		String message = plugin.getConfig().getString("messagePrefix").replace("&", "§") + string;
 		player.sendMessage(message);
 	}
 
 	public static void broadcast(String string, Boolean Value) {
 		if (Value == true) {
-			string = plugin.getConfig().getString("messagePrefix")
-					.replace("&", "ï¿½")
-					+ string;
+			string = plugin.getConfig().getString("messagePrefix").replace("&", "§") + string;
 		}
 		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
 		for (int i = 0; i < onlinePlayers.length; i++) {
