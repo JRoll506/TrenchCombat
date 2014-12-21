@@ -20,3 +20,8 @@ blue:
    x: 689
    y: 64
    z: 117
+mapBounderies:
+   minX: 511
+   maxX: 692
+   minZ: 86
+   maxZ: 120
