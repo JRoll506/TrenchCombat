@@ -5,9 +5,15 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,7 +32,7 @@ public class Main extends JavaPlugin {
 	static TrenchConfig trenchConfig;
 	static Location spawn;
 
-	public static String[] classes = { "Gunner", "Scout" };
+	public static String[] classes = { "Gunner", "Scout","Shotgun" };
 
 	public static HashMap<Player, String> classMap = new HashMap<Player, String>();
 	
@@ -77,6 +83,26 @@ public class Main extends JavaPlugin {
 			}
 		}
 		if (gameState == 1) {
+			if (!(game.redFlagHolder == null)){
+				Firework firework = (Firework) game.redFlagHolder.getWorld().spawnEntity(game.redFlagHolder.getLocation(), EntityType.FIREWORK);
+	            FireworkMeta fireworkMeta = firework.getFireworkMeta();
+	            FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.RED).with(Type.BALL_LARGE).trail(true).build();
+	            fireworkMeta.addEffect(effect);
+	            fireworkMeta.setPower(1);
+	            firework.setFireworkMeta(fireworkMeta);
+	            
+
+			}
+			if (!(game.blueFlagHolder == null)){
+				Firework firework = (Firework) game.blueFlagHolder.getWorld().spawnEntity(game.blueFlagHolder.getLocation(), EntityType.FIREWORK);
+	            FireworkMeta fireworkMeta = firework.getFireworkMeta();
+	            FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.BLUE).with(Type.BALL_LARGE).trail(true).build();
+	            fireworkMeta.addEffect(effect);
+	            fireworkMeta.setPower(1);
+	            firework.setFireworkMeta(fireworkMeta);
+	            
+
+			}
 			String second = Main.tick % 60 + "";
 			if (Main.tick % 60 <= 9) second = "0" + second;
 			String time = (Main.tick - (Main.tick % 60)) / 60 + ":" + second;

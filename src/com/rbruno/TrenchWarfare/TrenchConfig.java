@@ -32,6 +32,9 @@ public class TrenchConfig {
 	public int blueFlagY = plugin.getConfig().getInt("flag.blue.y");
 	public int blueFlagZ = plugin.getConfig().getInt("flag.blue.z");
 
+	public int fortRed = plugin.getConfig().getInt("fort.red");
+	public int fortBlue = plugin.getConfig().getInt("fort.blue");
+	
 	public Location getSpawn() {
 		return spawn;
 	}

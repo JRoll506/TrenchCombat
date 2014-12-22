@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -31,6 +32,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.util.Vector;
 
 public class listeners implements Listener {
 
@@ -81,14 +83,17 @@ public class listeners implements Listener {
 		}
 		Location location = player.getLocation();
 		if (Main.gameState == 0) {
-			if (Main.gameState == 0 || player.isOp()) return;
+			if (player.isOp()) return;
 			if (location.getBlockZ() >= 61 && location.getBlockY() >= 80) {
-				player.teleport(new Location(location.getWorld(),location.getX(),location.getY(),60,location.getYaw(),location.getPitch()));
+				player.teleport(new Location(location.getWorld(), location.getX(), location.getY(), 60, location.getYaw(), location.getPitch()));
 			}
 			return;
 		}
-
-
+		if (Main.game.blueTeam.contains(player)) {
+			if (location.getBlockX() <= Main.trenchConfig.fortRed) player.teleport(new Location(player.getWorld(), Main.trenchConfig.fortRed + 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+		} else {
+			if (location.getBlockX() >= Main.trenchConfig.fortBlue) player.teleport(new Location(player.getWorld(), Main.trenchConfig.fortBlue - 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+		}
 		if (Main.game.blueTeam.contains(player) && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
 			if (!(Main.game.redFlagHolder == null)) return;
 			Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
@@ -275,6 +280,7 @@ public class listeners implements Listener {
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		final Player player = (Player) event.getPlayer();
 		if (Main.gameState == 0) {
+			if (event.getClickedBlock() == null) return;
 			if (event.getClickedBlock().getType() == Material.SIGN || event.getClickedBlock().getType() == Material.SIGN_POST) {
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if (sign.getLine(0).equalsIgnoreCase("[class]")) {
@@ -304,13 +310,21 @@ public class listeners implements Listener {
 			if (d.getBlock().getType() == Material.SPONGE) {
 				if (Main.game.cooldown.toArray().length == 0) {
 					Main.game.cooldown.add(player);
-					fireCannon(player);
+					if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+						fireCannon(player, true);
+					} else {
+						fireCannon(player, false);
+					}
+					Main.messagePlayer(player, "Reloading cannon...");
 				} else {
 					if (!(Main.game.cooldown.contains(player))) {
 						Main.game.cooldown.add(player);
-						fireCannon(player);
-					} else {
-						Main.messagePlayer(player, "Cannon is reloading!");
+						if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+							fireCannon(player, true);
+						} else {
+							fireCannon(player, false);
+						}
+						Main.messagePlayer(player, "Reloading cannon...");
 					}
 				}
 			} else {
@@ -325,48 +339,79 @@ public class listeners implements Listener {
 		} else if (event.getMaterial().name() == "ARROW") {
 			event.setCancelled(true);
 			player.launchProjectile(Arrow.class);
+		} else if (event.getMaterial().name() == "BLAZE_ROD") {
+			if (Main.game.cooldownSniper.toArray().length == 0) {
+				fireArrow(player, event);
+			} else {
+				if (!(Main.game.cooldownSniper.contains(player))) {
+					fireArrow(player, event);
+				}
+			}
+			event.setCancelled(true);
 
 		}
 	}
 
-	public void fireCannon(final Player player) {
+	public void fireArrow(final Player player, PlayerInteractEvent event) {
+		Main.game.cooldownSniper.add(player);
+		Arrow arrow = (Arrow) player.launchProjectile(Arrow.class);
+		arrow.setVelocity(arrow.getVelocity().multiply(2));
+		Vector velocity = arrow.getVelocity();
+		double speed = velocity.length();
+		Vector direction = new Vector(velocity.getX() / speed, velocity.getY() / speed, velocity.getZ() / speed);
+		// you can tune the following value for different spray. Higher number means less spray.
+		double spray = 4.5D;
+
+		int arrowCount = 5;
+		for (int i = 0; i < arrowCount; i++) {
+			Arrow arrow2 = player.launchProjectile(Arrow.class);
+			arrow2.setVelocity(arrow.getVelocity().multiply(2));
+			arrow2.setVelocity(new Vector(direction.getX() + (Math.random() - 0.5) / spray, direction.getY() + (Math.random() - 0.5) / spray, direction.getZ() + (Math.random() - 0.5) / spray).normalize().multiply(speed));
+		}
+		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+		scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+			public void run() {
+				Main.game.cooldownSniper.remove(player);
+			}
+		}, 10L);
+	}
+
+	public void fireCannon(final Player player, final boolean rightClick) {
 		final TNTPrimed tnt = player.getWorld().spawn(player.getEyeLocation(), TNTPrimed.class);
-		tnt.setVelocity(player.getLocation().getDirection().multiply(3));
+		if (rightClick) {
+			tnt.setVelocity(player.getLocation().getDirection().multiply(1.5));
+		} else {
+			tnt.setVelocity(player.getLocation().getDirection().multiply(3));
+		}
 		tnt.setYield(0);
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
 			@Override
 			public void run() {
-
+				if (tnt.getLocation().getX() <= Main.trenchConfig.fortRed || tnt.getLocation().getX() >= Main.trenchConfig.fortBlue) return;
 				if (Main.game.redTeam.contains(player)) {
 					// red
-					if (tnt.getLocation().getBlockX() < Main.trenchConfig.trenchLocationRed) {
-						Main.messagePlayer(player, "To avoid your own team being put in danger you must shoot beyond your trench");
-					} else {
-						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
-						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
-						for (int i = 0; i < players.toArray().length; i++) {
-							if (players.get(i) instanceof Player) {
-								Player player = (Player) players.get(i);
-								player.damage(15F);
-							}
-
+					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
+					List<Entity> players;
+					players = tnt.getNearbyEntities(5, 5, 5);
+					for (int i = 0; i < players.toArray().length; i++) {
+						if (players.get(i) instanceof Player) {
+							Player player = (Player) players.get(i);
+							if (Main.game.blueTeam.contains(player)) player.damage(20F);
 						}
+
 					}
 				} else {
 					// blue
-					if (tnt.getLocation().getBlockX() > Main.trenchConfig.trenchLocationBlue) {
-						Main.messagePlayer(player, "To avoid your own team being put in danger you must shoot beyond your trench");
-					} else {
-						tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
-						List<Entity> players = tnt.getNearbyEntities(5, 5, 5);
-						for (int i = 0; i < players.toArray().length; i++) {
-							if (players.get(i) instanceof Player) {
-								Player player = (Player) players.get(i);
-								player.damage(15F);
-							}
-
+					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
+					List<Entity> players;
+					players = tnt.getNearbyEntities(5, 5, 5);
+					for (int i = 0; i < players.toArray().length; i++) {
+						if (players.get(i) instanceof Player) {
+							Player player = (Player) players.get(i);
+							if (Main.game.redTeam.contains(player)) player.damage(15F);
 						}
+
 					}
 				}
 

@@ -37,7 +37,9 @@ public class Game {
 	ScoreboardManager manager = Bukkit.getScoreboardManager();
 	Scoreboard board = manager.getNewScoreboard();
 	Objective objective = board.registerNewObjective("score", "dummy");
-	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red"), };
+	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red") };
+
+	public ArrayList<Player> cooldownSniper = new ArrayList<Player>();
 
 	public void pickTeams() {
 		int players = 0;
@@ -81,9 +83,10 @@ public class Game {
 		}
 		chestplate.setItemMeta(chestplateMata);
 		player.getInventory().setChestplate(chestplate);
-
+		player.getInventory().setItem(8, chestplate);
 		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
 		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
+		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BLAZE_ROD) };
 		if (!(Main.classMap.containsKey(player))) {
 			Main.classMap.put(player, "Gunner");
 		}
@@ -101,6 +104,9 @@ public class Game {
 			}, 5L);
 
 		}
+		if (Main.classMap.get(player).equals("Shotgun")) {
+			player.getInventory().addItem(shotGun);
+		}
 
 	}
 
@@ -109,9 +115,9 @@ public class Game {
 
 		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
 		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
+		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BLAZE_ROD) };
 		for (int i = 0; i < players.length; i++) {
 			players[i].getInventory().clear();
-
 			ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
 			LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
 			if (Main.game.redTeam.contains(players[i])) {
@@ -121,6 +127,7 @@ public class Game {
 			}
 			chestplate.setItemMeta(chestplateMata);
 			players[i].getInventory().setChestplate(chestplate);
+			players[i].getInventory().setItem(8, chestplate);
 			if (!(Main.classMap.containsKey(players[i]))) {
 				Main.classMap.put(players[i], "Gunner");
 			}
@@ -130,6 +137,9 @@ public class Game {
 			if (Main.classMap.get(players[i]).equals("Scout")) {
 				players[i].getInventory().addItem(scout);
 				players[i].addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 2));
+			}
+			if (Main.classMap.get(players[i]).equals("Shotgun")) {
+				players[i].getInventory().addItem(shotGun);
 			}
 		}
 	}
