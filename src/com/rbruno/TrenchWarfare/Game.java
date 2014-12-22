@@ -4,10 +4,15 @@ import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
@@ -41,6 +46,7 @@ public class Game {
 			players = onlinePlayers.length - 1;
 			addRed(onlinePlayers[onlinePlayers.length - 1]);
 		}
+		if (onlinePlayers.length == 1) return;
 		players = onlinePlayers.length;
 		for (int i = 0; i < players; i++) {
 			if (i >= players / 2) {
@@ -63,22 +69,68 @@ public class Game {
 		Main.messagePlayer(player, "You have joined the " + ChatColor.BLUE + "Blue" + ChatColor.RED + " Team!");
 	}
 
-	public void giveItems(Player player) {
+	public void giveItems(final Player player) {
 		//TODO: set up configurable kits
-		ItemStack[] kit = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), new ItemStack(Material.COOKED_BEEF) };
-		kit[2].setAmount(64);
 		player.getInventory().clear();
-		player.getInventory().addItem(kit);
+		ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+		LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
+		if (Main.game.redTeam.contains(player)) {
+			chestplateMata.setColor(Color.fromRGB(184, 0, 0));
+		} else {
+			chestplateMata.setColor(Color.fromRGB(0, 255, 255));
+		}
+		chestplate.setItemMeta(chestplateMata);
+		player.getInventory().setChestplate(chestplate);
+
+		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
+		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
+		if (!(Main.classMap.containsKey(player))) {
+			Main.classMap.put(player, "Gunner");
+		}
+		if (Main.classMap.get(player).equals("Gunner")) {
+			player.getInventory().addItem(gunner);
+		}
+		if (Main.classMap.get(player).equals("Scout")) {
+			player.getInventory().addItem(scout);
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 2));
+				}
+			}, 5L);
+
+		}
 
 	}
 
 	public void giveItems(Player[] players) {
 		//TODO: set up configurable kits
-		ItemStack[] kit = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), new ItemStack(Material.COOKED_BEEF) };
-		kit[2].setAmount(64);
+
+		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
+		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
 		for (int i = 0; i < players.length; i++) {
 			players[i].getInventory().clear();
-			players[i].getInventory().addItem(kit);
+
+			ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
+			LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
+			if (Main.game.redTeam.contains(players[i])) {
+				chestplateMata.setColor(Color.fromRGB(184, 0, 0));
+			} else {
+				chestplateMata.setColor(Color.fromRGB(0, 255, 255));
+			}
+			chestplate.setItemMeta(chestplateMata);
+			players[i].getInventory().setChestplate(chestplate);
+			if (!(Main.classMap.containsKey(players[i]))) {
+				Main.classMap.put(players[i], "Gunner");
+			}
+			if (Main.classMap.get(players[i]).equals("Gunner")) {
+				players[i].getInventory().addItem(gunner);
+			}
+			if (Main.classMap.get(players[i]).equals("Scout")) {
+				players[i].getInventory().addItem(scout);
+				players[i].addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 2));
+			}
 		}
 	}
 
@@ -86,10 +138,12 @@ public class Game {
 		Player[] redTeamArray = redTeam.toArray(new Player[redTeam.size()]);
 		Player[] blueTeamArray = blueTeam.toArray(new Player[blueTeam.size()]);
 		for (int i = 0; i < redTeamArray.length; i++) {
+			redTeamArray[i].setFallDistance(0F);
 			redTeamArray[i].teleport(redSpawn);
 		}
 		if (!(blueTeamArray.length == 0)) {
 			for (int i = 0; i < blueTeamArray.length; i++) {
+				blueTeamArray[i].setFallDistance(0F);
 				blueTeamArray[i].teleport(blueSpawn);
 			}
 		}
@@ -99,12 +153,12 @@ public class Game {
 		score[0].setScore(blueScore);
 		score[1].setScore(redScore);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		String second = Main.tick % 60+"";
+		String second = Main.tick % 60 + "";
 		if (Main.tick % 60 <= 9) second = "0" + second;
-		String time = (Main.tick - (Main.tick % 60))/60 + ":" + second;
+		String time = (Main.tick - (Main.tick % 60)) / 60 + ":" + second;
 		objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 		player.setScoreboard(board);
-		
+
 		Player[] redTeamArray = redTeam.toArray(new Player[redTeam.size()]);
 		Player[] blueTeamArray = blueTeam.toArray(new Player[blueTeam.size()]);
 		if (redTeamArray.length == blueTeamArray.length) {
@@ -126,9 +180,9 @@ public class Game {
 		score[0].setScore(blueScore);
 		score[1].setScore(redScore);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		String second = Main.tick % 60+"";
+		String second = Main.tick % 60 + "";
 		if (Main.tick % 60 <= 9) second = "0" + second;
-		String time = (Main.tick - (Main.tick % 60))/60 + ":" + second;
+		String time = (Main.tick - (Main.tick % 60)) / 60 + ":" + second;
 		objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 
 		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());

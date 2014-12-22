@@ -1,15 +1,17 @@
 package com.rbruno.TrenchWarfare;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class Main extends JavaPlugin {
@@ -23,6 +25,12 @@ public class Main extends JavaPlugin {
 	FileConfiguration config = getConfig();
 	static TrenchConfig trenchConfig;
 	static Location spawn;
+
+	public static String[] classes = { "Gunner", "Scout" };
+
+	public static HashMap<Player, String> classMap = new HashMap<Player, String>();
+	
+	public static ArrayList<Player> parkour = new ArrayList<Player>();
 
 	@Override
 	public void onEnable() {
@@ -71,7 +79,7 @@ public class Main extends JavaPlugin {
 		if (gameState == 1) {
 			String second = Main.tick % 60 + "";
 			if (Main.tick % 60 <= 9) second = "0" + second;
-			String time = (Main.tick - (Main.tick % 60))/60 + ":" + second;
+			String time = (Main.tick - (Main.tick % 60)) / 60 + ":" + second;
 			game.objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 			if (tick % 60 == 0) {
 				broadcast(tick / 60 + " minutes left in game!", true);
@@ -87,28 +95,28 @@ public class Main extends JavaPlugin {
 		}
 
 	}
-	
-	public static void endGame(boolean flag){
+
+	public static void endGame(boolean flag) {
+		parkour.clear();
 		game.objective.setDisplayName(ChatColor.BOLD + "Pre-Game");
-		if (!(flag)){
+		if (!(flag)) {
 			broadcast("The game has ended!", true);
-			if(game.blueScore<game.redScore){
+			if (game.blueScore < game.redScore) {
 				broadcast("Red has won the game!", true);
-			}else{
+			} else {
 				broadcast("Blue has won the game!", true);
 			}
 			broadcast("Score: " + ChatColor.BLUE + game.blueScore + " " + ChatColor.RED + game.redScore, true);
-		} 
+		}
 
 		gameState = 0;
 		Player[] players = Main.plugin.getServer().getOnlinePlayers();
 		if (!(players.length == 0)) {
-			ItemStack[] kit = { new ItemStack(Material.COOKED_BEEF) };
-			kit[0].setAmount(64);
 			for (int i = 0; i < players.length; i++) {
+				players[i].getInventory().setArmorContents(null);
+				players[i].removePotionEffect(PotionEffectType.SPEED);
 				players[i].teleport(spawn);
 				players[i].getInventory().clear();
-				players[i].getInventory().addItem(kit);
 			}
 			tick = trenchConfig.getPregameCountdown();
 			pregameCountdown = false;
@@ -116,7 +124,7 @@ public class Main extends JavaPlugin {
 	}
 
 	private void gameStart() {
-
+		parkour.clear();
 		game = new Game();
 		game.pickTeams();
 		game.giveItems(getServer().getOnlinePlayers());

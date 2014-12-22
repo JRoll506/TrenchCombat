@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -15,7 +15,10 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -26,7 +29,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class listeners implements Listener {
@@ -60,10 +63,32 @@ public class listeners implements Listener {
 	}
 
 	@EventHandler
+	public void onEntityDamageEvent(EntityDamageEvent event) {
+		if (Main.gameState == 0) event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onFoodLevelChangeEvent(FoodLevelChangeEvent event) {
+		event.setCancelled(true);
+	}
+
+	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent event) {
-		if (Main.gameState == 0) return;
 		Player player = event.getPlayer();
+		if (player.getLocation().getBlockY() < 0) {
+			player.teleport(spawn);
+			player.setFallDistance(0F);
+		}
 		Location location = player.getLocation();
+		if (Main.gameState == 0) {
+			if (Main.gameState == 0 || player.isOp()) return;
+			if (location.getBlockZ() >= 61 && location.getBlockY() >= 80) {
+				player.teleport(new Location(location.getWorld(),location.getX(),location.getY(),60,location.getYaw(),location.getPitch()));
+			}
+			return;
+		}
+
+
 		if (Main.game.blueTeam.contains(player) && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
 			if (!(Main.game.redFlagHolder == null)) return;
 			Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
@@ -115,10 +140,8 @@ public class listeners implements Listener {
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
 		if (Main.gameState == 0) {
-			ItemStack[] kit = { new ItemStack(Material.COOKED_BEEF) };
-			kit[0].setAmount(64);
+			event.getPlayer().removePotionEffect(PotionEffectType.SPEED);
 			event.getPlayer().getInventory().clear();
-			event.getPlayer().getInventory().addItem(kit);
 			event.getPlayer().teleport(spawn);
 			Main.messagePlayer(event.getPlayer(), "The game will begin shortly!");
 		} else if (Main.gameState == 1) {
@@ -143,21 +166,33 @@ public class listeners implements Listener {
 	}
 
 	@EventHandler
+	public void onBlockPlaceEvent(BlockPlaceEvent event) {
+		if (!event.getPlayer().isOp()) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
 		Player player = (Player) event.getEntity();
 		event.getDrops().clear();
 		if (Main.gameState == 1) {
 			if (Main.game.redTeam.contains(player)) {
-				if (Main.game.blueFlagHolder.equals(player)) {
-					Main.game.blueFlagHolder = null;
-					Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "blue " + ChatColor.WHITE + "flag", true);
+				if (!(Main.game.blueFlagHolder == null)) {
+					if (Main.game.blueFlagHolder.equals(player)) {
+						Main.game.blueFlagHolder = null;
+						Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag", true);
+					}
 				}
+
 				Main.game.blueScore = Main.game.blueScore + 10;
 				Main.game.score[0].setScore(Main.game.blueScore);
 			} else {
-				if (Main.game.blueFlagHolder.equals(player)) {
-					Main.game.redFlagHolder = null;
-					Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "red " + ChatColor.WHITE + "flag", true);
+				if (!(Main.game.redFlagHolder == null)) {
+					if (Main.game.redFlagHolder.equals(player)) {
+						Main.game.redFlagHolder = null;
+						Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
+					}
 				}
 				Main.game.redScore = Main.game.redScore + 10;
 				Main.game.score[1].setScore(Main.game.redScore);
@@ -170,28 +205,15 @@ public class listeners implements Listener {
 		Player player = (Player) event.getPlayer();
 		if (Main.gameState == 1) {
 			if (Main.game.redTeam.contains(player)) {
-				ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-				LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
-				lam.setColor(Color.fromRGB(184, 0, 0));
-				lhelmet.setItemMeta(lam);
-				player.getInventory().setChestplate(lhelmet);
 				event.setRespawnLocation(redSpawn);
 				Main.game.giveItems(player);
 			} else {
-				ItemStack lhelmet = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
-				LeatherArmorMeta lam = (LeatherArmorMeta) lhelmet.getItemMeta();
-				lam.setColor(Color.fromRGB(0, 255, 255));
-				lhelmet.setItemMeta(lam);
-				player.getInventory().setChestplate(lhelmet);
 				event.setRespawnLocation(blueSpawn);
 				Main.game.giveItems(player);
 			}
 		} else {
 			event.setRespawnLocation(spawn);
-			ItemStack[] kit = { new ItemStack(Material.COOKED_BEEF) };
-			kit[0].setAmount(64);
 			player.getInventory().clear();
-			player.getInventory().addItem(kit);
 		}
 	}
 
@@ -251,11 +273,34 @@ public class listeners implements Listener {
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		if (Main.gameState == 0) return;
 		final Player player = (Player) event.getPlayer();
+		if (Main.gameState == 0) {
+			if (event.getClickedBlock().getType() == Material.SIGN || event.getClickedBlock().getType() == Material.SIGN_POST) {
+				Sign sign = (Sign) event.getClickedBlock().getState();
+				if (sign.getLine(0).equalsIgnoreCase("[class]")) {
+					for (int i = 0; i < Main.classes.length; i++) {
+						if (sign.getLine(1).equals(Main.classes[i])) {
+							if (Main.classMap.containsKey(player)) {
+								Main.classMap.remove(player);
+							}
+							Main.classMap.put(player, sign.getLine(1));
+							Main.messagePlayer(player, "You have picked the " + sign.getLine(1) + " class");
+						}
+					}
+				} else if (sign.getLine(0).equalsIgnoreCase("[Parkour]")) {
+					if (!(Main.parkour.contains(player))) {
+						Main.broadcast(player.getName() + " knows how to use the spacebar!", true);
+						Main.parkour.add(player);
+
+					}
+				}
+			}
+			return;
+		}
+
 		Location location = player.getLocation();
 		Location d = new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ());
-		if (event.getMaterial().name() == "IRON_SWORD") {
+		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
 			if (d.getBlock().getType() == Material.SPONGE) {
 				if (Main.game.cooldown.toArray().length == 0) {
 					Main.game.cooldown.add(player);
@@ -265,7 +310,6 @@ public class listeners implements Listener {
 						Main.game.cooldown.add(player);
 						fireCannon(player);
 					} else {
-
 						Main.messagePlayer(player, "Cannon is reloading!");
 					}
 				}
