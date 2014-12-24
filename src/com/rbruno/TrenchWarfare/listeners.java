@@ -338,21 +338,58 @@ public class listeners implements Listener {
 			}
 		} else if (event.getMaterial().name() == "ARROW") {
 			event.setCancelled(true);
-			player.launchProjectile(Arrow.class);
-		} else if (event.getMaterial().name() == "BLAZE_ROD") {
+			if (Main.game.cooldownGunner.toArray().length == 0) {
+				Main.game.cooldownGunner.add(player);
+				player.launchProjectile(Arrow.class);
+			} else {
+				if (!(Main.game.cooldownGunner.contains(player))) {
+					Main.game.cooldownGunner.add(player);
+					player.launchProjectile(Arrow.class);
+				}
+			}
+			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+				public void run() {
+					Main.game.cooldownGunner.remove(player);
+				}
+			}, 1L);
+			
+		} else if (event.getMaterial().name() == "BONE") {
 			if (Main.game.cooldownSniper.toArray().length == 0) {
-				fireArrow(player, event);
+				fireArrow(player);
 			} else {
 				if (!(Main.game.cooldownSniper.contains(player))) {
-					fireArrow(player, event);
+					fireArrow(player);
 				}
 			}
 			event.setCancelled(true);
 
-		}
+		} 
+		else if (event.getMaterial().name() == "LEATHER_CHESTPLATE") {
+			if (Main.game.redTeam.contains(player)){
+				if((Main.game.blueTeam.toArray().length-Main.game.redTeam.toArray().length)>2){
+					Main.game.redTeam.remove(player);
+					Main.game.blueTeam.add(player);
+					player.teleport(blueSpawn);
+					Main.game.giveItems(player);
+					
+				}
+			} else {
+				if((Main.game.redTeam.toArray().length-Main.game.blueTeam.toArray().length)>2){
+					Main.game.blueTeam.remove(player);
+					Main.game.redTeam.add(player);
+					player.teleport(redSpawn);
+					Main.game.giveItems(player);
+
+				}
+			}
+			event.setCancelled(true);
+
+		} 
 	}
 
-	public void fireArrow(final Player player, PlayerInteractEvent event) {
+
+	public void fireArrow(final Player player) {
 		Main.game.cooldownSniper.add(player);
 		Arrow arrow = (Arrow) player.launchProjectile(Arrow.class);
 		arrow.setVelocity(arrow.getVelocity().multiply(2));
@@ -373,7 +410,7 @@ public class listeners implements Listener {
 			public void run() {
 				Main.game.cooldownSniper.remove(player);
 			}
-		}, 10L);
+		}, 40L);
 	}
 
 	public void fireCannon(final Player player, final boolean rightClick) {

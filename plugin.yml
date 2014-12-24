@@ -2,6 +2,11 @@ name: TrenchWarfare
 main: com.rbruno.TrenchWarfare.Main
 version: 1.1
 author: JRoll506
-
-
+commands:
+  2ndWorld:
+    description: tps you to new world
+  unload2ndworld:
+    description: tps you to new world
+  is2ndworldloaded:
+    description: tps you to new world
 

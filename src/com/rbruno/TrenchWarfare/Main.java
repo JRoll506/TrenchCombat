@@ -9,6 +9,10 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -33,6 +37,7 @@ public class Main extends JavaPlugin {
 	static Location spawn;
 
 	public static String[] classes = { "Gunner", "Scout","Shotgun" };
+	private World world;
 
 	public static HashMap<Player, String> classMap = new HashMap<Player, String>();
 	
@@ -50,6 +55,33 @@ public class Main extends JavaPlugin {
 		lobby();
 		getServer().getPluginManager().registerEvents(new listeners(), this);
 	}
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		Player player = (Player) sender;
+		if (cmd.getName().equalsIgnoreCase("2ndworld")) {
+			if (!(player.isOp())) return false;
+			if (world==null)world=getServer().createWorld(new WorldCreator("2ndWorld"));
+			player.teleport(world.getSpawnLocation());
+			return true;
+		} 
+		if (cmd.getName().equalsIgnoreCase("unload2ndworld")) {
+			if (!(player.isOp())||world==null) return false;
+			getServer().unloadWorld(world, true);
+			return true;
+		} 
+		if (cmd.getName().equalsIgnoreCase("is2ndworldloaded")) {
+			if (!(player.isOp())) return false;
+			if(world==null){
+				player.sendMessage("2nd world is loaded");
+			}else{
+				player.sendMessage("2nd world is not loaded");
+			}
+			return true;
+		} 
+		return false; 
+	}
+
 
 	private void lobby() {
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();

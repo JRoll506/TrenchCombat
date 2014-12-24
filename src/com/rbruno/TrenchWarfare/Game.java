@@ -41,6 +41,11 @@ public class Game {
 
 	public ArrayList<Player> cooldownSniper = new ArrayList<Player>();
 
+	public ArrayList<Player> cooldownFire = new ArrayList<Player>();
+
+	public ArrayList<Player> cooldownGunner = new ArrayList<Player>();
+
+
 	public void pickTeams() {
 		int players = 0;
 		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
@@ -81,12 +86,13 @@ public class Game {
 		} else {
 			chestplateMata.setColor(Color.fromRGB(0, 255, 255));
 		}
+		chestplateMata.setDisplayName(ChatColor.BOLD+"Right click to change teams");
 		chestplate.setItemMeta(chestplateMata);
 		player.getInventory().setChestplate(chestplate);
 		player.getInventory().setItem(8, chestplate);
 		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
 		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
-		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BLAZE_ROD) };
+		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BONE) };
 		if (!(Main.classMap.containsKey(player))) {
 			Main.classMap.put(player, "Gunner");
 		}
@@ -99,7 +105,7 @@ public class Game {
 			scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 2));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 1));
 				}
 			}, 5L);
 
@@ -115,7 +121,7 @@ public class Game {
 
 		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
 		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
-		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BLAZE_ROD) };
+		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BONE) };
 		for (int i = 0; i < players.length; i++) {
 			players[i].getInventory().clear();
 			ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
@@ -125,6 +131,7 @@ public class Game {
 			} else {
 				chestplateMata.setColor(Color.fromRGB(0, 255, 255));
 			}
+			chestplateMata.setDisplayName(ChatColor.BOLD+"Right click to change teams");
 			chestplate.setItemMeta(chestplateMata);
 			players[i].getInventory().setChestplate(chestplate);
 			players[i].getInventory().setItem(8, chestplate);
@@ -136,7 +143,7 @@ public class Game {
 			}
 			if (Main.classMap.get(players[i]).equals("Scout")) {
 				players[i].getInventory().addItem(scout);
-				players[i].addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 2));
+				players[i].addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 1));
 			}
 			if (Main.classMap.get(players[i]).equals("Shotgun")) {
 				players[i].getInventory().addItem(shotGun);
