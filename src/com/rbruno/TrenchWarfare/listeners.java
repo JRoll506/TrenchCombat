@@ -17,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -75,6 +76,13 @@ public class listeners implements Listener {
 	}
 
 	@EventHandler
+	public void signCreation(SignChangeEvent event) {
+		for (int i = 0; i < 4; i++) {
+			event.setLine(i, event.getLine(i).replace("&", "§"));
+		}
+	}
+
+	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
 		if (player.getLocation().getBlockY() < 0) {
@@ -118,13 +126,31 @@ public class listeners implements Listener {
 		}
 
 		if (Main.game.redFlagHolder == player && location.getBlockX() == Main.trenchConfig.blueFlagX && location.getBlockY() == Main.trenchConfig.blueFlagY && location.getBlockZ() == Main.trenchConfig.blueFlagZ) {
-			Main.broadcast(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.BLUE + "Blue", true);
-			Main.endGame(true);
+			Main.game.redFlagHolder = null;
+			Main.game.blueScore = Main.game.blueScore + 1;
+			Main.game.score[0].setScore(Main.game.blueScore);
+			if (Main.game.blueScore == 3) {
+				Main.broadcast(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.BLUE + "Blue", true);
+				Main.endGame(true);
+			} else {
+				Main.broadcast(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.BLUE + "Blue", true);
+				Main.game.giveItems(player);
+
+			}
 		}
 
 		if (Main.game.blueFlagHolder == player && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
-			Main.broadcast(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.RED + "Red", true);
-			Main.endGame(true);
+			Main.game.blueFlagHolder = null;
+			Main.game.redScore = Main.game.redScore + 1;
+			Main.game.score[1].setScore(Main.game.redScore);
+			if (Main.game.redScore == 3) {
+				Main.broadcast(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.RED + "Red", true);
+				Main.endGame(true);
+			} else {
+				Main.broadcast(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.RED + "Red", true);
+				Main.game.giveItems(player);
+
+			}
 		}
 		if (Main.gameState == 0 || player.isOp()) return;
 
@@ -146,6 +172,7 @@ public class listeners implements Listener {
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
 		if (Main.gameState == 0) {
 			event.getPlayer().removePotionEffect(PotionEffectType.SPEED);
+			event.getPlayer().getInventory().setArmorContents(null);
 			event.getPlayer().getInventory().clear();
 			event.getPlayer().teleport(spawn);
 			Main.messagePlayer(event.getPlayer(), "The game will begin shortly!");
@@ -189,9 +216,6 @@ public class listeners implements Listener {
 						Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag", true);
 					}
 				}
-
-				Main.game.blueScore = Main.game.blueScore + 10;
-				Main.game.score[0].setScore(Main.game.blueScore);
 			} else {
 				if (!(Main.game.redFlagHolder == null)) {
 					if (Main.game.redFlagHolder.equals(player)) {
@@ -199,8 +223,6 @@ public class listeners implements Listener {
 						Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
 					}
 				}
-				Main.game.redScore = Main.game.redScore + 10;
-				Main.game.score[1].setScore(Main.game.redScore);
 			}
 		}
 	}
@@ -281,9 +303,9 @@ public class listeners implements Listener {
 		final Player player = (Player) event.getPlayer();
 		if (Main.gameState == 0) {
 			if (event.getClickedBlock() == null) return;
-			if (event.getClickedBlock().getType() == Material.SIGN || event.getClickedBlock().getType() == Material.SIGN_POST) {
+			if (event.getClickedBlock().getState() instanceof Sign) {
 				Sign sign = (Sign) event.getClickedBlock().getState();
-				if (sign.getLine(0).equalsIgnoreCase("[class]")) {
+				if (sign.getLine(0).contains("[Class]")) {
 					for (int i = 0; i < Main.classes.length; i++) {
 						if (sign.getLine(1).equals(Main.classes[i])) {
 							if (Main.classMap.containsKey(player)) {
@@ -291,14 +313,47 @@ public class listeners implements Listener {
 							}
 							Main.classMap.put(player, sign.getLine(1));
 							Main.messagePlayer(player, "You have picked the " + sign.getLine(1) + " class");
+							if (sign.getLine(1).equalsIgnoreCase("gunner")) {
+								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
+								player.sendMessage("&f&lGunner Class".replace("&", "§"));
+								player.sendMessage("&7Fulll-automatic machine gun.".replace("&", "§"));
+								player.sendMessage("");
+								player.sendMessage("&fMachine Gun".replace("&", "§"));
+								player.sendMessage("&eRight-Click &7to use gun.".replace("&", "§"));
+								player.sendMessage("&7Equipped with &aIron Sword &7and &aLeather Tunic".replace("&", "§"));
+								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
+							}
+							if (sign.getLine(1).equalsIgnoreCase("shotgun")) {
+								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
+								player.sendMessage("&f&lShotgun Class".replace("&", "§"));
+								player.sendMessage("&7Pump action shotgun.".replace("&", "§"));
+								player.sendMessage("&66 bullets per round.".replace("&", "§"));
+								player.sendMessage("");
+								player.sendMessage("&fShotgun".replace("&", "§"));
+								player.sendMessage("&eRight-Click &7to use Shotgun.".replace("&", "§"));
+								player.sendMessage("&7Equipped with &aIron Sword &7and &aLeather Tunic.".replace("&", "§"));
+
+								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
+							}
+							if (sign.getLine(1).equalsIgnoreCase("scout")) {
+								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
+								player.sendMessage("&f&lScout Class".replace("&", "§"));
+								player.sendMessage("&7Equipped with &aDiamond Sword &7and &aLeather Tunic.".replace("&", "§"));
+								player.sendMessage("");
+								player.sendMessage("&fSpeed".replace("&", "§"));
+								player.sendMessage("&7Permanet Speed 2.".replace("&", "§"));
+								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
+							}
 						}
 					}
-				} else if (sign.getLine(0).equalsIgnoreCase("[Parkour]")) {
+				} else if (sign.getLine(0).contains("[Parkour]")) {
 					if (!(Main.parkour.contains(player))) {
 						Main.broadcast(player.getName() + " knows how to use the spacebar!", true);
 						Main.parkour.add(player);
 
 					}
+				} else if (sign.getLine(2).contains("[Right Click]")) {
+					player.teleport(new Location(Main.getInstance().getServer().getWorld("Trenchwarfare"), 602.5, 69, 41.5, 180, 0));
 				}
 			}
 			return;
@@ -353,44 +408,48 @@ public class listeners implements Listener {
 					Main.game.cooldownGunner.remove(player);
 				}
 			}, 1L);
-			
+
 		} else if (event.getMaterial().name() == "BONE") {
-			if (Main.game.cooldownSniper.toArray().length == 0) {
+			if (Main.game.cooldownShotgun.toArray().length == 0) {
 				fireArrow(player);
 			} else {
-				if (!(Main.game.cooldownSniper.contains(player))) {
+				if (!(Main.game.cooldownShotgun.contains(player))) {
 					fireArrow(player);
 				}
 			}
 			event.setCancelled(true);
 
-		} 
-		else if (event.getMaterial().name() == "LEATHER_CHESTPLATE") {
-			if (Main.game.redTeam.contains(player)){
-				if((Main.game.blueTeam.toArray().length-Main.game.redTeam.toArray().length)>2){
+		} else if (event.getMaterial() == Material.LEATHER_CHESTPLATE) {
+			if (Main.game.redTeam.contains(player)) {
+				if ((Main.game.blueTeam.toArray().length - Main.game.redTeam.toArray().length) < 2) {
 					Main.game.redTeam.remove(player);
 					Main.game.blueTeam.add(player);
 					player.teleport(blueSpawn);
+					Main.messagePlayer(player, "You have joined the " + ChatColor.BLUE + "Blue" + ChatColor.RED + " Team!");
 					Main.game.giveItems(player);
-					
+
+				} else {
+					Main.messagePlayer(player, "The teams are too unbalanced to switch teams");
 				}
 			} else {
-				if((Main.game.redTeam.toArray().length-Main.game.blueTeam.toArray().length)>2){
+				if ((Main.game.redTeam.toArray().length - Main.game.blueTeam.toArray().length) < 2) {
 					Main.game.blueTeam.remove(player);
 					Main.game.redTeam.add(player);
 					player.teleport(redSpawn);
+					Main.messagePlayer(player, "You have joined the " + ChatColor.RED + "Red" + ChatColor.RED + " Team!");
 					Main.game.giveItems(player);
 
+				} else {
+					Main.messagePlayer(player, "The teams are too unbalanced to switch teams");
 				}
 			}
 			event.setCancelled(true);
 
-		} 
+		}
 	}
 
-
 	public void fireArrow(final Player player) {
-		Main.game.cooldownSniper.add(player);
+		Main.game.cooldownShotgun.add(player);
 		Arrow arrow = (Arrow) player.launchProjectile(Arrow.class);
 		arrow.setVelocity(arrow.getVelocity().multiply(2));
 		Vector velocity = arrow.getVelocity();
@@ -408,9 +467,9 @@ public class listeners implements Listener {
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
 			public void run() {
-				Main.game.cooldownSniper.remove(player);
+				Main.game.cooldownShotgun.remove(player);
 			}
-		}, 40L);
+		}, 20L);
 	}
 
 	public void fireCannon(final Player player, final boolean rightClick) {

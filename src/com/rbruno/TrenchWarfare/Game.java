@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -39,9 +40,7 @@ public class Game {
 	Objective objective = board.registerNewObjective("score", "dummy");
 	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red") };
 
-	public ArrayList<Player> cooldownSniper = new ArrayList<Player>();
-
-	public ArrayList<Player> cooldownFire = new ArrayList<Player>();
+	public ArrayList<Player> cooldownShotgun = new ArrayList<Player>();
 
 	public ArrayList<Player> cooldownGunner = new ArrayList<Player>();
 
@@ -79,6 +78,7 @@ public class Game {
 	public void giveItems(final Player player) {
 		//TODO: set up configurable kits
 		player.getInventory().clear();
+		player.getInventory().setArmorContents(null);
 		ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
 		LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
 		if (Main.game.redTeam.contains(player)) {
@@ -91,8 +91,14 @@ public class Game {
 		player.getInventory().setChestplate(chestplate);
 		player.getInventory().setItem(8, chestplate);
 		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
+		ItemMeta machineGun=gunner[1].getItemMeta();
+		machineGun.setDisplayName("Machine gun");
+		gunner[1].setItemMeta(machineGun);
 		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
 		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BONE) };
+		ItemMeta shotGunMeta=shotGun[1].getItemMeta();
+		shotGunMeta.setDisplayName("Shotgun");
+		shotGun[1].setItemMeta(shotGunMeta);
 		if (!(Main.classMap.containsKey(player))) {
 			Main.classMap.put(player, "Gunner");
 		}
@@ -105,7 +111,7 @@ public class Game {
 			scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 1));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 0));
 				}
 			}, 5L);
 
@@ -123,6 +129,7 @@ public class Game {
 		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
 		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BONE) };
 		for (int i = 0; i < players.length; i++) {
+			players[i].getInventory().setArmorContents(null);
 			players[i].getInventory().clear();
 			ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
 			LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
@@ -143,7 +150,7 @@ public class Game {
 			}
 			if (Main.classMap.get(players[i]).equals("Scout")) {
 				players[i].getInventory().addItem(scout);
-				players[i].addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 1));
+				players[i].addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 0));
 			}
 			if (Main.classMap.get(players[i]).equals("Shotgun")) {
 				players[i].getInventory().addItem(shotGun);

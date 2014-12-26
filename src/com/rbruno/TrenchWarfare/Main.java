@@ -9,10 +9,6 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -37,7 +33,7 @@ public class Main extends JavaPlugin {
 	static Location spawn;
 
 	public static String[] classes = { "Gunner", "Scout","Shotgun" };
-	private World world;
+	//private World world;
 
 	public static HashMap<Player, String> classMap = new HashMap<Player, String>();
 	
@@ -56,7 +52,7 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new listeners(), this);
 	}
 	
-	@Override
+/*	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
 		if (cmd.getName().equalsIgnoreCase("2ndworld")) {
@@ -80,7 +76,7 @@ public class Main extends JavaPlugin {
 			return true;
 		} 
 		return false; 
-	}
+	}*/
 
 
 	private void lobby() {
