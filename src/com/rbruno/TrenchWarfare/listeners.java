@@ -85,7 +85,7 @@ public class listeners implements Listener {
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		if(player.isDead())return;
+		if (player.isDead()) return;
 		if (player.getLocation().getBlockY() < 0) {
 			player.teleport(spawn);
 			player.setFallDistance(0F);
@@ -210,18 +210,20 @@ public class listeners implements Listener {
 		event.getDrops().clear();
 		if (Main.gameState == 1) {
 			if (Main.game.redTeam.contains(player)) {
-				if (player.getKiller().getItemInHand().getType()==Material.ARROW){
-					Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
-					Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() +" with your gun!");
-				}else if (player.getKiller().getItemInHand().getType()==Material.IRON_SWORD||player.getKiller().getItemInHand().getType()==Material.DIAMOND_SWORD){
-					Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
-					Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() +" with your sword!");
-				}else if (player.getKiller().getItemInHand().getType()==Material.BONE){
-					Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
-					Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() +" with your shotgun!");
-				}else{
-					Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you!");
-					Main.messagePlayer(player.getKiller(), "You have killed " + player.getName());
+				if (player.getKiller() instanceof Player) {
+					if (player.getKiller().getItemInHand().getType() == Material.ARROW) {
+						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() + " with your gun!");
+					} else if (player.getKiller().getItemInHand().getType() == Material.IRON_SWORD || player.getKiller().getItemInHand().getType() == Material.DIAMOND_SWORD) {
+						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() + " with your sword!");
+					} else if (player.getKiller().getItemInHand().getType() == Material.BONE) {
+						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() + " with your shotgun!");
+					} else {
+						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName());
+					}
 				}
 				if (!(Main.game.blueFlagHolder == null)) {
 					if (Main.game.blueFlagHolder.equals(player)) {
@@ -230,18 +232,22 @@ public class listeners implements Listener {
 					}
 				}
 			} else {
-				if (player.getKiller().getItemInHand().getType()==Material.ARROW){
-					Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
-					Main.messagePlayer(player.getKiller(), "You have killed " +ChatColor.BLUE+ player.getName() +ChatColor.RED+" with your gun!");
-				}else if (player.getKiller().getItemInHand().getType()==Material.IRON_SWORD||player.getKiller().getItemInHand().getType()==Material.DIAMOND_SWORD){
-					Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
-					Main.messagePlayer(player.getKiller(), "You have killed " +ChatColor.BLUE+ player.getName()+ChatColor.RED +" with your sword!");
-				}else if (player.getKiller().getItemInHand().getType()==Material.BONE){
-					Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
-					Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE+player.getName() +ChatColor.RED+" with your shotgun!");
-				}else{
-					Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you!");
-					Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE+player.getName());
+				if (player.getKiller() instanceof Player) {
+
+					if (player.getKiller().getItemInHand().getType() == Material.ARROW) {
+						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your gun!");
+					} else if (player.getKiller().getItemInHand().getType() == Material.IRON_SWORD || player.getKiller().getItemInHand().getType() == Material.DIAMOND_SWORD) {
+						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your sword!");
+					} else if (player.getKiller().getItemInHand().getType() == Material.BONE) {
+						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your shotgun!");
+					} else {
+						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you!");
+						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName());
+					}
+
 				}
 				if (!(Main.game.redFlagHolder == null)) {
 					if (Main.game.redFlagHolder.equals(player)) {
@@ -289,14 +295,13 @@ public class listeners implements Listener {
 				}
 			} else {
 				// attacker is blue
+
 				if (Main.game.redTeam.contains(event.getEntity())) {
 					// victim is red
-					if (Main.game.redTeam.contains(event.getEntity())) {
-						return;
-					} else {
-						// Victim is blue
-						event.setCancelled(true);
-					}
+					return;
+				} else {
+					// Victim is blue
+					event.setCancelled(true);
 				}
 			}
 		} else if (event.getDamager() instanceof Arrow) {
@@ -332,8 +337,7 @@ public class listeners implements Listener {
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		final Player player = (Player) event.getPlayer();
-		if (Main.gameState == 0) {
-			if (event.getClickedBlock() == null) return;
+		if (!(event.getClickedBlock() == null)) {
 			if (event.getClickedBlock().getState() instanceof Sign) {
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if (sign.getLine(0).contains("[Class]")) {
@@ -375,6 +379,7 @@ public class listeners implements Listener {
 								player.sendMessage("&7Permanent Speed 2.".replace("&", "§"));
 								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
 							}
+
 						}
 					}
 				} else if (sign.getLine(0).contains("[Parkour]")) {
@@ -387,9 +392,8 @@ public class listeners implements Listener {
 					player.teleport(new Location(Main.getInstance().getServer().getWorld("Trenchwarfare"), 602.5, 69, 41.5, 180, 0));
 				}
 			}
-			return;
 		}
-
+		if (Main.gameState == 0) return;
 		Location location = player.getLocation();
 		Location d = new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ());
 		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
@@ -450,7 +454,7 @@ public class listeners implements Listener {
 			}
 			event.setCancelled(true);
 
-		} 
+		}
 	}
 
 	public void fireArrow(final Player player) {
@@ -505,7 +509,7 @@ public class listeners implements Listener {
 										Main.broadcast(ChatColor.BLUE + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
 									}
 								}
-								Main.messagePlayer(player, "You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.RED +" with your cannon!");
+								Main.messagePlayer(player, "You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.RED + " with your cannon!");
 								Main.messagePlayer(victum, player.getName() + " has killed you with his cannon!");
 
 								victum.damage(20F);
