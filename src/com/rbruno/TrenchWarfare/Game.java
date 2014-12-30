@@ -44,6 +44,9 @@ public class Game {
 
 	public ArrayList<Player> cooldownGunner = new ArrayList<Player>();
 	public ArrayList<Player> cooldownTeamSwitch = new ArrayList<Player>();
+	
+    ItemStack redwool = new ItemStack(Material.WOOL, 1, (byte)14);
+    ItemStack bluewool = new ItemStack(Material.WOOL, 1, (byte)11);
 
 
 	public void pickTeams() {
@@ -83,8 +86,10 @@ public class Game {
 		ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
 		LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
 		if (Main.game.redTeam.contains(player)) {
+			player.getInventory().setHelmet(redwool);
 			chestplateMata.setColor(Color.fromRGB(184, 0, 0));
 		} else {
+			player.getInventory().setHelmet(bluewool);
 			chestplateMata.setColor(Color.fromRGB(0, 255, 255));
 		}
 		chestplate.setItemMeta(chestplateMata);
@@ -152,7 +157,10 @@ public class Game {
 			LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
 			if (Main.game.redTeam.contains(players[i])) {
 				chestplateMata.setColor(Color.fromRGB(184, 0, 0));
+				players[i].getInventory().setHelmet(redwool);
+
 			} else {
+				players[i].getInventory().setHelmet(bluewool);
 				chestplateMata.setColor(Color.fromRGB(0, 255, 255));
 			}
 			chestplate.setItemMeta(chestplateMata);

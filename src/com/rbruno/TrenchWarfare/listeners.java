@@ -42,6 +42,8 @@ public class listeners implements Listener {
 	Location spawn = Main.trenchConfig.getSpawn();
 	Location redSpawn = Main.trenchConfig.getRed();
 	Location blueSpawn = Main.trenchConfig.getBlue();
+	
+
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
