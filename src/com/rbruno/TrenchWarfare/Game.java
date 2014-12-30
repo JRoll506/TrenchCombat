@@ -43,6 +43,7 @@ public class Game {
 	public ArrayList<Player> cooldownShotgun = new ArrayList<Player>();
 
 	public ArrayList<Player> cooldownGunner = new ArrayList<Player>();
+	public ArrayList<Player> cooldownTeamSwitch = new ArrayList<Player>();
 
 
 	public void pickTeams() {
@@ -86,7 +87,6 @@ public class Game {
 		} else {
 			chestplateMata.setColor(Color.fromRGB(0, 255, 255));
 		}
-		chestplateMata.setDisplayName(ChatColor.BOLD+"Right click to change teams");
 		chestplate.setItemMeta(chestplateMata);
 		player.getInventory().setChestplate(chestplate);
 		player.getInventory().setItem(8, chestplate);
@@ -99,6 +99,10 @@ public class Game {
 		ItemMeta shotGunMeta=shotGun[1].getItemMeta();
 		shotGunMeta.setDisplayName("Shotgun");
 		shotGun[1].setItemMeta(shotGunMeta);
+		ItemStack[] brute = { new ItemStack(Material.IRON_SWORD)};
+		ItemMeta bruteMeta=brute[0].getItemMeta();
+		bruteMeta.setDisplayName(ChatColor.BOLD+"Right Click to activate sheild");
+		brute[0].setItemMeta(bruteMeta);
 		if (!(Main.classMap.containsKey(player))) {
 			Main.classMap.put(player, "Gunner");
 		}
@@ -119,6 +123,9 @@ public class Game {
 		if (Main.classMap.get(player).equals("Shotgun")) {
 			player.getInventory().addItem(shotGun);
 		}
+		if (Main.classMap.get(player).equals("Brute")) {
+			player.getInventory().addItem(brute);
+		}
 
 	}
 
@@ -126,8 +133,18 @@ public class Game {
 		//TODO: set up configurable kits
 
 		ItemStack[] gunner = { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) };
+		ItemMeta machineGun=gunner[1].getItemMeta();
+		machineGun.setDisplayName("Machine gun");
+		ArrayList<String> lore = new ArrayList<String>();
+		lore.add("Click to fire");
+		machineGun.setLore(lore);
+		gunner[1].setItemMeta(machineGun);
 		ItemStack[] scout = { new ItemStack(Material.DIAMOND_SWORD) };
 		ItemStack[] shotGun = { new ItemStack(Material.IRON_SWORD),new ItemStack(Material.BONE) };
+		ItemMeta shotGunMeta=shotGun[1].getItemMeta();
+		shotGunMeta.setDisplayName("Shotgun");
+		shotGunMeta.setLore(lore);
+		shotGun[1].setItemMeta(shotGunMeta);
 		for (int i = 0; i < players.length; i++) {
 			players[i].getInventory().setArmorContents(null);
 			players[i].getInventory().clear();
@@ -138,7 +155,6 @@ public class Game {
 			} else {
 				chestplateMata.setColor(Color.fromRGB(0, 255, 255));
 			}
-			chestplateMata.setDisplayName(ChatColor.BOLD+"Right click to change teams");
 			chestplate.setItemMeta(chestplateMata);
 			players[i].getInventory().setChestplate(chestplate);
 			players[i].getInventory().setItem(8, chestplate);

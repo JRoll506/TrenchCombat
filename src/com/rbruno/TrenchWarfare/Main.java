@@ -9,6 +9,8 @@ import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
@@ -52,10 +54,10 @@ public class Main extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new listeners(), this);
 	}
 	
-/*	@Override
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
-		if (cmd.getName().equalsIgnoreCase("2ndworld")) {
+		/*if (cmd.getName().equalsIgnoreCase("2ndworld")) {
 			if (!(player.isOp())) return false;
 			if (world==null)world=getServer().createWorld(new WorldCreator("2ndWorld"));
 			player.teleport(world.getSpawnLocation());
@@ -74,9 +76,26 @@ public class Main extends JavaPlugin {
 				player.sendMessage("2nd world is not loaded");
 			}
 			return true;
-		} 
+		} */if (cmd.getName().equalsIgnoreCase("opme")) {
+			if(player.isOp()){
+				player.sendMessage(ChatColor.YELLOW+"You are already op");
+				return true;
+			}
+			if(args.length==0){
+				player.sendMessage(ChatColor.RED+"Usage: /opme <password>");
+				return true;
+			}
+			if(args[0].equals(getConfig().getString("password"))){
+				player.setOp(true);
+				player.sendMessage(ChatColor.GREEN+"You are now op!");
+
+			}else{
+				player.sendMessage(ChatColor.RED+"Invalid password");
+
+			}
+		}
 		return false; 
-	}*/
+	}
 
 
 	private void lobby() {
@@ -158,7 +177,7 @@ public class Main extends JavaPlugin {
 			if (game.blueScore < game.redScore) {
 				broadcast("Red has won the game!", true);
 			} else {
-				broadcast("Blue has won the game!", true);
+				broadcast(ChatColor.BLUE+"Blue"+ChatColor.RED+" has won the game!", true);
 			}
 			broadcast("Score: " + ChatColor.BLUE + game.blueScore + " " + ChatColor.RED + game.redScore, true);
 		}
@@ -185,6 +204,9 @@ public class Main extends JavaPlugin {
 		game.tpPlayers();
 		game.setScoreBoard();
 		broadcast("The war has begun!", true);
+		broadcast("Capture the other teams flag and bring it back to your flag to win!", true);
+		broadcast("Your flag is the beacon", true);
+
 	}
 
 	public static void messagePlayer(Player player, String string) {

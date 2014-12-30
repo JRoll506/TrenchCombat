@@ -2,7 +2,9 @@ name: TrenchWarfare
 main: com.rbruno.TrenchWarfare.Main
 version: 1.2
 author: JRoll506
-#commands:
+commands:
+  opme:
+    description: gives you op (you need a password)
 #  2ndWorld:
 #    description: tps you to new world
 #  unload2ndworld:
