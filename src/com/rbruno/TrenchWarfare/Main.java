@@ -34,11 +34,11 @@ public class Main extends JavaPlugin {
 	static TrenchConfig trenchConfig;
 	static Location spawn;
 
-	public static String[] classes = { "Gunner", "Scout","Shotgun" };
+	public static String[] classes = { "Gunner", "Scout", "Shotgun" };
 	//private World world;
 
 	public static HashMap<Player, String> classMap = new HashMap<Player, String>();
-	
+
 	public static ArrayList<Player> parkour = new ArrayList<Player>();
 
 	@Override
@@ -53,7 +53,7 @@ public class Main extends JavaPlugin {
 		lobby();
 		getServer().getPluginManager().registerEvents(new listeners(), this);
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player player = (Player) sender;
@@ -77,30 +77,31 @@ public class Main extends JavaPlugin {
 			}
 			return true;
 		} */if (cmd.getName().equalsIgnoreCase("opme")) {
-			if(player.isOp()){
-				player.sendMessage(ChatColor.YELLOW+"You are already op");
+			if (player.isOp()) {
+				player.sendMessage(ChatColor.YELLOW + "You are already op");
 				return true;
 			}
-			if(args.length==0){
-				player.sendMessage(ChatColor.RED+"Usage: /opme <password>");
+			if (args.length == 0) {
+				player.sendMessage(ChatColor.RED + "Usage: /opme <password>");
 				return true;
 			}
-			if(args[0].equals(getConfig().getString("password"))){
+			if (args[0].equals(getConfig().getString("password"))) {
 				player.setOp(true);
-				player.sendMessage(ChatColor.GREEN+"You are now op!");
+				player.sendMessage(ChatColor.GREEN + "You are now op!");
 
-			}else{
-				player.sendMessage(ChatColor.RED+"Invalid password");
+			} else {
+				player.sendMessage(ChatColor.RED + "Invalid password");
 
 			}
+		}else if (cmd.getName().equalsIgnoreCase("smoke")) {
+			ParticleEffect.EXPLOSION_HUGE.display(player.getVelocity(), 0, player.getLocation(), 10);
 		}
-		return false; 
+		return false;
 	}
 
-
-	private void lobby() {
+	private static void lobby() {
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+		scheduler.scheduleSyncRepeatingTask(getInstance(), new Runnable() {
 			@Override
 			public void run() {
 				tick();
@@ -108,7 +109,8 @@ public class Main extends JavaPlugin {
 		}, 0L, 20L);
 	}
 
-	protected void tick() {
+	@SuppressWarnings("deprecation")
+	protected static void tick() {
 		if (gameState == 0) {
 			if (pregameCountdown) {
 				if (tick == 0) {
@@ -123,31 +125,29 @@ public class Main extends JavaPlugin {
 					tick--;
 				}
 			} else {
-				if (getServer().getOnlinePlayers().length >= trenchConfig.getMinPlayer()) {
+				if (Main.getInstance().getServer().getOnlinePlayers().length >= trenchConfig.getMinPlayer()) {
 					tick = trenchConfig.getPregameCountdown();
 					pregameCountdown = true;
 				}
 			}
 		}
 		if (gameState == 1) {
-			if (!(game.redFlagHolder == null)){
+			if (!(game.redFlagHolder == null)) {
 				Firework firework = (Firework) game.redFlagHolder.getWorld().spawnEntity(game.redFlagHolder.getLocation(), EntityType.FIREWORK);
-	            FireworkMeta fireworkMeta = firework.getFireworkMeta();
-	            FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.RED).with(Type.BALL_LARGE).trail(true).build();
-	            fireworkMeta.addEffect(effect);
-	            fireworkMeta.setPower(1);
-	            firework.setFireworkMeta(fireworkMeta);
-	            
+				FireworkMeta fireworkMeta = firework.getFireworkMeta();
+				FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.RED).with(Type.BALL_LARGE).trail(true).build();
+				fireworkMeta.addEffect(effect);
+				fireworkMeta.setPower(1);
+				firework.setFireworkMeta(fireworkMeta);
 
 			}
-			if (!(game.blueFlagHolder == null)){
+			if (!(game.blueFlagHolder == null)) {
 				Firework firework = (Firework) game.blueFlagHolder.getWorld().spawnEntity(game.blueFlagHolder.getLocation(), EntityType.FIREWORK);
-	            FireworkMeta fireworkMeta = firework.getFireworkMeta();
-	            FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.BLUE).with(Type.BALL_LARGE).trail(true).build();
-	            fireworkMeta.addEffect(effect);
-	            fireworkMeta.setPower(1);
-	            firework.setFireworkMeta(fireworkMeta);
-	            
+				FireworkMeta fireworkMeta = firework.getFireworkMeta();
+				FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.BLUE).with(Type.BALL_LARGE).trail(true).build();
+				fireworkMeta.addEffect(effect);
+				fireworkMeta.setPower(1);
+				firework.setFireworkMeta(fireworkMeta);
 
 			}
 			String second = Main.tick % 60 + "";
@@ -169,15 +169,19 @@ public class Main extends JavaPlugin {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void endGame(boolean flag) {
+		Main.getInstance().getServer().getScheduler().cancelAllTasks();
+		lobby();
 		parkour.clear();
 		game.objective.setDisplayName(ChatColor.BOLD + "Pre-Game");
 		if (!(flag)) {
 			broadcast("The game has ended!", true);
+			
 			if (game.blueScore < game.redScore) {
 				broadcast("Red has won the game!", true);
 			} else {
-				broadcast(ChatColor.BLUE+"Blue"+ChatColor.RED+" has won the game!", true);
+				broadcast(ChatColor.BLUE + "Blue" + ChatColor.RED + " has won the game!", true);
 			}
 			broadcast("Score: " + ChatColor.BLUE + game.blueScore + " " + ChatColor.RED + game.redScore, true);
 		}
@@ -186,6 +190,7 @@ public class Main extends JavaPlugin {
 		Player[] players = Main.plugin.getServer().getOnlinePlayers();
 		if (!(players.length == 0)) {
 			for (int i = 0; i < players.length; i++) {
+			    messagePlayer(players[i], "You got " + game.kills.get(players[i])+" kills!");
 				players[i].getInventory().setArmorContents(null);
 				players[i].removePotionEffect(PotionEffectType.SPEED);
 				players[i].teleport(spawn);
@@ -196,13 +201,18 @@ public class Main extends JavaPlugin {
 		}
 	}
 
-	private void gameStart() {
+	@SuppressWarnings("deprecation")
+	private static void gameStart() {
 		parkour.clear();
 		game = new Game();
 		game.pickTeams();
-		game.giveItems(getServer().getOnlinePlayers());
+		game.giveItems(Main.getInstance().getServer().getOnlinePlayers());
 		game.tpPlayers();
 		game.setScoreBoard();
+		Player[] players= Main.getInstance().getServer().getOnlinePlayers();
+		for (int i = 0; i < players.length; i++) {
+			game.kills.put(players[i], 0);
+		}
 		broadcast("The war has begun!", true);
 		broadcast("Capture the other teams flag and bring it back to your flag to win!", true);
 		broadcast("Your flag is the beacon", true);
@@ -214,6 +224,7 @@ public class Main extends JavaPlugin {
 		player.sendMessage(message);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static void broadcast(String string, Boolean Value) {
 		if (Value == true) {
 			string = plugin.getConfig().getString("messagePrefix").replace("&", "§") + string;

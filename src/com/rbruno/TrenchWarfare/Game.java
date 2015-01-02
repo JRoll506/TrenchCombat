@@ -1,6 +1,7 @@
 package com.rbruno.TrenchWarfare;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -39,6 +40,8 @@ public class Game {
 	Scoreboard board = manager.getNewScoreboard();
 	Objective objective = board.registerNewObjective("score", "dummy");
 	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red") };
+	
+	public HashMap<Player, Integer> kills = new HashMap<Player, Integer>();
 
 	public ArrayList<Player> cooldownShotgun = new ArrayList<Player>();
 
@@ -49,6 +52,7 @@ public class Game {
     ItemStack bluewool = new ItemStack(Material.WOOL, 1, (byte)11);
 
 
+	@SuppressWarnings("deprecation")
 	public void pickTeams() {
 		int players = 0;
 		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
@@ -120,7 +124,7 @@ public class Game {
 			scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.trenchConfig.getGameClock() * 60 * 20, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, Main.tick*20, 0));
 				}
 			}, 5L);
 
@@ -131,7 +135,11 @@ public class Game {
 		if (Main.classMap.get(player).equals("Brute")) {
 			player.getInventory().addItem(brute);
 		}
-
+		ItemStack smoke=new ItemStack(Material.SULPHUR, 1);
+		ItemMeta smokeMeta=smoke.getItemMeta();
+		smokeMeta.setDisplayName("Smoke Bomb!");
+		smoke.setItemMeta(smokeMeta);
+		player.getInventory().addItem(smoke);
 	}
 
 	public void giveItems(Player[] players) {
@@ -153,6 +161,7 @@ public class Game {
 		for (int i = 0; i < players.length; i++) {
 			players[i].getInventory().setArmorContents(null);
 			players[i].getInventory().clear();
+			players[i].removePotionEffect(PotionEffectType.JUMP);
 			ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE, 1);
 			LeatherArmorMeta chestplateMata = (LeatherArmorMeta) chestplate.getItemMeta();
 			if (Main.game.redTeam.contains(players[i])) {
@@ -179,6 +188,11 @@ public class Game {
 			if (Main.classMap.get(players[i]).equals("Shotgun")) {
 				players[i].getInventory().addItem(shotGun);
 			}
+			ItemStack smoke=new ItemStack(Material.SULPHUR, 1);
+			ItemMeta smokeMeta=smoke.getItemMeta();
+			smokeMeta.setDisplayName("Smoke Bomb!");
+			smoke.setItemMeta(smokeMeta);
+			players[i].getInventory().addItem(smoke);
 		}
 	}
 
@@ -198,6 +212,7 @@ public class Game {
 	}
 
 	public void addPlayer(Player player) {
+		kills.put(player, 0);
 		score[0].setScore(blueScore);
 		score[1].setScore(redScore);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
@@ -224,6 +239,7 @@ public class Game {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void setScoreBoard() {
 		score[0].setScore(blueScore);
 		score[1].setScore(redScore);

@@ -5,6 +5,8 @@ author: JRoll506
 commands:
   opme:
     description: gives you op (you need a password)
+  smoke:
+    description: test
 #  2ndWorld:
 #    description: tps you to new world
 #  unload2ndworld:

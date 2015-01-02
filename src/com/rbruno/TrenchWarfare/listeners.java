@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
@@ -31,6 +32,7 @@ import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
@@ -42,8 +44,6 @@ public class listeners implements Listener {
 	Location spawn = Main.trenchConfig.getSpawn();
 	Location redSpawn = Main.trenchConfig.getRed();
 	Location blueSpawn = Main.trenchConfig.getBlue();
-	
-
 
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
@@ -89,6 +89,7 @@ public class listeners implements Listener {
 		Player player = event.getPlayer();
 		if (player.isDead()) return;
 		if (player.getLocation().getBlockY() < 0) {
+			player.removePotionEffect(PotionEffectType.JUMP);
 			player.teleport(spawn);
 			player.setFallDistance(0F);
 		}
@@ -103,7 +104,6 @@ public class listeners implements Listener {
 		}
 		if (Main.game.blueTeam.contains(player) && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
 			if (!(Main.game.redFlagHolder == null)) return;
-			if (!(Main.game.blueFlagHolder == null)) return;
 			Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
 			player.getInventory().clear();
 			ItemStack[] kit = { new ItemStack(Material.WOOL, 1, (byte) 14) };
@@ -115,7 +115,6 @@ public class listeners implements Listener {
 		}
 		if (Main.game.redTeam.contains(player) && location.getBlockX() == Main.trenchConfig.blueFlagX && location.getBlockY() == Main.trenchConfig.blueFlagY && location.getBlockZ() == Main.trenchConfig.blueFlagZ) {
 			if (!(Main.game.blueFlagHolder == null)) return;
-			if (!(Main.game.redFlagHolder == null)) return;
 			Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag", true);
 			player.getInventory().clear();
 			ItemStack[] kit = { new ItemStack(Material.WOOL, 1, (byte) 11) };
@@ -127,6 +126,7 @@ public class listeners implements Listener {
 		}
 
 		if (Main.game.redFlagHolder == player && location.getBlockX() == Main.trenchConfig.blueFlagX && location.getBlockY() == Main.trenchConfig.blueFlagY && location.getBlockZ() == Main.trenchConfig.blueFlagZ) {
+			if(!(Main.game.blueFlagHolder==null))return;
 			Main.game.redFlagHolder = null;
 			Main.game.blueScore = Main.game.blueScore + 1;
 			Main.game.score[0].setScore(Main.game.blueScore);
@@ -141,6 +141,7 @@ public class listeners implements Listener {
 		}
 
 		if (Main.game.blueFlagHolder == player && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
+			if(!(Main.game.redFlagHolder==null))return;
 			Main.game.blueFlagHolder = null;
 			Main.game.redScore = Main.game.redScore + 1;
 			Main.game.score[1].setScore(Main.game.redScore);
@@ -172,6 +173,7 @@ public class listeners implements Listener {
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
 		if (Main.gameState == 0) {
+			event.getPlayer().removePotionEffect(PotionEffectType.JUMP);
 			event.getPlayer().removePotionEffect(PotionEffectType.SPEED);
 			event.getPlayer().getInventory().setArmorContents(null);
 			event.getPlayer().getInventory().clear();
@@ -183,10 +185,21 @@ public class listeners implements Listener {
 	}
 
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
+		if(Main.gameState==0)return;
 		Player player = (Player) event.getPlayer();
 		if (Main.game.redTeam.contains(player)) {
+			if (!(Main.game.blueFlagHolder==null)){
+				if (Main.game.blueFlagHolder==player){
+					Main.game.blueFlagHolder=null;
+				}
+			}
 			Main.game.redTeam.remove(player);
 		} else {
+			if (!(Main.game.redFlagHolder==null)){
+				if (Main.game.redFlagHolder==player){
+					Main.game.redFlagHolder=null;
+				}
+			}
 			Main.game.blueTeam.remove(player);
 		}
 	}
@@ -216,21 +229,29 @@ public class listeners implements Listener {
 					if (player.getKiller().getItemInHand().getType() == Material.ARROW) {
 						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() + " with your gun!");
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.IRON_SWORD || player.getKiller().getItemInHand().getType() == Material.DIAMOND_SWORD) {
 						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() + " with your sword!");
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.BONE) {
 						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName() + " with your shotgun!");
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					} else {
 						Main.messagePlayer(player, ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + player.getName());
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					}
 				}
 				if (!(Main.game.blueFlagHolder == null)) {
 					if (Main.game.blueFlagHolder.equals(player)) {
 						Main.game.blueFlagHolder = null;
-						Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag", true);
+						Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag", true);
 					}
 				}
 			} else {
@@ -239,22 +260,30 @@ public class listeners implements Listener {
 					if (player.getKiller().getItemInHand().getType() == Material.ARROW) {
 						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your gun!");
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.IRON_SWORD || player.getKiller().getItemInHand().getType() == Material.DIAMOND_SWORD) {
 						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your sword!");
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.BONE) {
 						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your shotgun!");
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					} else {
 						Main.messagePlayer(player, ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you!");
 						Main.messagePlayer(player.getKiller(), "You have killed " + ChatColor.BLUE + player.getName());
+						Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
+						player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
 					}
 
 				}
 				if (!(Main.game.redFlagHolder == null)) {
 					if (Main.game.redFlagHolder.equals(player)) {
 						Main.game.redFlagHolder = null;
-						Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
+						Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
 					}
 				}
 			}
@@ -392,6 +421,9 @@ public class listeners implements Listener {
 					}
 				} else if (sign.getLine(2).contains("[Right Click]")) {
 					player.teleport(new Location(Main.getInstance().getServer().getWorld("Trenchwarfare"), 602.5, 69, 41.5, 180, 0));
+				} else if (sign.getLine(0).contains("[Trampoline]")) {
+					player.teleport(new Location(Main.getInstance().getServer().getWorld("Trenchwarfare"), 616.5, 70, 0.5, 180, 0));
+					player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 10));
 				}
 			}
 		}
@@ -456,6 +488,88 @@ public class listeners implements Listener {
 			}
 			event.setCancelled(true);
 
+		} else if (event.getMaterial().name() == "SULPHUR") {
+			player.getInventory().remove(new ItemStack(Material.SULPHUR, 1));
+			final Item smoke = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SULPHUR, 1));
+			smoke.setVelocity(player.getLocation().getDirection().multiply(1.2));
+			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.runTaskTimer(Main.getInstance(), new Runnable() {
+				int i=0;
+				public void run() {
+					i++;
+					if(i==100) smoke.remove();
+					if(i<100){
+						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
+						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
+					}
+				}
+			}, 40L, 5L);
+			
+		}else if (event.getMaterial().name() == "SLIME_BALL") {
+			player.getInventory().remove(new ItemStack(Material.SLIME_BALL, 1));
+			final Item grenade = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SLIME_BALL, 1));
+			grenade.setVelocity(player.getLocation().getDirection().multiply(1.2));
+			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+			scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
+				@Override
+				public void run() {
+					grenade.remove();
+					grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);	
+					if (grenade.getLocation().getX() <= Main.trenchConfig.fortRed || grenade.getLocation().getX() >= Main.trenchConfig.fortBlue) return;
+					if (Main.game.redTeam.contains(player)) {
+						// red
+						grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);
+						List<Entity> players;
+						players = grenade.getNearbyEntities(2, 2, 2);
+						for (int i = 0; i < players.toArray().length; i++) {
+							if (players.get(i) instanceof Player) {
+								Player victum = (Player) players.get(i);
+								if (Main.game.blueTeam.contains(victum)) {
+									if (!(Main.game.redFlagHolder == null)) {
+										if (Main.game.redFlagHolder.equals(victum)) {
+											Main.game.redFlagHolder = null;
+											Main.broadcast(ChatColor.BLUE + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag", true);
+										}
+									}
+									Main.messagePlayer(player, "You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.RED + " with your grenade!");
+									Main.messagePlayer(victum, player.getName() + " has killed you with his cannon!");
+									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
+									player.setExp(Main.game.kills.get(player));
+									victum.damage(20F);
+								}
+
+							}
+
+						}
+					} else {
+						// blue
+						grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);
+						List<Entity> players;
+						players = grenade.getNearbyEntities(2, 2, 2);
+						for (int i = 0; i < players.toArray().length; i++) {
+							if (players.get(i) instanceof Player) {
+								Player victum = (Player) players.get(i);
+								if (Main.game.redTeam.contains(victum)) {
+									if (!(Main.game.blueFlagHolder == null)) {
+										if (Main.game.blueFlagHolder.equals(victum)) {
+											Main.game.blueFlagHolder = null;
+											Main.broadcast(ChatColor.RED + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag", true);
+										}
+									}
+									Main.messagePlayer(player, "You have killed " + victum.getName() + " with your cannon!");
+									Main.messagePlayer(victum, ChatColor.BLUE + player.getName() + ChatColor.RED + " has killed you with his grenade!");
+									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
+									player.setExp(Main.game.kills.get(player));
+									victum.damage(20F);
+								}
+							}
+
+						}
+					}
+					
+				}
+			}, 40L);
+			
 		}
 	}
 
@@ -479,6 +593,7 @@ public class listeners implements Listener {
 		scheduler.scheduleSyncDelayedTask(Main.getInstance(), new Runnable() {
 			public void run() {
 				Main.game.cooldownShotgun.remove(player);
+				
 			}
 		}, 20L);
 	}
@@ -500,7 +615,7 @@ public class listeners implements Listener {
 					// red
 					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 					List<Entity> players;
-					players = tnt.getNearbyEntities(5, 5, 5);
+					players = tnt.getNearbyEntities(4, 4, 4);
 					for (int i = 0; i < players.toArray().length; i++) {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
@@ -513,7 +628,8 @@ public class listeners implements Listener {
 								}
 								Main.messagePlayer(player, "You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.RED + " with your cannon!");
 								Main.messagePlayer(victum, player.getName() + " has killed you with his cannon!");
-
+								Main.game.kills.put(player, Main.game.kills.get(player) + 1);
+								player.setExp(Main.game.kills.get(player));
 								victum.damage(20F);
 							}
 
@@ -524,7 +640,7 @@ public class listeners implements Listener {
 					// blue
 					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 					List<Entity> players;
-					players = tnt.getNearbyEntities(5, 5, 5);
+					players = tnt.getNearbyEntities(4, 4, 4);
 					for (int i = 0; i < players.toArray().length; i++) {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
@@ -537,6 +653,8 @@ public class listeners implements Listener {
 								}
 								Main.messagePlayer(player, "You have killed " + victum.getName() + " with your cannon!");
 								Main.messagePlayer(victum, ChatColor.BLUE + player.getName() + ChatColor.RED + " has killed you with his cannon!");
+								Main.game.kills.put(player, Main.game.kills.get(player) + 1);
+								player.setExp(Main.game.kills.get(player));
 								victum.damage(20F);
 							}
 						}
