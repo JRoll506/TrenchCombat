@@ -137,9 +137,14 @@ public class Game {
 		}
 		ItemStack smoke=new ItemStack(Material.SULPHUR, 1);
 		ItemMeta smokeMeta=smoke.getItemMeta();
-		smokeMeta.setDisplayName("Smoke Bomb!");
+		smokeMeta.setDisplayName("Smoke Bomb");
 		smoke.setItemMeta(smokeMeta);
 		player.getInventory().addItem(smoke);
+		ItemStack granade=new ItemStack(Material.SLIME_BALL, 1);
+		ItemMeta granadeMeta=smoke.getItemMeta();
+		granadeMeta.setDisplayName("Granade");
+		granade.setItemMeta(granadeMeta);
+		player.getInventory().addItem(granade);
 	}
 
 	public void giveItems(Player[] players) {
@@ -190,9 +195,14 @@ public class Game {
 			}
 			ItemStack smoke=new ItemStack(Material.SULPHUR, 1);
 			ItemMeta smokeMeta=smoke.getItemMeta();
-			smokeMeta.setDisplayName("Smoke Bomb!");
+			smokeMeta.setDisplayName("Smoke Bomb");
 			smoke.setItemMeta(smokeMeta);
 			players[i].getInventory().addItem(smoke);
+			ItemStack grenade=new ItemStack(Material.SLIME_BALL, 1);
+			ItemMeta grenadeMeta=smoke.getItemMeta();
+			grenadeMeta.setDisplayName("grenade");
+			grenade.setItemMeta(grenadeMeta);
+			players[i].getInventory().addItem(grenade);
 		}
 	}
 
