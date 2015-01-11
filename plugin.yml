@@ -1,5 +1,5 @@
 name: TrenchWarfare
-main: com.rbruno.TrenchWarfare.Main
+main: com.rbruno.engine.Main
 version: 1.2
 author: JRoll506
 commands:

@@ -38,7 +38,7 @@ public class Game {
 
 	ScoreboardManager manager = Bukkit.getScoreboardManager();
 	Scoreboard board = manager.getNewScoreboard();
-	Objective objective = board.registerNewObjective("score", "dummy");
+	public Objective objective = board.registerNewObjective("score", "dummy");
 	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red") };
 	
 	public HashMap<Player, Integer> kills = new HashMap<Player, Integer>();
