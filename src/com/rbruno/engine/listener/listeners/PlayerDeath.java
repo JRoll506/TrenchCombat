@@ -26,28 +26,28 @@ public class PlayerDeath extends EngineListner implements Listener{
 					if (player.getKiller().getItemInHand().getType() == Material.ARROW) {
 						player.sendMessage(ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
 						player.getKiller().sendMessage("You have killed " + player.getName() + " with your gun!");
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.IRON_SWORD || player.getKiller().getItemInHand().getType() == Material.DIAMOND_SWORD) {
 						player.sendMessage(ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
 						player.getKiller().sendMessage("You have killed " + player.getName() + " with your sword!");
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.BONE) {
 						player.sendMessage(ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
 						player.getKiller().sendMessage( "You have killed " + player.getName() + " with your shotgun!");
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					} else {
 						player.sendMessage(ChatColor.BLUE + player.getKiller().getName() + ChatColor.RED + " has killed you!");
 						player.getKiller().sendMessage( "You have killed " + player.getName());
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					}
 				}
-				if (!(Main.game.getBlueTeam().getFlagHolder() == null)) {
-					if (Main.game.getBlueTeam().getFlagHolder()==player) {
-						Main.game.getBlueTeam().setFlagHolder(null);
+				if (!(Main.getGame().getBlueTeam().getFlagHolder() == null)) {
+					if (Main.getGame().getBlueTeam().getFlagHolder()==player) {
+						Main.getGame().getBlueTeam().setFlagHolder(null);
 						Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
 					}
 				}
@@ -57,29 +57,29 @@ public class PlayerDeath extends EngineListner implements Listener{
 					if (player.getKiller().getItemInHand().getType() == Material.ARROW) {
 						player.sendMessage(ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his gun!");
 						player.getKiller().sendMessage( "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your gun!");
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						//Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.IRON_SWORD || player.getKiller().getItemInHand().getType() == Material.DIAMOND_SWORD) {
 						player.sendMessage(ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his sword!");
 						player.getKiller().sendMessage( "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your sword!");
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					} else if (player.getKiller().getItemInHand().getType() == Material.BONE) {
 						player.sendMessage(ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you with his shotgun!");
 						player.getKiller().sendMessage( "You have killed " + ChatColor.BLUE + player.getName() + ChatColor.RED + " with your shotgun!");
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					} else {
 						player.sendMessage(ChatColor.RED + player.getKiller().getName() + ChatColor.RED + " has killed you!");
 						player.getKiller().sendMessage( "You have killed " + ChatColor.BLUE + player.getName());
-						//Main.game.kills.put(player.getKiller(), Main.game.kills.get(player.getKiller()) + 1);
-						//player.getKiller().setExp(Main.game.kills.get(player.getKiller()));
+						Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+						//player.getKiller().setExp(Main.getGame().kills.get(player.getKiller()));
 					}
 
 				}
-				if (!(Main.game.getRedTeam().getFlagHolder() == null)) {
-					if (Main.game.getRedTeam().getFlagHolder() ==player) {
-						Main.game.getRedTeam().setFlagHolder(null);
+				if (!(Main.getGame().getRedTeam().getFlagHolder() == null)) {
+					if (Main.getGame().getRedTeam().getFlagHolder() ==player) {
+						Main.getGame().getRedTeam().setFlagHolder(null);
 						Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
 					}
 				}

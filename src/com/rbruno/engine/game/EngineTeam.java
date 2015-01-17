@@ -10,7 +10,7 @@ public class EngineTeam {
 	
 	private String name;
 	
-	private ArrayList<Player> players;
+	private ArrayList<Player> players = new ArrayList<Player>();
 	
 	private Team team;
 

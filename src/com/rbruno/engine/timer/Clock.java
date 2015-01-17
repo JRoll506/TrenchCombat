@@ -19,7 +19,7 @@ import com.rbruno.engine.game.GameType;
 public class Clock {
 
 	private int pregameClock = Main.trenchConfig.getPregameCountdown();
-	private int gameClock = Main.trenchConfig.getGameClock();
+	private int gameClock = Main.trenchConfig.getGameClock() * 60;
 
 	private boolean pregameClockIsRunning = false;
 
@@ -39,9 +39,9 @@ public class Clock {
 	@SuppressWarnings("deprecation")
 	private void tick() {
 		if (Main.getGameState() == GameState.LOBBY) {
-			if(pregameClock % 10 ==0 && pregameClockIsRunning) Main.broadcast(pregameClock + " second(s) till the game starts!");
-			if (pregameClock == 0) startGame();//start game
 			if (!pregameClockIsRunning && Bukkit.getOnlinePlayers().length >= Main.trenchConfig.getMinPlayer()) pregameClockIsRunning = true;
+			if (pregameClock % 10 == 0 && pregameClockIsRunning && !(pregameClock == 0)) Main.broadcast(pregameClock + " second(s) till the game starts!");
+			if (pregameClock == 0) startGame();//start game
 			if (pregameClockIsRunning) pregameClock--;
 		} else if (Main.getGameState() == GameState.IN_GAME) {
 			spawnFirework();
@@ -51,27 +51,48 @@ public class Clock {
 			if (Main.clock.getGameClock() % 60 <= 9) second = "0" + second;
 			String time = (Main.clock.getGameClock() - (Main.clock.getGameClock() % 60)) / 60 + ":" + second;
 			Main.getGame().objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
+			if (gameClock % 60 == 0) Main.broadcast(gameClock / 60 + " minutes left in game!");
 
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void startGame() {
+		pregameClock = Main.trenchConfig.getPregameCountdown();
 		pregameClockIsRunning = false;
+		Main.parkour.clear();
 		pregameClock = Main.getPlugin().getConfig().getInt("pregameClock");
-		Main.setGameState(GameState.IN_GAME);
 		Main.game = new Game(GameType.DEATHMATCH);
 		Main.getGame().pickTeams();
+		Main.getGame().tpPlayers();
 		Main.getGame().giveItems();
-		
+		Main.broadcast("The war has begun!");
+		Main.setGameState(GameState.IN_GAME);
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			Main.game.kills.put(player, 0);
+		}
+
 	}
 
+	@SuppressWarnings("deprecation")
 	public void endGame() {
+		pregameClock = Main.trenchConfig.getPregameCountdown();
+		if (Main.getGame().getBlueTeam().score == Main.getGame().getRedTeam().score) {
+			Main.broadcast("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.WHITE + "!");
+		} else if (Main.getGame().getBlueTeam().score > Main.getGame().getRedTeam().score) {
+			Main.broadcast("The game had ended and the  " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "team won!");
+		} else {
+			Main.broadcast("The game had ended and the  " + ChatColor.RED + "Red " + ChatColor.WHITE + "team won!");
+		}
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			player.sendMessage("You got " + ChatColor.RED + Main.getGame().kills.get(player) + ChatColor.WHITE + " Kills!");
+		}
 		Main.game = null;
 		pregameClock = Main.getPlugin().getConfig().getInt("pregameClock");
 		Main.setGameState(GameState.LOBBY);
 	}
-	
-	private void spawnFirework(){
+
+	private void spawnFirework() {
 		if (!(getFlagHolder(ColorTeam.RED) == null)) {
 			Firework firework = (Firework) getFlagHolder(ColorTeam.RED).getWorld().spawnEntity(getFlagHolder(ColorTeam.RED).getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkMeta = firework.getFireworkMeta();
@@ -102,8 +123,8 @@ public class Clock {
 			return null;
 		}
 	}
-	
-	public int getGameClock(){
+
+	public int getGameClock() {
 		return gameClock;
 	}
 

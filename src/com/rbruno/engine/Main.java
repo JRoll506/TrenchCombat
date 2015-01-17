@@ -1,12 +1,17 @@
 package com.rbruno.engine;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.ScoreboardManager;
 
+import com.rbruno.engine.classes.ClassManager;
 import com.rbruno.engine.game.Game;
 import com.rbruno.engine.listener.ListenerManager;
 import com.rbruno.engine.map.EngineMap;
@@ -28,9 +33,15 @@ public class Main extends JavaPlugin {
 	public static Clock clock;
 
 	ScoreboardManager manager = Bukkit.getScoreboardManager();
+	
+	public static ClassManager classManager;
 
 	public static Game game;
 	public static TrenchConfig trenchConfig;
+	
+	public static HashMap<Player, String> classMap = new HashMap<Player, String>();
+	public static String[] classes = { "Gunner", "Scout", "Shotgun" };
+	public static ArrayList<Player> parkour = new ArrayList<Player>();
 
 	@Override
 	public void onEnable() {
@@ -42,7 +53,7 @@ public class Main extends JavaPlugin {
 		getLogger().info(pdf.getName() + "[" + pdf.getVersion() + "]" + " is enabled");
 		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
 		new ListenerManager();
-
+		classManager = new ClassManager();
 		clock = new Clock();
 	}
 
@@ -54,6 +65,10 @@ public class Main extends JavaPlugin {
 
 	public static void broadcast(String message) {
 		Main.getPlugin().getServer().broadcastMessage(message);
+	}
+
+	public static ClassManager getClassManager() {
+		return classManager;
 	}
 
 	public static GameState getGameState() {

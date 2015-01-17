@@ -16,8 +16,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
+import org.bukkit.block.Sign;
 
 import com.rbruno.TrenchWarfare.ParticleEffect;
 import com.rbruno.engine.Main;
@@ -25,14 +28,14 @@ import com.rbruno.engine.game.ColorTeam;
 import com.rbruno.engine.listener.EngineListner;
 import com.rbruno.engine.timer.GameState;
 
-public class PlayerInteract extends EngineListner implements Listener{
+public class PlayerInteract extends EngineListner implements Listener {
 
 	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		final Player player = (Player) event.getPlayer();
 		if (!(event.getClickedBlock() == null)) {
-			/*if (event.getClickedBlock().getState() instanceof Sign) {
+			if (event.getClickedBlock().getState() instanceof Sign) {
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if (sign.getLine(0).contains("[Class]")) {
 					for (int i = 0; i < Main.classes.length; i++) {
@@ -78,18 +81,18 @@ public class PlayerInteract extends EngineListner implements Listener{
 					}
 				} else if (sign.getLine(0).contains("[Parkour]")) {
 					if (!(Main.parkour.contains(player))) {
-						Main.broadcast(player.getName() + " knows how to use the spacebar!", true);
+						Main.broadcast(player.getName() + " knows how to use the spacebar!");
 						Main.parkour.add(player);
 
 					}
 				} else if (sign.getLine(2).contains("[Right Click]")) {
-					player.teleport(new Location(Main.getInstance().getServer().getWorld("Trenchwarfare"), 602.5, 69, 41.5, 180, 0));
+					player.teleport(new Location(Main.getPlugin().getServer().getWorld("Trenchwarfare"), 602.5, 69, 41.5, 180, 0));
 				} else if (sign.getLine(0).contains("[Trampoline]")) {
-					player.teleport(new Location(Main.getInstance().getServer().getWorld("Trenchwarfare"), 616.5, 70, 0.5, 180, 0));
+					player.teleport(new Location(Main.getPlugin().getServer().getWorld("Trenchwarfare"), 616.5, 70, 0.5, 180, 0));
 					player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 10));
 				}
 			}
-		}*/
+		}
 		if (Main.getGameState() == GameState.LOBBY) return;
 		Location location = player.getLocation();
 		Location d = new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ());
@@ -166,9 +169,8 @@ public class PlayerInteract extends EngineListner implements Listener{
 						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
 						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
 					}
-				}
-			}, 40L, 5L);
-		}
+			}
+		}, 40L, 5L);
 			
 		}else if (event.getMaterial().name() == "SLIME_BALL") {
 			player.getInventory().remove(Material.SLIME_BALL);
@@ -234,8 +236,7 @@ public class PlayerInteract extends EngineListner implements Listener{
 					
 				}
 			}, 40L);
-		}
-			
+			}	
 		}
 
 	public void fireArrow(final Player player) {

@@ -12,7 +12,6 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 
 import com.rbruno.engine.Main;
-import com.rbruno.engine.classes.ClassManager;
 
 public class Game {
 
@@ -23,13 +22,10 @@ public class Game {
 
 	public ScoreBoardManager scoreBoardManager = new ScoreBoardManager();
 
-	private ClassManager classManager;
+	public Objective objective = scoreBoardManager.registerNewObjective("Score", "dummy");
 
-	public Objective objective;
-	
 	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red") };
-	
-	
+
 	public HashMap<Player, Integer> kills = new HashMap<Player, Integer>();
 	public ArrayList<Player> cooldownShotgun = new ArrayList<Player>();
 	public ArrayList<Player> cooldownGunner = new ArrayList<Player>();
@@ -40,8 +36,7 @@ public class Game {
 		this.GAME_TYPE = gameType;
 		redTeam = new EngineTeam("Red", false, Color.RED, scoreBoardManager);
 		blueTeam = new EngineTeam("Blue", false, Color.BLUE, scoreBoardManager);
-		classManager = new ClassManager();
-		objective = scoreBoardManager.registerNewObjective("Score", "dummy");
+		setScoreBoard();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -65,9 +60,25 @@ public class Game {
 	}
 
 	@SuppressWarnings("deprecation")
+	public void tpPlayers() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (getColorTeam(player) == ColorTeam.RED) {
+				player.teleport(Main.trenchConfig.getRed());
+			} else {
+				player.teleport(Main.trenchConfig.getBlue());
+			}
+		}
+	}
+
+	@SuppressWarnings("deprecation")
 	public void giveItems() {
 		for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
-			if (classManager.getClass(player).equals("Gunner")) player.getInventory().addItem(classManager.getEngineClass(classManager.getClass(player)).getItems());
+			player.getInventory().clear();
+			if (Main.getClassManager().getClass(player) == null) {
+				player.getInventory().addItem(Main.getClassManager().getEngineClass("Gunner").getItems());
+				continue;
+			}
+			player.getInventory().addItem(Main.getClassManager().getEngineClass(Main.getClassManager().getClass(player)).getItems());
 		}
 	}
 
@@ -89,9 +100,14 @@ public class Game {
 	}
 
 	public void giveItems(Player player) {
-		if (classManager.getClass(player).equals("Gunner")) player.getInventory().addItem(classManager.getEngineClass(classManager.getClass(player)).getItems());
+		player.getInventory().clear();
+		if (Main.getClassManager().getClass(player) == null) {
+			player.getInventory().addItem(Main.getClassManager().getEngineClass("Gunner").getItems());
+			return;
+		}
+		player.getInventory().addItem(Main.getClassManager().getEngineClass(Main.getClassManager().getClass(player)).getItems());
 	}
-	
+
 	public void addPlayer(Player player) {
 		player.setScoreboard(scoreBoardManager.board);
 		if (redTeam.getPlayers().toArray().length == blueTeam.getPlayers().toArray().length) {

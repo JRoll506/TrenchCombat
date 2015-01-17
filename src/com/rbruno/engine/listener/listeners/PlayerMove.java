@@ -54,11 +54,11 @@ public class PlayerMove extends EngineListner implements Listener {
 			for (int i = 0; i < 9; i++) {
 				player.getInventory().addItem(kit);
 			}
-			Main.game.getBlueTeam().setFlagHolder(null);
+			Main.game.getBlueTeam().setFlagHolder(player);
 		}
 
 		if (Main.game.getRedTeam().getFlagHolder() == player && location.getBlockX() == Main.trenchConfig.blueFlagX && location.getBlockY() == Main.trenchConfig.blueFlagY && location.getBlockZ() == Main.trenchConfig.blueFlagZ) {
-			if (!(Main.game.getRedTeam().getFlagHolder() == null)) return;
+			if (!(Main.game.getBlueTeam().getFlagHolder() == null)) return;
 			Main.game.getRedTeam().setFlagHolder(null);
 			Main.game.getBlueTeam().score++;
 			Main.game.score[0].setScore(Main.game.getRedTeam().score);
@@ -72,7 +72,7 @@ public class PlayerMove extends EngineListner implements Listener {
 			}
 		}
 
-		if (Main.game.getRedTeam().getFlagHolder() == player && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
+		if (Main.game.getBlueTeam().getFlagHolder() == player && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
 			if (!(Main.game.getRedTeam().getFlagHolder() == null)) return;
 			Main.game.getBlueTeam().setFlagHolder(null);
 			Main.game.getRedTeam().score++;

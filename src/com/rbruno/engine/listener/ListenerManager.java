@@ -24,6 +24,7 @@ public class ListenerManager {
 		this.listners.add(new PlayerQuit());
 		this.listners.add(new PlayerRespawn());
 		this.listners.add(new SignCreation());
+		this.listners.add(new PlayerPickUpItem());
 
 
 		for (EngineListner listner:listners)
