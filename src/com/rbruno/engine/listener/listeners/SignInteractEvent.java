@@ -1,5 +1,6 @@
 package com.rbruno.engine.listener.listeners;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -9,6 +10,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.rbruno.engine.Main;
+import com.rbruno.engine.game.ColorTeam;
 import com.rbruno.engine.listener.EngineListner;
 
 public class SignInteractEvent extends EngineListner {
@@ -22,10 +24,10 @@ public class SignInteractEvent extends EngineListner {
 				if (sign.getLine(0).contains("[Class]")) {
 					for (int i = 0; i < Main.classes.length; i++) {
 						if (sign.getLine(1).equals(Main.classes[i])) {
-							if (Main.classMap.containsKey(player)) {
-								Main.classMap.remove(player);
+							if (Main.getClassManager().getClassMap().containsKey(player)) {
+								Main.getClassManager().getClassMap().remove(player);
 							}
-							Main.classMap.put(player, sign.getLine(1));
+							Main.getClassManager().getClassMap().put(player, sign.getLine(1));
 							player.sendMessage("You have picked the " + sign.getLine(1) + " class");
 							if (sign.getLine(1).equalsIgnoreCase("gunner")) {
 								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
@@ -61,6 +63,10 @@ public class SignInteractEvent extends EngineListner {
 
 						}
 					}
+				} else if (sign.getLine(0).contains("[Team]")) {
+					player.sendMessage("You have qued for the " + sign.getLine(1) + ChatColor.WHITE + " team");
+					if (sign.getLine(1).contains("Red")) Main.getPlugin().getTeamQue().put(player, ColorTeam.RED);
+					if (sign.getLine(1).contains("Blue")) Main.getPlugin().getTeamQue().put(player, ColorTeam.BLUE);
 				} else if (sign.getLine(0).contains("[Parkour]")) {
 					if (!(Main.parkour.contains(player))) {
 						Main.broadcast(player.getName() + " knows how to use the spacebar!");

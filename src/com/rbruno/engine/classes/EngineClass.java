@@ -1,16 +1,19 @@
 package com.rbruno.engine.classes;
 
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
-public class EngineClass {
+public class EngineClass implements Listener {
 	private String name;
 	private String premission;
 
 	private ItemStack[] items;
 
-	private PotionEffect effect;
+	private PotionEffect effect = new PotionEffect(PotionEffectType.CONFUSION, 0, 0);
 	
 	private String[] description;
 
@@ -19,20 +22,31 @@ public class EngineClass {
 		this.setEffect(effect);
 		this.setName(name);
 		this.setPremission(permssion);
-		decription();
+		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+		description = decription();
+	}
+	
+	public EngineClass(ItemStack[] items, PotionEffect effect, String name) {
+		this.setItems(items);
+		this.setEffect(effect);
+		this.setName(name);
+		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+		description = decription();
 	}
 
 	public EngineClass(ItemStack[] items, String name, String permssion) {
 		this.setItems(items);
 		this.setName(name);
 		this.setPremission(permssion);
-		decription();
+		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+		description = decription();
 	}
 
 	public EngineClass(ItemStack[] items, String name) {
 		this.setItems(items);
 		this.setName(name);
-		decription();
+		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+		description = decription();
 	}
 	
 	private String[] decription(){
@@ -43,8 +57,8 @@ public class EngineClass {
 		return new String[]{string};
 	}
 	
-	public void onInteract(PlayerInteractEvent event){
-		
+	@EventHandler
+	public void onInteract(PlayerInteractEvent event){	
 	}
 
 	public String getName() {

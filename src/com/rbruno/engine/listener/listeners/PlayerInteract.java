@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.bukkit.util.Vector;
 
 import com.rbruno.TrenchWarfare.ParticleEffect;
 import com.rbruno.engine.Main;
@@ -33,7 +31,7 @@ public class PlayerInteract extends EngineListner implements Listener {
 		final Player player = (Player) event.getPlayer();
 		if (Main.getGameState() == GameState.LOBBY)
 			return;
-		
+
 		Location location = player.getLocation();
 		Location d = new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ());
 		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
@@ -66,34 +64,6 @@ public class PlayerInteract extends EngineListner implements Listener {
 				}
 
 			}
-		} else if (event.getMaterial().name() == "ARROW") {
-			event.setCancelled(true);
-			if (Main.game.cooldownGunner.toArray().length == 0) {
-				Main.game.cooldownGunner.add(player);
-				player.launchProjectile(Arrow.class);
-			} else {
-				if (!(Main.game.cooldownGunner.contains(player))) {
-					Main.game.cooldownGunner.add(player);
-					player.launchProjectile(Arrow.class);
-				}
-			}
-			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-				public void run() {
-					Main.game.cooldownGunner.remove(player);
-				}
-			}, 1L);
-
-		} else if (event.getMaterial().name() == "BONE") {
-			if (Main.game.cooldownShotgun.toArray().length == 0) {
-				fireArrow(player);
-			} else {
-				if (!(Main.game.cooldownShotgun.contains(player))) {
-					fireArrow(player);
-				}
-			}
-			event.setCancelled(true);
-
 		} else if (event.getMaterial().name() == "SULPHUR") {
 			player.getInventory().remove(Material.SULPHUR);
 			final Item smoke = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SULPHUR, 1));
@@ -180,32 +150,6 @@ public class PlayerInteract extends EngineListner implements Listener {
 				}
 			}, 40L);
 		}
-	}
-
-	public void fireArrow(final Player player) {
-		Main.game.cooldownShotgun.add(player);
-		Arrow arrow = (Arrow) player.launchProjectile(Arrow.class);
-		arrow.setVelocity(arrow.getVelocity().multiply(2));
-		Vector velocity = arrow.getVelocity();
-		double speed = velocity.length();
-		Vector direction = new Vector(velocity.getX() / speed, velocity.getY() / speed, velocity.getZ() / speed);
-		// you can tune the following value for different spray. Higher number
-		// means less spray.
-		double spray = 4.5D;
-
-		int arrowCount = 5;
-		for (int i = 0; i < arrowCount; i++) {
-			Arrow arrow2 = player.launchProjectile(Arrow.class);
-			arrow2.setVelocity(arrow.getVelocity().multiply(2));
-			arrow2.setVelocity(new Vector(direction.getX() + (Math.random() - 0.5) / spray, direction.getY() + (Math.random() - 0.5) / spray, direction.getZ() + (Math.random() - 0.5) / spray).normalize().multiply(speed));
-		}
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
-			public void run() {
-				Main.game.cooldownShotgun.remove(player);
-
-			}
-		}, 20L);
 	}
 
 	public void fireCannon(final Player player, final boolean rightClick) {

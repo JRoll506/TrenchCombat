@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -19,9 +20,11 @@ public class Gunner extends EngineClass {
 
 	public Gunner() {
 		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) }, "Gunner");
+		Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
 	}
 
 	@Override
+	@EventHandler
 	public void onInteract(PlayerInteractEvent event) {
 		final Player player = event.getPlayer();
 		if (event.getMaterial().name() == "ARROW") {

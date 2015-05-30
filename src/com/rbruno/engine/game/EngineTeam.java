@@ -18,7 +18,7 @@ public class EngineTeam {
 	
 	private Player flagHolder;
 
-	public int score;
+	private int score;
 	
 	public EngineTeam(String name,boolean canHarm,Color color, ScoreBoardManager scoreBoardManager){
 		this.color = color;
@@ -66,6 +66,15 @@ public class EngineTeam {
 	
 	public void setFlagHolder(Player flagHolder) {
 		this.flagHolder = flagHolder;
+	}
+
+	public int getScore() {
+		return score;
+	}
+
+	public void setScore(int score) {
+		System.out.println("called " + score);
+		this.score = score;
 	}
 
 }

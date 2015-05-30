@@ -6,10 +6,10 @@ import com.rbruno.engine.Main;
 import com.rbruno.engine.listener.listeners.*;
 
 public class ListenerManager {
-	
+
 	public ArrayList<EngineListner> listners = new ArrayList<EngineListner>();
-	
-	public ListenerManager(){
+
+	public ListenerManager() {
 		this.listners.add(new InventoryClick());
 		this.listners.add(new DropItem());
 		this.listners.add(new EntityDamage());
@@ -25,11 +25,10 @@ public class ListenerManager {
 		this.listners.add(new PlayerRespawn());
 		this.listners.add(new SignCreation());
 		this.listners.add(new PlayerPickUpItem());
+		this.listners.add(new SignInteractEvent());
 
-
-		for (EngineListner listner:listners)
+		for (EngineListner listner : listners)
 			Main.getPlugin().getServer().getPluginManager().registerEvents(listner, Main.getPlugin());
 	}
-
 
 }

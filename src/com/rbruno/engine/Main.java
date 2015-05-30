@@ -6,12 +6,12 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.rbruno.engine.classes.ClassManager;
+import com.rbruno.engine.game.ColorTeam;
 import com.rbruno.engine.game.Game;
 import com.rbruno.engine.listener.ListenerManager;
 import com.rbruno.engine.map.EngineMap;
@@ -20,7 +20,7 @@ import com.rbruno.engine.timer.GameState;
 
 public class Main extends JavaPlugin {
 
-	private static Plugin plugin;
+	private static Main plugin;
 
 	PluginDescriptionFile pdf = this.getDescription();
 
@@ -35,11 +35,12 @@ public class Main extends JavaPlugin {
 	ScoreboardManager manager = Bukkit.getScoreboardManager();
 	
 	public static ClassManager classManager;
+	
+	private HashMap<Player, ColorTeam> teamQue = new HashMap<Player, ColorTeam>();
 
 	public static Game game;
 	public static TrenchConfig trenchConfig;
 	
-	public static HashMap<Player, String> classMap = new HashMap<Player, String>();
 	public static String[] classes = { "Gunner", "Scout", "Shotgun" };
 	public static ArrayList<Player> parkour = new ArrayList<Player>();
 
@@ -47,6 +48,8 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		plugin = this;
 		gameState = GameState.LOBBY;
+		getConfig().options().copyDefaults(true);
+	    saveConfig();
 		trenchConfig = new TrenchConfig();
 		map = new EngineMap("Map", trenchConfig.redSpawn, trenchConfig.blueSpawn);
 		spawn = trenchConfig.spawn;
@@ -75,7 +78,7 @@ public class Main extends JavaPlugin {
 		return gameState;
 	}
 
-	public static Plugin getPlugin() {
+	public static Main getPlugin() {
 		return plugin;
 	}
 
@@ -93,6 +96,10 @@ public class Main extends JavaPlugin {
 
 	public static void setGameState(GameState gameState) {
 		Main.gameState = gameState;
+	}
+
+	public HashMap<Player, ColorTeam> getTeamQue() {
+		return teamQue;
 	}
 
 }

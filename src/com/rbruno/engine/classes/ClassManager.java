@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
-import com.rbruno.engine.classes.classes.Gunner;
+import com.rbruno.engine.classes.classes.*;
 
 public class ClassManager {
 
@@ -15,6 +15,8 @@ public class ClassManager {
 
 	public ClassManager() {
 		this.classes.add(new Gunner());
+		this.classes.add(new Shotgun());
+		this.classes.add(new Scout());
 	}
 
 	public String getClass(Player player) {
@@ -23,13 +25,17 @@ public class ClassManager {
 
 	public EngineClass getEngineClass(String name) {
 		for (EngineClass engineClass : classes) {
-			if (engineClass.getName().equals(name)) return engineClass;
+			if (engineClass.getName().equalsIgnoreCase(name)) return engineClass;
 		}
 		return null;
 	}
 
 	public void setClass(Player player, String string) {
 		classMap.put(player, string);
+	}
+	
+	public HashMap<Player, String> getClassMap(){
+		return classMap;
 	}
 
 }
