@@ -12,7 +12,6 @@ import com.rbruno.engine.listener.EngineListner;
 import com.rbruno.engine.timer.GameState;
 
 public class EntityDamageByEntity extends EngineListner implements Listener{
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		if (Main.getGameState() == GameState.LOBBY) return;
