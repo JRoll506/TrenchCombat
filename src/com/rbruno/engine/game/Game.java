@@ -1,6 +1,7 @@
 package com.rbruno.engine.game;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -39,27 +40,31 @@ public class Game {
 		setScoreBoard();
 	}
 
-	@SuppressWarnings("deprecation")
 	public void pickTeams() {
 		int players = 0;
-		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
-		if ((onlinePlayers.length % 2) == 1) {
-			players = onlinePlayers.length - 1;
-			redTeam.addPlayer(onlinePlayers[onlinePlayers.length - 1]);
+		Collection<? extends Player> onlinePlayers = (Bukkit.getOnlinePlayers());
+		Player[] onlinePlayersConverted = new Player[onlinePlayers.size()];
+		int ia = 0;
+		for (Player player : onlinePlayers) {
+			onlinePlayersConverted[ia] = player;
+			ia++;
 		}
-		if (onlinePlayers.length == 1) return;
-		players = onlinePlayers.length;
+		if ((onlinePlayersConverted.length % 2) == 1) {
+			players = onlinePlayersConverted.length - 1;
+			redTeam.addPlayer(onlinePlayersConverted[onlinePlayers.size() - 1]);
+		}
+		if (onlinePlayersConverted.length == 1) return;
+		players = onlinePlayersConverted.length;
 		for (int i = 0; i < players; i++) {
 			if (i >= players / 2) {
-				redTeam.addPlayer(onlinePlayers[i]);
+				redTeam.addPlayer(onlinePlayersConverted[i]);
 
 			} else {
-				blueTeam.addPlayer(onlinePlayers[i]);
+				blueTeam.addPlayer(onlinePlayersConverted[i]);
 			}
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void tpPlayers() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (getColorTeam(player) == ColorTeam.RED) {
@@ -70,7 +75,6 @@ public class Game {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void giveItems() {
 		for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
 			player.getInventory().clear();
@@ -82,7 +86,6 @@ public class Game {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void setScoreBoard() {
 		score[0].setScore(0);
 		score[1].setScore(0);
@@ -92,9 +95,15 @@ public class Game {
 		String time = (Main.clock.getGameClock() - (Main.clock.getGameClock() % 60)) / 60 + ":" + second;
 		objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 
-		Player[] onlinePlayers = (Bukkit.getOnlinePlayers());
-		for (int i = 0; i < onlinePlayers.length; i++) {
-			onlinePlayers[i].setScoreboard(scoreBoardManager.board);
+		Collection<? extends Player> onlinePlayers = (Bukkit.getOnlinePlayers());
+		Player[] onlinePlayersConverted = new Player[onlinePlayers.size()];
+		int ia = 0;
+		for (Player player : onlinePlayers) {
+			onlinePlayersConverted[ia] = player;
+			ia++;
+		}
+		for (int i = 0; i < onlinePlayersConverted.length; i++) {
+			onlinePlayersConverted[i].setScoreboard(scoreBoardManager.board);
 		}
 
 	}
