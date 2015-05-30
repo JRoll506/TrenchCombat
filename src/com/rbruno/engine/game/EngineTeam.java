@@ -35,12 +35,12 @@ public class EngineTeam {
 	
 	public void addPlayer(Player player){
 		players.add(player);
-		team.addPlayer(player);
+		team.addEntry(player.getName());
 	}
 	
 	public void removePlayer(Player player){
 		players.remove(player);
-		team.removePlayer(player);
+		team.removeEntry(player.getName());
 	}
 	
 	public String getName(){

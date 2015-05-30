@@ -17,7 +17,6 @@ public class EngineMap {
 		this.blueSpawn = blueSpawn;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void spawnPlayers(){
 		for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) 
 			repawnPlayer(player);

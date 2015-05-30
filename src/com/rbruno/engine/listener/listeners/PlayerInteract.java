@@ -16,11 +16,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.util.Vector;
-import org.bukkit.block.Sign;
 
 import com.rbruno.TrenchWarfare.ParticleEffect;
 import com.rbruno.engine.Main;
@@ -34,66 +31,9 @@ public class PlayerInteract extends EngineListner implements Listener {
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		final Player player = (Player) event.getPlayer();
-		if (!(event.getClickedBlock() == null)) {
-			if (event.getClickedBlock().getState() instanceof Sign) {
-				Sign sign = (Sign) event.getClickedBlock().getState();
-				if (sign.getLine(0).contains("[Class]")) {
-					for (int i = 0; i < Main.classes.length; i++) {
-						if (sign.getLine(1).equals(Main.classes[i])) {
-							if (Main.classMap.containsKey(player)) {
-								Main.classMap.remove(player);
-							}
-							Main.classMap.put(player, sign.getLine(1));
-							player.sendMessage("You have picked the " + sign.getLine(1) + " class");
-							if (sign.getLine(1).equalsIgnoreCase("gunner")) {
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-								player.sendMessage("&f&lGunner Class".replace("&", "§"));
-								player.sendMessage("&7Fully-automatic machine gun.".replace("&", "§"));
-								player.sendMessage("");
-								player.sendMessage("&f&lMachine Gun".replace("&", "§"));
-								player.sendMessage("&eRight-Click &7to use gun.".replace("&", "§"));
-								player.sendMessage("&7Equipped with &aIron Sword &7and &aLeather Tunic".replace("&", "§"));
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-							}
-							if (sign.getLine(1).equalsIgnoreCase("shotgun")) {
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-								player.sendMessage("&f&lShotgun Class".replace("&", "§"));
-								player.sendMessage("&7Pump action shotgun.".replace("&", "§"));
-								player.sendMessage("&66 bullets per round.".replace("&", "§"));
-								player.sendMessage("");
-								player.sendMessage("&f&lShotgun".replace("&", "§"));
-								player.sendMessage("&eRight-Click &7to use Shotgun.".replace("&", "§"));
-								player.sendMessage("&7Equipped with &aIron Sword &7and &aLeather Tunic.".replace("&", "§"));
-
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-							}
-							if (sign.getLine(1).equalsIgnoreCase("scout")) {
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-								player.sendMessage("&f&lScout Class".replace("&", "§"));
-								player.sendMessage("&7Equipped with &aDiamond Sword &7and &aLeather Tunic.".replace("&", "§"));
-								player.sendMessage("");
-								player.sendMessage("&f&lSpeed".replace("&", "§"));
-								player.sendMessage("&7Permanent Speed 2.".replace("&", "§"));
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-							}
-
-						}
-					}
-				} else if (sign.getLine(0).contains("[Parkour]")) {
-					if (!(Main.parkour.contains(player))) {
-						Main.broadcast(player.getName() + " knows how to use the spacebar!");
-						Main.parkour.add(player);
-
-					}
-				} else if (sign.getLine(2).contains("[Right Click]")) {
-					player.teleport(new Location(Main.getPlugin().getServer().getWorld("Trenchwarfare"), 602.5, 69, 41.5, 180, 0));
-				} else if (sign.getLine(0).contains("[Trampoline]")) {
-					player.teleport(new Location(Main.getPlugin().getServer().getWorld("Trenchwarfare"), 616.5, 70, 0.5, 180, 0));
-					player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 10));
-				}
-			}
-		}
-		if (Main.getGameState() == GameState.LOBBY) return;
+		if (Main.getGameState() == GameState.LOBBY)
+			return;
+		
 		Location location = player.getLocation();
 		Location d = new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ());
 		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
@@ -160,19 +100,21 @@ public class PlayerInteract extends EngineListner implements Listener {
 			smoke.setVelocity(player.getLocation().getDirection().multiply(1.2));
 			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 			scheduler.runTaskTimer(Main.getPlugin(), new Runnable() {
-				int i=0;
+				int i = 0;
+
 				@Override
 				public void run() {
 					i++;
-					if(i==100) smoke.remove();
-					if(i<100){
+					if (i == 100)
+						smoke.remove();
+					if (i < 100) {
 						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
 						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
 					}
-			}
-		}, 40L, 5L);
-			
-		}else if (event.getMaterial().name() == "SLIME_BALL") {
+				}
+			}, 40L, 5L);
+
+		} else if (event.getMaterial().name() == "SLIME_BALL") {
 			player.getInventory().remove(Material.SLIME_BALL);
 			final Item grenade = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SLIME_BALL, 1));
 			grenade.setVelocity(player.getLocation().getDirection().multiply(1.2));
@@ -181,8 +123,9 @@ public class PlayerInteract extends EngineListner implements Listener {
 				@Override
 				public void run() {
 					grenade.remove();
-					grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);	
-					if (grenade.getLocation().getX() <= Main.trenchConfig.fortRed || grenade.getLocation().getX() >= Main.trenchConfig.fortBlue) return;
+					grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);
+					if (grenade.getLocation().getX() <= Main.trenchConfig.fortRed || grenade.getLocation().getX() >= Main.trenchConfig.fortBlue)
+						return;
 					if (Main.game.getColorTeam(player) == ColorTeam.RED) {
 						// red
 						grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);
@@ -233,11 +176,11 @@ public class PlayerInteract extends EngineListner implements Listener {
 
 						}
 					}
-					
+
 				}
 			}, 40L);
-			}	
 		}
+	}
 
 	public void fireArrow(final Player player) {
 		Main.game.cooldownShotgun.add(player);
@@ -246,7 +189,8 @@ public class PlayerInteract extends EngineListner implements Listener {
 		Vector velocity = arrow.getVelocity();
 		double speed = velocity.length();
 		Vector direction = new Vector(velocity.getX() / speed, velocity.getY() / speed, velocity.getZ() / speed);
-		// you can tune the following value for different spray. Higher number means less spray.
+		// you can tune the following value for different spray. Higher number
+		// means less spray.
 		double spray = 4.5D;
 
 		int arrowCount = 5;
@@ -276,7 +220,8 @@ public class PlayerInteract extends EngineListner implements Listener {
 		scheduler.scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
-				if (tnt.getLocation().getX() <= Main.trenchConfig.fortRed || tnt.getLocation().getX() >= Main.trenchConfig.fortBlue) return;
+				if (tnt.getLocation().getX() <= Main.trenchConfig.fortRed || tnt.getLocation().getX() >= Main.trenchConfig.fortBlue)
+					return;
 				if (Main.game.getColorTeam(player) == ColorTeam.RED) {
 					// red
 					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
@@ -294,8 +239,9 @@ public class PlayerInteract extends EngineListner implements Listener {
 								}
 								player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.RED + " with your cannon!");
 								victum.sendMessage(player.getName() + " has killed you with his cannon!");
-								//Main.game.kills.put(player, Main.game.kills.get(player) + 1);
-								//player.setExp(Main.game.kills.get(player));
+								// Main.game.kills.put(player,
+								// Main.game.kills.get(player) + 1);
+								// player.setExp(Main.game.kills.get(player));
 								victum.damage(20F);
 							}
 
@@ -319,8 +265,9 @@ public class PlayerInteract extends EngineListner implements Listener {
 								}
 								player.sendMessage("You have killed " + victum.getName() + " with your cannon!");
 								victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.RED + " has killed you with his cannon!");
-								//Main.game.kills.put(player, Main.game.kills.get(player) + 1);
-								//player.setExp(Main.game.kills.get(player));
+								// Main.game.kills.put(player,
+								// Main.game.kills.get(player) + 1);
+								// player.setExp(Main.game.kills.get(player));
 								victum.damage(20F);
 							}
 						}

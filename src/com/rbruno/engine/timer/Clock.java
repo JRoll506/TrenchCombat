@@ -36,10 +36,9 @@ public class Clock {
 		}, 0L, 20L);
 	}
 
-	@SuppressWarnings("deprecation")
 	private void tick() {
 		if (Main.getGameState() == GameState.LOBBY) {
-			if (!pregameClockIsRunning && Bukkit.getOnlinePlayers().length >= Main.trenchConfig.getMinPlayer()) pregameClockIsRunning = true;
+			if (!pregameClockIsRunning && Bukkit.getOnlinePlayers().size() >= Main.trenchConfig.getMinPlayer()) pregameClockIsRunning = true;
 			if (pregameClock % 10 == 0 && pregameClockIsRunning && !(pregameClock == 0)) Main.broadcast(pregameClock + " second(s) till the game starts!");
 			if (pregameClock == 0) startGame();//start game
 			if (pregameClockIsRunning) pregameClock--;
@@ -56,7 +55,6 @@ public class Clock {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	public void startGame() {
 		pregameClock = Main.trenchConfig.getPregameCountdown();
 		pregameClockIsRunning = false;
@@ -74,7 +72,6 @@ public class Clock {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public void endGame() {
 		pregameClock = Main.trenchConfig.getPregameCountdown();
 		if (Main.getGame().getBlueTeam().score == Main.getGame().getRedTeam().score) {
