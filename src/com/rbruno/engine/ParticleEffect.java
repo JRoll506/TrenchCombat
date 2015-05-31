@@ -1,4 +1,4 @@
-package com.rbruno.TrenchWarfare;
+package com.rbruno.engine;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -15,7 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
-import com.rbruno.TrenchWarfare.ReflectionUtils.PackageType;
+import com.rbruno.engine.ReflectionUtils.PackageType;
 
 /**
  * <b>ParticleEffect Library</b>
@@ -1203,7 +1203,6 @@ public enum ParticleEffect {
 		 * @throws IllegalArgumentException If the range is lower than 1
 		 * @see #sendTo(Location center, Player player)
 		 */
-		@SuppressWarnings("deprecation")
 		public void sendTo(Location center, double range) throws IllegalArgumentException {
 			if (range < 1) {
 				throw new IllegalArgumentException("The range is lower than 1");

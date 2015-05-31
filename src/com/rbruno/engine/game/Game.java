@@ -163,6 +163,19 @@ public class Game {
 	public void addPlayer(Player player) {
 		player.setScoreboard(scoreBoardManager.board);
 		if (redTeam.getPlayers().toArray().length == blueTeam.getPlayers().toArray().length) {
+			Random random = new Random();
+			switch (random.nextInt(2)) {
+			case 0:
+				player.teleport(Main.getMap().getBlueSpawn());
+				giveItems(player);
+				blueTeam.addPlayer(player);
+				return;
+			case 1:
+				player.teleport(Main.getMap().getRedSpawn());
+				redTeam.addPlayer(player);
+				giveItems(player);
+				return;
+			}
 			player.teleport(Main.getMap().getRedSpawn());
 			redTeam.addPlayer(player);
 			giveItems(player);

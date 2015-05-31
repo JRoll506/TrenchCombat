@@ -17,8 +17,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.rbruno.TrenchWarfare.ParticleEffect;
 import com.rbruno.engine.Main;
+import com.rbruno.engine.ParticleEffect;
 import com.rbruno.engine.game.ColorTeam;
 import com.rbruno.engine.listener.EngineListner;
 import com.rbruno.engine.timer.GameState;
