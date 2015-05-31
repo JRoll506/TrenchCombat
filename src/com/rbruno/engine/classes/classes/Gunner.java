@@ -15,11 +15,11 @@ import com.rbruno.engine.Main;
 import com.rbruno.engine.classes.EngineClass;
 
 public class Gunner extends EngineClass {
-	
+
 	private ArrayList<Player> cooldown = new ArrayList<Player>();
 
 	public Gunner() {
-		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW) }, "Gunner");
+		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), Main.getPlugin().getGranade() }, "Gunner");
 		Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
 	}
 

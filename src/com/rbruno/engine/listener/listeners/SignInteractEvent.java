@@ -64,6 +64,7 @@ public class SignInteractEvent extends EngineListner {
 						}
 					}
 				} else if (sign.getLine(0).contains("[Team]")) {
+					if (Main.getPlugin().getTeamQue().containsKey(player)) Main.getPlugin().getTeamQue().remove(player);
 					player.sendMessage("You have qued for the " + sign.getLine(1) + ChatColor.WHITE + " team");
 					if (sign.getLine(1).contains("Red")) Main.getPlugin().getTeamQue().put(player, ColorTeam.RED);
 					if (sign.getLine(1).contains("Blue")) Main.getPlugin().getTeamQue().put(player, ColorTeam.BLUE);

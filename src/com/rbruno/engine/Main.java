@@ -5,7 +5,10 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.ScoreboardManager;
@@ -100,6 +103,24 @@ public class Main extends JavaPlugin {
 
 	public HashMap<Player, ColorTeam> getTeamQue() {
 		return teamQue;
+	}
+	
+	public ItemStack getGranade() {
+		ItemStack granade = new ItemStack(Material.SLIME_BALL);
+		granade.setAmount(3);
+		ItemMeta meta = granade.getItemMeta();
+		meta.setDisplayName("Granade (Right Click)");
+		granade.setItemMeta(meta);
+		return granade;
+	}
+	
+	public ItemStack getSmoke() {
+		ItemStack smoke = new ItemStack(Material.SULPHUR);
+		smoke.setAmount(1);
+		ItemMeta meta = smoke.getItemMeta();
+		meta.setDisplayName("Smoke (Right Click)");
+		smoke.setItemMeta(meta);
+		return smoke;
 	}
 
 }

@@ -65,7 +65,7 @@ public class PlayerInteract extends EngineListner implements Listener {
 
 			}
 		} else if (event.getMaterial().name() == "SULPHUR") {
-			player.getInventory().remove(Material.SULPHUR);
+			player.getInventory().remove(new ItemStack(Material.SLIME_BALL, 1));
 			final Item smoke = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SULPHUR, 1));
 			smoke.setVelocity(player.getLocation().getDirection().multiply(1.2));
 			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -75,17 +75,17 @@ public class PlayerInteract extends EngineListner implements Listener {
 				@Override
 				public void run() {
 					i++;
-					if (i == 100)
+					if (i >= 40)
 						smoke.remove();
-					if (i < 100) {
+					if (i < 40) {
 						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
 						ParticleEffect.EXPLOSION_HUGE.display(smoke.getVelocity(), 0, smoke.getLocation(), 10);
 					}
 				}
-			}, 40L, 5L);
+			}, 20L, 5L);
 
 		} else if (event.getMaterial().name() == "SLIME_BALL") {
-			player.getInventory().remove(Material.SLIME_BALL);
+			player.getInventory().remove(new ItemStack(Material.SLIME_BALL, 1));
 			final Item grenade = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SLIME_BALL, 1));
 			grenade.setVelocity(player.getLocation().getDirection().multiply(1.2));
 			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -97,7 +97,6 @@ public class PlayerInteract extends EngineListner implements Listener {
 					if (grenade.getLocation().getX() <= Main.trenchConfig.fortRed || grenade.getLocation().getX() >= Main.trenchConfig.fortBlue)
 						return;
 					if (Main.game.getColorTeam(player) == ColorTeam.RED) {
-						// red
 						grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);
 						List<Entity> players;
 						players = grenade.getNearbyEntities(2, 2, 2);
@@ -111,8 +110,8 @@ public class PlayerInteract extends EngineListner implements Listener {
 											Main.broadcast(ChatColor.BLUE + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
 										}
 									}
-									player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.RED + " with your grenade!");
-									victum.sendMessage(player.getName() + " has killed you with his cannon!");
+									player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.WHITE + " with your grenade!");
+									victum.sendMessage(ChatColor.RED + player.getName() + ChatColor.WHITE +" has killed you with their grenade!");
 									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 									player.setExp(Main.game.kills.get(player));
 									victum.damage(20F);
@@ -122,7 +121,6 @@ public class PlayerInteract extends EngineListner implements Listener {
 
 						}
 					} else {
-						// blue
 						grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);
 						List<Entity> players;
 						players = grenade.getNearbyEntities(2, 2, 2);
@@ -136,8 +134,8 @@ public class PlayerInteract extends EngineListner implements Listener {
 											Main.broadcast(ChatColor.RED + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
 										}
 									}
-									player.sendMessage("You have killed " + victum.getName() + " with your cannon!");
-									victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.RED + " has killed you with his grenade!");
+									player.sendMessage("You have killed " + ChatColor.RED + victum.getName() + ChatColor.WHITE + " with your cannon!");
+									victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has killed you with their grenade!");
 									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 									player.setExp(Main.game.kills.get(player));
 									victum.damage(20F);

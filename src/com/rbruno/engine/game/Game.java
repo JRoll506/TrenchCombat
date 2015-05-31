@@ -66,15 +66,11 @@ public class Game {
 		}
 		for (Player player : onlinePlayers) {
 			if (!blueTeam.isPlayer(player) && !redTeam.isPlayer(player)) {
-				Bukkit.broadcastMessage(blueTeam.getPlayers().size() + ":" + redTeam.getPlayers().size());
 				if (blueTeam.getPlayers().size() < redTeam.getPlayers().size()) {
-					Bukkit.broadcastMessage("fav blue");
 					blueTeam.addPlayer(player);
 				} else if (redTeam.getPlayers().size() < blueTeam.getPlayers().size()) {
-					Bukkit.broadcastMessage("fav red");
 					redTeam.addPlayer(player);
 				} else {
-					Bukkit.broadcastMessage("no fav");
 					Random random = new Random();
 					switch (random.nextInt(2)) {
 					case 1:

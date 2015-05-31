@@ -16,7 +16,7 @@ import com.rbruno.engine.classes.EngineClass;
 public class Shotgun extends EngineClass {
 
 	public Shotgun() {
-		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE) }, "shotgun");
+		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE), Main.getPlugin().getGranade() }, "shotgun");
 		Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
 	}
 
