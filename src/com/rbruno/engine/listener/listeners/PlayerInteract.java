@@ -65,7 +65,7 @@ public class PlayerInteract extends EngineListner implements Listener {
 
 			}
 		} else if (event.getMaterial().name() == "SULPHUR") {
-			player.getInventory().remove(new ItemStack(Material.SLIME_BALL, 1));
+			player.getInventory().remove(new ItemStack(Material.SULPHUR), 1);
 			final Item smoke = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SULPHUR, 1));
 			smoke.setVelocity(player.getLocation().getDirection().multiply(1.2));
 			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -85,7 +85,7 @@ public class PlayerInteract extends EngineListner implements Listener {
 			}, 20L, 5L);
 
 		} else if (event.getMaterial().name() == "SLIME_BALL") {
-			player.getInventory().remove(new ItemStack(Material.SLIME_BALL, 1));
+			player.getInventory().remove(new ItemStack(Material.SLIME_BALL), 1);
 			final Item grenade = player.getWorld().dropItem(player.getEyeLocation(), new ItemStack(Material.SLIME_BALL, 1));
 			grenade.setVelocity(player.getLocation().getDirection().multiply(1.2));
 			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
