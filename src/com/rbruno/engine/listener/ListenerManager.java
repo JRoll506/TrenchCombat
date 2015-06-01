@@ -18,7 +18,7 @@ public class ListenerManager {
 		this.listners.add(new BlockPlace());
 		this.listners.add(new EntityDamageByEntity());
 		this.listners.add(new PlayerDeath());
-		this.listners.add(new PlayerInteract());
+		this.listners.add(new CannonListener());
 		this.listners.add(new PlayerJoin());
 		this.listners.add(new PlayerMove());
 		this.listners.add(new PlayerQuit());
@@ -26,6 +26,8 @@ public class ListenerManager {
 		this.listners.add(new SignCreation());
 		this.listners.add(new PlayerPickUpItem());
 		this.listners.add(new SignInteractEvent());
+		this.listners.add(new GrenadeListener());
+		this.listners.add(new SmokeListener());
 
 		for (EngineListner listner : listners)
 			Main.getPlugin().getServer().getPluginManager().registerEvents(listner, Main.getPlugin());

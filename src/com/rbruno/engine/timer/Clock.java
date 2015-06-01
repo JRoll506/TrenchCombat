@@ -62,6 +62,7 @@ public class Clock {
 	}
 
 	public void startGame() {
+		gameClock = Main.trenchConfig.getGameClock() * 60;
 		pregameClock = Main.trenchConfig.getPregameCountdown();
 		pregameClockIsRunning = false;
 		Main.parkour.clear();
@@ -79,6 +80,7 @@ public class Clock {
 	}
 
 	public void endGame() {
+		gameClock = Main.trenchConfig.getGameClock() * 60;
 		pregameClock = Main.trenchConfig.getPregameCountdown();
 		if (Main.getGame().getBlueTeam().getScore() == Main.getGame().getRedTeam().getScore()) {
 			Main.broadcast("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.WHITE + "!");
