@@ -20,6 +20,17 @@ public class Gunner extends EngineClass {
 
 	public Gunner() {
 		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), Main.getPlugin().getGranade() }, "Gunner");
+		String[] description = { 
+				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
+				"&f&lGunner Class",
+				"&7Fully-automatic machine gun.",
+				"",
+				"&f&lMachine Gun",
+				"&eRight-Click &7to use gun.",
+				"&7Equipped with &aIron Sword &7and &a3 Granades",
+				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+			};
+		this.setDescription(description);
 		Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
 	}
 

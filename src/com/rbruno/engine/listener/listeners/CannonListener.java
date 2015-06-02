@@ -32,8 +32,8 @@ public class CannonListener extends EngineListner implements Listener {
 		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
 			if (blockStandingOn.getBlock().getType() == Material.SPONGE) {
 				// Player Fired Cannon
-				if (!(Main.game.cooldown.contains(player))) {
-					Main.game.cooldown.add(player);
+				if (!(Main.game.cooldownCannon.contains(player))) {
+					Main.game.cooldownCannon.add(player);
 					if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
 						// Lobed tnt
 						fireCannon(player, true);
@@ -53,7 +53,7 @@ public class CannonListener extends EngineListner implements Listener {
 				}
 
 			}
-		} 
+		}
 	}
 
 	public void fireCannon(final Player player, final boolean rightClick) {
@@ -77,18 +77,16 @@ public class CannonListener extends EngineListner implements Listener {
 					for (int i = 0; i < players.toArray().length; i++) {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
-							if (Main.game.getColorTeam(victum) == ColorTeam.RED) {
+							if (Main.game.getColorTeam(victum) == ColorTeam.BLUE) {
 								if (!(Main.game.getRedTeam().getFlagHolder() == null)) {
 									if (Main.game.getRedTeam().getFlagHolder().equals(victum)) {
 										Main.game.getRedTeam().setFlagHolder(null);
 										Main.broadcast(ChatColor.BLUE + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
 									}
 								}
-								player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.RED + " with your cannon!");
-								victum.sendMessage(player.getName() + " has killed you with his cannon!");
-								// Main.game.kills.put(player,
-								// Main.game.kills.get(player) + 1);
-								// player.setExp(Main.game.kills.get(player));
+								player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.WHITE + " with your cannon!");
+								victum.sendMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has killed you with their cannon!");
+								Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 								victum.damage(20F);
 							}
 
@@ -110,11 +108,9 @@ public class CannonListener extends EngineListner implements Listener {
 										Main.broadcast(ChatColor.RED + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
 									}
 								}
-								player.sendMessage("You have killed " + victum.getName() + " with your cannon!");
-								victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.RED + " has killed you with his cannon!");
-								// Main.game.kills.put(player,
-								// Main.game.kills.get(player) + 1);
-								// player.setExp(Main.game.kills.get(player));
+								player.sendMessage("You have killed " + ChatColor.RED + victum.getName() + ChatColor.WHITE + " with your cannon!");
+								victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has killed you with his cannon!");
+								Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 								victum.damage(20F);
 							}
 						}
@@ -126,7 +122,7 @@ public class CannonListener extends EngineListner implements Listener {
 		}, tnt.getFuseTicks());
 		scheduler.scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
 			public void run() {
-				Main.game.cooldown.remove(player);
+				Main.game.cooldownCannon.remove(player);
 			}
 		}, 60L);
 	}

@@ -36,7 +36,7 @@ public class Game {
 	public ArrayList<Player> cooldownShotgun = new ArrayList<Player>();
 	public ArrayList<Player> cooldownGunner = new ArrayList<Player>();
 	public ArrayList<Player> cooldownTeamSwitch = new ArrayList<Player>();
-	public ArrayList<Player> cooldown = new ArrayList<Player>();
+	public ArrayList<Player> cooldownCannon = new ArrayList<Player>();
 
 	private ItemStack redwool = new ItemStack(Material.WOOL, 1, (byte) 14);
 	private ItemStack bluewool = new ItemStack(Material.WOOL, 1, (byte) 11);

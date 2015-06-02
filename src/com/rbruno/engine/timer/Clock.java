@@ -35,29 +35,21 @@ public class Clock {
 
 	private void tick() {
 		if (Main.getGameState() == GameState.LOBBY) {
-			if (!pregameClockIsRunning && Bukkit.getOnlinePlayers().size() >= Main.trenchConfig.getMinPlayer())
-				pregameClockIsRunning = true;
-			if (pregameClock % 10 == 0 && pregameClockIsRunning && !(pregameClock == 0))
-				Main.broadcast(pregameClock + " second(s) till the game starts!");
-			if (pregameClock == 0)
-				startGame();// start game
-			if (pregameClockIsRunning)
-				pregameClock--;
+			if (!pregameClockIsRunning && Bukkit.getOnlinePlayers().size() >= Main.trenchConfig.getMinPlayer()) pregameClockIsRunning = true;
+			if (pregameClock % 10 == 0 && pregameClockIsRunning && !(pregameClock == 0)) Main.broadcast(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
+			if (pregameClock <= 5 && pregameClock != 0) Main.broadcast(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
+			if (pregameClock == 0) startGame();// start game
+			if (pregameClockIsRunning) pregameClock--;
 		} else if (Main.getGameState() == GameState.IN_GAME) {
 			spawnFirework();
 			// end game & rebuild map
-			if (gameClock > 0)
-				gameClock--;
+			if (gameClock > 0) gameClock--;
 			String second = Main.clock.getGameClock() % 60 + "";
-			if (Main.clock.getGameClock() % 60 <= 9)
-				second = "0" + second;
+			if (Main.clock.getGameClock() % 60 <= 9) second = "0" + second;
 			String time = (Main.clock.getGameClock() - (Main.clock.getGameClock() % 60)) / 60 + ":" + second;
-			if (Main.getGame() != null)
-				Main.getGame().objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
-			if (gameClock % 60 == 0)
-				Main.broadcast(gameClock / 60 + " minutes left in game!");
-			if (gameClock <= 0)
-				endGame();
+			if (Main.getGame() != null) Main.getGame().objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
+			if (gameClock % 60 == 0 && gameClock != 0) Main.broadcast(ChatColor.YELLOW + "" + (gameClock / 60) + ChatColor.WHITE + " minutes left in game!");
+			if (gameClock <= 0) endGame();
 		}
 	}
 
@@ -100,7 +92,7 @@ public class Clock {
 
 		Main.setGameState(GameState.LOBBY);
 		Main.game = null;
-
+		Main.classManager.getClassMap().clear();
 	}
 
 	private void spawnFirework() {

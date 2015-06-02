@@ -17,6 +17,17 @@ public class Shotgun extends EngineClass {
 
 	public Shotgun() {
 		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE), Main.getPlugin().getGranade() }, "shotgun");
+		String[] description = { 
+				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
+				"&f&lScout Class",
+				"&7Pump action shotgun.",
+				"",
+				"&f&lShotgun",
+				"&eRight-Click &7to use Shotgun.",
+				"&7Equipped with &aDiamond Sword&7, &a3 Granades&7.",
+				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
+			};
+		this.setDescription(description);
 		Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
 	}
 

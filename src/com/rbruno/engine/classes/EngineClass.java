@@ -22,39 +22,23 @@ public class EngineClass implements Listener {
 		this.setEffect(effect);
 		this.setName(name);
 		this.setPremission(permssion);
-		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
-		description = decription();
 	}
 	
 	public EngineClass(ItemStack[] items, PotionEffect effect, String name) {
 		this.setItems(items);
 		this.setEffect(effect);
 		this.setName(name);
-		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
-		description = decription();
 	}
 
 	public EngineClass(ItemStack[] items, String name, String permssion) {
 		this.setItems(items);
 		this.setName(name);
 		this.setPremission(permssion);
-		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
-		description = decription();
 	}
 
 	public EngineClass(ItemStack[] items, String name) {
 		this.setItems(items);
 		this.setName(name);
-		//Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
-		description = decription();
-	}
-	
-	private String[] decription(){
-		String string = "The "+ getName() + " class has "; 
-		for (ItemStack name: items){
-			string += name.getItemMeta().getDisplayName() + " ";
-		}
-		return new String[]{string};
 	}
 	
 	@EventHandler

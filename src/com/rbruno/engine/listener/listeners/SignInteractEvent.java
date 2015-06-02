@@ -28,39 +28,14 @@ public class SignInteractEvent extends EngineListner {
 								Main.getClassManager().getClassMap().remove(player);
 							}
 							Main.getClassManager().getClassMap().put(player, sign.getLine(1));
+							if (Main.getClassManager().getEngineClass(sign.getLine(1)) == null) {
+								player.sendMessage(ChatColor.RED + "Class not Found!");
+								return;
+							}
 							player.sendMessage("You have picked the " + sign.getLine(1) + " class");
-							if (sign.getLine(1).equalsIgnoreCase("gunner")) {
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-								player.sendMessage("&f&lGunner Class".replace("&", "§"));
-								player.sendMessage("&7Fully-automatic machine gun.".replace("&", "§"));
-								player.sendMessage("");
-								player.sendMessage("&f&lMachine Gun".replace("&", "§"));
-								player.sendMessage("&eRight-Click &7to use gun.".replace("&", "§"));
-								player.sendMessage("&7Equipped with &aIron Sword &7and &aLeather Tunic".replace("&", "§"));
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
+							for (String line : Main.getClassManager().getEngineClass(sign.getLine(1)).getDescription()) {
+								player.sendMessage(line.replace("&", "§"));
 							}
-							if (sign.getLine(1).equalsIgnoreCase("shotgun")) {
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-								player.sendMessage("&f&lShotgun Class".replace("&", "§"));
-								player.sendMessage("&7Pump action shotgun.".replace("&", "§"));
-								player.sendMessage("&66 bullets per round.".replace("&", "§"));
-								player.sendMessage("");
-								player.sendMessage("&f&lShotgun".replace("&", "§"));
-								player.sendMessage("&eRight-Click &7to use Shotgun.".replace("&", "§"));
-								player.sendMessage("&7Equipped with &aIron Sword &7and &aLeather Tunic.".replace("&", "§"));
-
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-							}
-							if (sign.getLine(1).equalsIgnoreCase("scout")) {
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-								player.sendMessage("&f&lScout Class".replace("&", "§"));
-								player.sendMessage("&7Equipped with &aDiamond Sword &7and &aLeather Tunic.".replace("&", "§"));
-								player.sendMessage("");
-								player.sendMessage("&f&lSpeed".replace("&", "§"));
-								player.sendMessage("&7Permanent Speed 2.".replace("&", "§"));
-								player.sendMessage("&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=".replace("&", "§"));
-							}
-
 						}
 					}
 				} else if (sign.getLine(0).contains("[Team]")) {

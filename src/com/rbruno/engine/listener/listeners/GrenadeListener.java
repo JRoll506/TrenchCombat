@@ -51,10 +51,8 @@ public class GrenadeListener extends EngineListner implements Listener {
 					for (Entity victum : players) {
 						if (victum instanceof Player) {
 							Player victumPlayer = (Player) victum;
-
 							if (Main.game.getColorTeam(player) == ColorTeam.RED) {
-
-								if (Main.game.getColorTeam(player) == ColorTeam.BLUE) {
+								if (Main.game.getColorTeam(victumPlayer) == ColorTeam.BLUE) {
 									if (!(Main.game.getRedTeam().getFlagHolder() == null)) {
 										if (Main.game.getRedTeam().getFlagHolder() == victum) {
 											Main.game.getRedTeam().setFlagHolder(null);
@@ -64,7 +62,6 @@ public class GrenadeListener extends EngineListner implements Listener {
 									player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.WHITE + " with your grenade!");
 									victum.sendMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has killed you with their grenade!");
 									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
-									player.setExp(Main.game.kills.get(player));
 									victumPlayer.damage(20F);
 								}
 
@@ -76,10 +73,9 @@ public class GrenadeListener extends EngineListner implements Listener {
 											Main.broadcast(ChatColor.RED + victumPlayer.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
 										}
 									}
-									player.sendMessage("You have killed " + ChatColor.RED + victum.getName() + ChatColor.WHITE + " with your cannon!");
+									player.sendMessage("You have killed " + ChatColor.RED + victum.getName() + ChatColor.WHITE + " with your grenade!");
 									victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has killed you with their grenade!");
 									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
-									player.setExp(Main.game.kills.get(player));
 									victumPlayer.damage(20F);
 								}
 							}
