@@ -1,11 +1,8 @@
-password: "1qAz9oL0p4rFv4rFv"
 minPlayer: 2
 pregameCountdown: 60
 #in seconds
 gameClock: 10
 #in minutes
-messagePrefix: "&8[&bTrench&8] &c"
-#to be used for broudcasting and messing players
 spawn:
    world: "TrenchWarfare"
    x: 602
