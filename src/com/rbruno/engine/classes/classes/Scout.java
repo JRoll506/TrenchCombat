@@ -11,7 +11,7 @@ import com.rbruno.engine.classes.EngineClass;
 public class Scout extends EngineClass {
 
 	public Scout() {
-		super(new ItemStack[] { new ItemStack(Material.DIAMOND_SWORD) , Main.getPlugin().getGranade(), Main.getPlugin().getSmoke()}, new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1), "Scout");
+		super(new ItemStack[] { new ItemStack(Material.DIAMOND_SWORD) , Main.getPlugin().getGrenade(), Main.getPlugin().getSmoke()}, new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1), "Scout");
 		String[] description = { 
 				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
 				"&f&lScout Class",
@@ -19,7 +19,7 @@ public class Scout extends EngineClass {
 				"",
 				"&f&lSpeed",
 				"&7Permanent Speed &a2&7.",
-				"&7Equipped with &aIron Sword&7, &a3 granades &7and &aa smoke&7.",
+				"&7Equipped with &aDiamond Sword&7, &a3 grenades &7and &aa smoke&7.",
 				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 			};
 		this.setDescription(description);

@@ -105,7 +105,7 @@ public class Main extends JavaPlugin {
 		return teamQue;
 	}
 	
-	public ItemStack getGranade() {
+	public ItemStack getGrenade() {
 		ItemStack granade = new ItemStack(Material.SLIME_BALL);
 		granade.setAmount(3);
 		ItemMeta meta = granade.getItemMeta();

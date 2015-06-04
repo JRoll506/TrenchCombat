@@ -12,7 +12,7 @@ import com.rbruno.engine.listener.EngineListner;
 import com.rbruno.engine.timer.GameState;
 
 public class PlayerDeath extends EngineListner implements Listener {
-	
+
 	@EventHandler
 	public void onPlayerDeath2(PlayerDeathEvent event) {
 		event.setDeathMessage("");
@@ -20,25 +20,24 @@ public class PlayerDeath extends EngineListner implements Listener {
 		event.getDrops().clear();
 		if (Main.getGameState() == GameState.IN_GAME) {
 			EntityDamageEvent damageCause = player.getLastDamageCause();
-			if (!(damageCause.getEntity() instanceof Player)) return;
-			Player killer = player.getKiller();
+			Player killer = (Player) player.getKiller();
 			ChatColor color = getChatColor(player);
-			ChatColor killerColor  = getChatColor(killer);
-
+			ChatColor killerColor = getChatColor(killer);
+			
 			switch (damageCause.getCause()) {
 			case BLOCK_EXPLOSION:
+				killer = (Player) damageCause.getEntity();
+				killerColor = getChatColor(killer);
 				killer.sendMessage("You have killed " + color + player.getName() + ChatColor.WHITE + " with your cannon!");
-				player.sendMessage(killerColor + killer.getName() + ChatColor.WHITE + " has killed you with his cannon!");
-				break;
-			case ENTITY_ATTACK:
-				player.sendMessage(killerColor + player.getKiller().getName() + ChatColor.WHITE + " has killed you with their sword!");
-				killer.sendMessage("You have killed " + color + player.getName() + ChatColor.WHITE + " with your sword!");
+				player.sendMessage(killerColor + killer.getName() + ChatColor.WHITE + " has killed you with their cannon!");
 				break;
 			case ENTITY_EXPLOSION:
-				player.sendMessage(killerColor + player.getKiller().getName() + ChatColor.WHITE + " has killed you with their grenade!");
+				killer = (Player) damageCause.getEntity();
+				killerColor = getChatColor(killer);
+				player.sendMessage(killerColor + killer.getName() + ChatColor.WHITE + " has killed you with their grenade!");
 				killer.sendMessage("You have killed " + color + player.getName() + ChatColor.WHITE + " with your grenade!");
 				break;
-			case PROJECTILE:
+			default:
 				String weapon = "";
 				switch (killer.getInventory().getItemInHand().getType()) {
 				case ARROW:
@@ -47,27 +46,28 @@ public class PlayerDeath extends EngineListner implements Listener {
 				case BONE:
 					weapon = " shotgun";
 					break;
-				default:
+				case DIAMOND_SWORD:
+				case IRON_SWORD:
+					weapon = " sword";
 					break;
-				}	
-				player.sendMessage(killerColor + player.getKiller().getName() + ChatColor.WHITE + " has killed you with their" + weapon + "!");
-				System.out.println(color + player.getName() + ":" + weapon);
+				default:
+					weapon = " hand";
+				}
+				player.sendMessage(killerColor + killer.getName() + ChatColor.WHITE + " has killed you with their" + weapon + "!");
 				killer.sendMessage("You have killed " + color + player.getName() + ChatColor.WHITE + " with your" + weapon + "!");
 				break;
-			default:
-				break;
 			}
-			Main.getGame().kills.put(player.getKiller(), Main.getGame().kills.get(player.getKiller()) + 1);
+			Main.getGame().kills.put(killer, Main.getGame().kills.get(killer) + 1);
 			if (!(Main.getGame().getTeam(player).getFlagHolder() == null)) {
 				if (Main.getGame().getTeam(player).getFlagHolder() == player) {
 					Main.getGame().getTeam(player).setFlagHolder(null);
-					Main.broadcast(color + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + killerColor + (killerColor == ChatColor.RED? " red": " blue") + ChatColor.WHITE + "flag");
+					Main.broadcast(color + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + killerColor + (killerColor == ChatColor.RED ? " red" : " blue") + ChatColor.WHITE + "flag");
 				}
 			}
 		}
 	}
-	
-	private ChatColor getChatColor(Player player){
+
+	private ChatColor getChatColor(Player player) {
 		ChatColor color;
 		switch (Main.getGame().getColorTeam(player)) {
 		case BLUE:
@@ -79,7 +79,7 @@ public class PlayerDeath extends EngineListner implements Listener {
 		default:
 			color = ChatColor.YELLOW;
 			break;
-			
+
 		}
 		return color;
 	}

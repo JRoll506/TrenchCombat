@@ -1,6 +1,6 @@
 package com.rbruno.engine.listener.listeners;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -14,9 +14,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import com.google.common.base.Function;
+import com.google.common.base.Functions;
+import com.google.common.collect.ImmutableMap;
 import com.rbruno.engine.Main;
 import com.rbruno.engine.game.ColorTeam;
 import com.rbruno.engine.listener.EngineListner;
@@ -80,8 +84,9 @@ public class CannonListener extends EngineListner implements Listener {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
 							if (Main.game.getColorTeam(victum) == ColorTeam.BLUE) {
+								double inital = victum.getHealth();
+								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 								victum.damage(20F);
-								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new HashMap<EntityDamageEvent.DamageModifier, Double>(), null));
 							}
 
 						}
@@ -96,8 +101,9 @@ public class CannonListener extends EngineListner implements Listener {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
 							if (Main.game.getColorTeam(victum) == ColorTeam.RED) {
+								double inital = victum.getHealth();
+								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 								victum.damage(20F);
-								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new HashMap<EntityDamageEvent.DamageModifier, Double>(), null));
 							}
 						}
 
