@@ -1,15 +1,17 @@
 package com.rbruno.engine.listener.listeners;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -53,30 +55,14 @@ public class GrenadeListener extends EngineListner implements Listener {
 							Player victumPlayer = (Player) victum;
 							if (Main.game.getColorTeam(player) == ColorTeam.RED) {
 								if (Main.game.getColorTeam(victumPlayer) == ColorTeam.BLUE) {
-									if (!(Main.game.getRedTeam().getFlagHolder() == null)) {
-										if (Main.game.getRedTeam().getFlagHolder() == victum) {
-											Main.game.getRedTeam().setFlagHolder(null);
-											Main.broadcast(ChatColor.BLUE + victumPlayer.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
-										}
-									}
-									player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.WHITE + " with your grenade!");
-									victum.sendMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has killed you with their grenade!");
-									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 									victumPlayer.damage(20F);
+									victumPlayer.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new HashMap<EntityDamageEvent.DamageModifier, Double>(), null));
 								}
 
 							} else {
 								if (Main.game.getColorTeam(victumPlayer) == ColorTeam.RED) {
-									if (!(Main.game.getBlueTeam().getFlagHolder() == null)) {
-										if (Main.game.getBlueTeam().getFlagHolder() == victum) {
-											Main.game.getBlueTeam().setFlagHolder(null);
-											Main.broadcast(ChatColor.RED + victumPlayer.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
-										}
-									}
-									player.sendMessage("You have killed " + ChatColor.RED + victum.getName() + ChatColor.WHITE + " with your grenade!");
-									victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has killed you with their grenade!");
-									Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 									victumPlayer.damage(20F);
+									victumPlayer.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new HashMap<EntityDamageEvent.DamageModifier, Double>(), null));
 								}
 							}
 						}

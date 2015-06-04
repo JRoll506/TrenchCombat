@@ -1,9 +1,9 @@
 package com.rbruno.engine.listener.listeners;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -12,6 +12,8 @@ import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -78,16 +80,8 @@ public class CannonListener extends EngineListner implements Listener {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
 							if (Main.game.getColorTeam(victum) == ColorTeam.BLUE) {
-								if (!(Main.game.getRedTeam().getFlagHolder() == null)) {
-									if (Main.game.getRedTeam().getFlagHolder().equals(victum)) {
-										Main.game.getRedTeam().setFlagHolder(null);
-										Main.broadcast(ChatColor.BLUE + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
-									}
-								}
-								player.sendMessage("You have killed " + ChatColor.BLUE + victum.getName() + ChatColor.WHITE + " with your cannon!");
-								victum.sendMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has killed you with their cannon!");
-								Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 								victum.damage(20F);
+								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new HashMap<EntityDamageEvent.DamageModifier, Double>(), null));
 							}
 
 						}
@@ -102,16 +96,8 @@ public class CannonListener extends EngineListner implements Listener {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
 							if (Main.game.getColorTeam(victum) == ColorTeam.RED) {
-								if (!(Main.game.getBlueTeam().getFlagHolder() == null)) {
-									if (Main.game.getBlueTeam().getFlagHolder() == victum) {
-										Main.game.getBlueTeam().setFlagHolder(null);
-										Main.broadcast(ChatColor.RED + victum.getDisplayName() + ChatColor.WHITE + " has droped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
-									}
-								}
-								player.sendMessage("You have killed " + ChatColor.RED + victum.getName() + ChatColor.WHITE + " with your cannon!");
-								victum.sendMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has killed you with his cannon!");
-								Main.game.kills.put(player, Main.game.kills.get(player) + 1);
 								victum.damage(20F);
+								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new HashMap<EntityDamageEvent.DamageModifier, Double>(), null));
 							}
 						}
 

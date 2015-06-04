@@ -197,6 +197,14 @@ public class Game {
 			return ColorTeam.BLUE;
 		return ColorTeam.NONE;
 	}
+	
+	public EngineTeam getTeam(Player player) {
+		if (redTeam.isPlayer(player))
+			return redTeam;
+		if (blueTeam.isPlayer(player))
+			return blueTeam;
+		return null;
+	}
 
 	public GameType getGameType() {
 		return GAME_TYPE;
