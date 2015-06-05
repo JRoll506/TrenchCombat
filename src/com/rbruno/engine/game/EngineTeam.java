@@ -73,7 +73,6 @@ public class EngineTeam {
 	}
 
 	public void setScore(int score) {
-		System.out.println("called " + score);
 		this.score = score;
 	}
 
