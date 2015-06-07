@@ -21,6 +21,7 @@ public class Shotgun extends EngineClass {
 				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
 				"&f&lShotgun Class",
 				"&7Pump action shotgun.",
+				"&66 bullets per round.",
 				"",
 				"&f&lShotgun",
 				"&eRight-Click &7to use Shotgun.",

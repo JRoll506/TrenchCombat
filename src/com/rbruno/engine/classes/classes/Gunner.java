@@ -54,7 +54,7 @@ public class Gunner extends EngineClass {
 				public void run() {
 					cooldown.remove(player);
 				}
-			}, 1L);
+			}, 2L);
 
 		}
 	}

@@ -37,7 +37,7 @@ public class Clock {
 		if (Main.getGameState() == GameState.LOBBY) {
 			if (!pregameClockIsRunning && Bukkit.getOnlinePlayers().size() >= Main.trenchConfig.getMinPlayer()) pregameClockIsRunning = true;
 			if (pregameClock % 10 == 0 && pregameClockIsRunning && !(pregameClock == 0)) Main.broadcast(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
-			if (pregameClock <= 5 && pregameClock != 0) Main.broadcast(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
+			if (pregameClock <= 5 && pregameClock != 0 && pregameClockIsRunning) Main.broadcast(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
 			if (pregameClock == 0) startGame();// start game
 			if (pregameClockIsRunning) pregameClock--;
 		} else if (Main.getGameState() == GameState.IN_GAME) {

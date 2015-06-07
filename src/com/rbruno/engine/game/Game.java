@@ -199,10 +199,14 @@ public class Game {
 	}
 	
 	public EngineTeam getTeam(Player player) {
-		if (redTeam.isPlayer(player))
-			return redTeam;
-		if (blueTeam.isPlayer(player))
-			return blueTeam;
+		if (redTeam.isPlayer(player)) {
+			Bukkit.broadcastMessage("Red Team");
+			return getRedTeam();
+		}
+		if (blueTeam.isPlayer(player)){
+			Bukkit.broadcastMessage("blue Team");
+			return getBlueTeam();
+		}
 		return null;
 	}
 
