@@ -1,5 +1,5 @@
 name: TrenchCombat
-main: com.rbruno.engine.Main
+main: com.rbruno.trench.Main
 version: 1.2
 author: JRoll506
 commands:
