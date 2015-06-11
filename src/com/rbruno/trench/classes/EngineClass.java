@@ -15,7 +15,7 @@ public class EngineClass implements Listener {
 
 	private PotionEffect effect = new PotionEffect(PotionEffectType.CONFUSION, 0, 0);
 	
-	private String[] description;
+	private String[] description = {};
 
 	public EngineClass(ItemStack[] items, PotionEffect effect, String name, String permssion) {
 		this.setItems(items);
