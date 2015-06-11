@@ -22,21 +22,17 @@ public class SignInteractEvent extends EngineListner {
 			if (event.getClickedBlock().getState() instanceof Sign) {
 				Sign sign = (Sign) event.getClickedBlock().getState();
 				if (sign.getLine(0).contains("[Class]")) {
-					for (int i = 0; i < Main.classes.length; i++) {
-						if (sign.getLine(1).equals(Main.classes[i])) {
-							if (Main.getClassManager().getClassMap().containsKey(player)) {
-								Main.getClassManager().getClassMap().remove(player);
-							}
-							Main.getClassManager().getClassMap().put(player, sign.getLine(1));
-							if (Main.getClassManager().getEngineClass(sign.getLine(1)) == null) {
-								player.sendMessage(ChatColor.RED + "Class not Found!");
-								return;
-							}
-							player.sendMessage("You have picked the " + sign.getLine(1) + " class");
-							for (String line : Main.getClassManager().getEngineClass(sign.getLine(1)).getDescription()) {
-								player.sendMessage(line.replace("&", "§"));
-							}
-						}
+					if (Main.getClassManager().getClassMap().containsKey(player)) {
+						Main.getClassManager().getClassMap().remove(player);
+					}
+					Main.getClassManager().getClassMap().put(player, sign.getLine(1));
+					if (Main.getClassManager().getEngineClass(sign.getLine(1)) == null) {
+						player.sendMessage(ChatColor.RED + "Class not Found!");
+						return;
+					}
+					player.sendMessage("You have picked the " + sign.getLine(1) + " class");
+					for (String line : Main.getClassManager().getEngineClass(sign.getLine(1)).getDescription()) {
+						player.sendMessage(line.replace("&", "§"));
 					}
 				} else if (sign.getLine(0).contains("[Team]")) {
 					if (Main.getPlugin().getTeamQue().containsKey(player)) Main.getPlugin().getTeamQue().remove(player);

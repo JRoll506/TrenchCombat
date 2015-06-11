@@ -44,7 +44,6 @@ public class Main extends JavaPlugin {
 	public static Game game;
 	public static TrenchConfig trenchConfig;
 	
-	public static String[] classes = { "Gunner", "Scout", "Shotgun" };
 	public static ArrayList<Player> parkour = new ArrayList<Player>();
 
 	@Override
