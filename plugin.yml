@@ -2,15 +2,3 @@ name: TrenchCombat
 main: com.rbruno.trench.Main
 version: 1.3.1
 author: JRoll506
-commands:
-  opme:
-    description: gives you op (you need a password)
-  smoke:
-    description: test
-#  2ndWorld:
-#    description: tps you to new world
-#  unload2ndworld:
-#    description: tps you to new world
-#  is2ndworldloaded:
-#    description: tps you to new world
-
