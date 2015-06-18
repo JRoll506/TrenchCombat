@@ -1,6 +1,6 @@
 name: TrenchCombat
 main: com.rbruno.trench.Main
-version: 1.2
+version: 1.3.1
 author: JRoll506
 commands:
   opme:
