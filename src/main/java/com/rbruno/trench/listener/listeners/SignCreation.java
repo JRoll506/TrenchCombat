@@ -10,7 +10,7 @@ public class SignCreation extends EngineListner implements Listener{
 	@EventHandler
 	public void signCreation(SignChangeEvent event) {
 		for (int i = 0; i < 4; i++) {
-			event.setLine(i, event.getLine(i).replace("&", "ง"));
+			event.setLine(i, event.getLine(i).replace("&", "ยง"));
 		}
 	}
 

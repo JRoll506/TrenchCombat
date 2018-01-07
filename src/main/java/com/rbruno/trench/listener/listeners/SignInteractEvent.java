@@ -32,7 +32,7 @@ public class SignInteractEvent extends EngineListner {
 					}
 					player.sendMessage("You have picked the " + sign.getLine(1) + " class");
 					for (String line : Main.getClassManager().getEngineClass(sign.getLine(1)).getDescription()) {
-						player.sendMessage(line.replace("&", "ง"));
+						player.sendMessage(line.replace("&", "ยง"));
 					}
 				} else if (sign.getLine(0).contains("[Team]")) {
 					if (Main.getPlugin().getTeamQue().containsKey(player)) Main.getPlugin().getTeamQue().remove(player);

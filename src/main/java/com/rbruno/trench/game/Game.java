@@ -138,7 +138,7 @@ public class Game {
 
 	}
 
-	public void giveItems(Player player) {
+	public void giveItems(final Player player) {
 		player.getInventory().clear();
 		for (PotionEffect effect : player.getActivePotionEffects())
 			player.removePotionEffect(effect.getType());
