@@ -55,7 +55,6 @@ public class Main extends JavaPlugin {
 		trenchConfig = new TrenchConfig();
 		map = new EngineMap("Map", trenchConfig.redSpawn, trenchConfig.blueSpawn);
 		spawn = trenchConfig.spawn;
-		getLogger().info(pdf.getName() + "[" + pdf.getVersion() + "]" + " is enabled");
 		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
 		new ListenerManager();
 		classManager = new ClassManager();
@@ -64,7 +63,6 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		getLogger().info(pdf.getName() + "[" + pdf.getVersion() + "]" + " is Disabled");
 		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
 	}
 
