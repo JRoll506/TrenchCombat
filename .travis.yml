@@ -3,4 +3,6 @@ jdk:
     - openjdk7
 script:
     - cd Original/
-    - mvn clean verify
+    - mvn verify
+    - cd ../Lobby
+    - mvn verify

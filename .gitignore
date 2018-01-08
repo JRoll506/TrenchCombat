@@ -3,7 +3,7 @@
 /.metadata/
 *.bin/
 .project
-
+.recommenders/
 *.classpath
 *.settings
 */.gitignore
