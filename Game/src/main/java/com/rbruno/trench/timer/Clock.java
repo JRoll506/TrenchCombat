@@ -20,7 +20,7 @@ import com.rbruno.trench.game.GameType;
 
 public class Clock {
 
-	private int gameClock = Game.trenchConfig.getGameClock() * 60;
+	private int gameClock = 5;
 
 	public Clock() {
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
@@ -34,6 +34,14 @@ public class Clock {
 
 	private void tick() {
 		switch (Game.getPlugin().getGameState()) {
+		case LOADING:
+			if (gameClock <= 0) {
+				Game.getPlugin().setGameState(GameState.PLAYING);
+				startGame();
+				gameClock = Game.trenchConfig.getGameClock() * 60;
+			}
+			gameClock--;
+			break;		
 		case PLAYING:
 			if (Game.game == null) startGame();
 			spawnFirework();
@@ -55,6 +63,8 @@ public class Clock {
 				}
 				gameClock++;
 			}
+			break;
+		default:
 			break;
 		}
 	}

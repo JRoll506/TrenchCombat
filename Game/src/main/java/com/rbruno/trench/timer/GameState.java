@@ -1,5 +1,5 @@
 package com.rbruno.trench.timer;
 
 public enum GameState {
-PLAYING, ENDED
+LOADING, PLAYING, ENDED
 }

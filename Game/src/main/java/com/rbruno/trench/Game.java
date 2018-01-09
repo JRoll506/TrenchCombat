@@ -2,6 +2,7 @@ package com.rbruno.trench;
 
 import java.util.HashMap;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -22,11 +23,12 @@ public class Game extends JavaPlugin {
 	private static Game plugin;
 
 	public static TrenchConfig trenchConfig;
-	private GameState gameState = GameState.PLAYING;
+	private GameState gameState = GameState.LOADING;
 	public static ClassManager classManager;
 	public static EngineGame game;
 	public static Clock clock;
 	private static EngineMap map;
+	private static Location spawn;
 
 	private HashMap<Player, ColorTeam> teamQueue = new HashMap<Player, ColorTeam>();
 
@@ -40,6 +42,7 @@ public class Game extends JavaPlugin {
 	    saveConfig();
 		trenchConfig = new TrenchConfig();
 		map = new EngineMap("Map", trenchConfig.redSpawn, trenchConfig.blueSpawn);
+		spawn = trenchConfig.spawn;
 		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
 		new ListenerManager();
 		classManager = new ClassManager();
@@ -92,6 +95,10 @@ public class Game extends JavaPlugin {
 		meta.setDisplayName("Smoke (Right Click)");
 		smoke.setItemMeta(meta);
 		return smoke;
+	}
+
+	public static Location getSpawn() {
+		return spawn;
 	}
 
 	public static EngineMap getMap() {

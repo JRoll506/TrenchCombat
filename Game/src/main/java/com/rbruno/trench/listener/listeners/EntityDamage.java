@@ -8,12 +8,12 @@ import com.rbruno.trench.Game;
 import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
-public class EntityDamage extends EngineListner implements Listener{
+public class EntityDamage extends EngineListner implements Listener {
 	@EventHandler
 	public void onEntityDamageEvent(EntityDamageEvent event) {
-		if(Game.getPlugin().getGameState() == GameState.ENDED){
-			event.setCancelled(true);
-		}
+		if (Game.getPlugin().getGameState() == GameState.PLAYING)
+			return;
+		event.setCancelled(true);
 	}
 
 }

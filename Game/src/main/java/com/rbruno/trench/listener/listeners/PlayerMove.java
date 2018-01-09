@@ -8,10 +8,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffectType;
 
 import com.rbruno.trench.Game;
 import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.listener.EngineListner;
+import com.rbruno.trench.timer.GameState;
 
 public class PlayerMove extends EngineListner implements Listener {
 	@EventHandler
@@ -19,8 +21,16 @@ public class PlayerMove extends EngineListner implements Listener {
 		Player player = event.getPlayer();
 		if (player.isDead())
 			return;
-
+		
+		if (player.getLocation().getBlockY() < 0) {
+			player.removePotionEffect(PotionEffectType.JUMP);
+			player.teleport(Game.getSpawn());
+			player.setFallDistance(0F);
+		}
 		Location location = player.getLocation();
+		if (Game.getPlugin().getGameState() == GameState.LOADING) {
+			return;
+		}
 
 		if (Game.game.getColorTeam(player) == ColorTeam.BLUE) {
 			if (location.getBlockX() <= Game.trenchConfig.fortRed)

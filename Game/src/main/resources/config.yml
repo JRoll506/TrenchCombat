@@ -1,5 +1,10 @@
 gameClock: 10
 #in minutes
+spawn:
+   world: "TrenchWarfare"
+   x: 602
+   y: 76
+   z: 68
 red:
    world: "TrenchWarfare"
    x: 514
