@@ -1,17 +1,13 @@
 package com.rbruno.trench;
 
-import java.util.HashMap;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.rbruno.trench.classes.ClassManager;
-import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.game.EngineGame;
 import com.rbruno.trench.listener.ListenerManager;
 import com.rbruno.trench.map.EngineMap;
@@ -29,8 +25,6 @@ public class Game extends JavaPlugin {
 	public static Clock clock;
 	private static EngineMap map;
 	private static Location spawn;
-
-	private HashMap<Player, ColorTeam> teamQueue = new HashMap<Player, ColorTeam>();
 
 	PluginDescriptionFile pdf = this.getDescription();
 
@@ -69,10 +63,6 @@ public class Game extends JavaPlugin {
 
 	public static EngineGame getGame() {
 		return game;
-	}
-
-	public HashMap<Player, ColorTeam> getTeamQueue() {
-		return teamQueue;
 	}
 
 	public void setGameState(GameState gameState) {

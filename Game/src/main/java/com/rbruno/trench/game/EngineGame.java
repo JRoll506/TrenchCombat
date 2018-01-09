@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Random;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,7 +49,7 @@ public class EngineGame {
 
 	public void pickTeams() {
 		Collection<? extends Player> onlinePlayers = (Bukkit.getOnlinePlayers());
-		Set<Player> playerSet = Game.getPlugin().getTeamQueue().keySet();
+		/* Set<Player> playerSet = Game.getPlugin().getTeamQueue().keySet();
 		for (Player player : playerSet) {
 			ColorTeam team = Game.getPlugin().getTeamQueue().get(player);
 			if (team.equals(ColorTeam.BLUE)) {
@@ -63,7 +62,7 @@ public class EngineGame {
 					redTeam.addPlayer(player);
 				}
 			}
-		}
+		} */
 		for (Player player : onlinePlayers) {
 			if (!blueTeam.isPlayer(player) && !redTeam.isPlayer(player)) {
 				if (blueTeam.getPlayers().size() < redTeam.getPlayers().size()) {

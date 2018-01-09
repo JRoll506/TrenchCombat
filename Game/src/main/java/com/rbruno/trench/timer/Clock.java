@@ -40,7 +40,7 @@ public class Clock {
 				startGame();
 				gameClock = Game.trenchConfig.getGameClock() * 60;
 			}
-			gameClock--;
+			if (Bukkit.getOnlinePlayers().size() > 0) gameClock--;
 			break;		
 		case PLAYING:
 			if (Game.game == null) startGame();
@@ -96,7 +96,7 @@ public class Clock {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
 			try {
 			    out.write("Connect".getBytes("UTF-8"));
-			    out.write("game".getBytes("UTF-8"));
+			    out.write("lobby".getBytes("UTF-8"));
 			}catch(IOException e) {
 			    e.printStackTrace();
 			}

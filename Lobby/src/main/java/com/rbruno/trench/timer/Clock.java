@@ -52,9 +52,6 @@ public class Clock {
 				clock++;
 			}
 			break;
-		default:
-			break;
-
 		}
 
 	}
