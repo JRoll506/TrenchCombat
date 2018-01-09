@@ -33,6 +33,7 @@ public class Lobby extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 		trenchConfig = new TrenchConfig();

@@ -1,5 +1,8 @@
 package com.rbruno.trench.timer;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -25,17 +28,23 @@ public class Clock {
 	private void tick() {
 		switch (Lobby.getPlugin().getLobbyState()) {
 		case WAITING:
-			if (Bukkit.getOnlinePlayers().size() >= Lobby.trenchConfig.getMinPlayer()) Lobby.getPlugin().setGameState(LobbyState.COUNTING);
+			if (Bukkit.getOnlinePlayers().size() >= Lobby.trenchConfig.getMinPlayer())
+				Lobby.getPlugin().setGameState(LobbyState.COUNTING);
 			break;
 		case COUNTING:
-			if (clock % 10 == 0 && !(clock == 0)) Lobby.broadcast(ChatColor.YELLOW + "" + clock + ChatColor.WHITE + " second(s) till the game starts!");
-			if (clock <= 5 && clock != 0) Lobby.broadcast(ChatColor.YELLOW + "" + clock + ChatColor.WHITE + " second(s) till the game starts!");
-			if (clock == 0) startGame(); // start game
-			if (clock > 0) clock--;
+			if (clock % 10 == 0 && !(clock == 0))
+				Lobby.broadcast(ChatColor.YELLOW + "" + clock + ChatColor.WHITE + " second(s) till the game starts!");
+			if (clock <= 5 && clock != 0)
+				Lobby.broadcast(ChatColor.YELLOW + "" + clock + ChatColor.WHITE + " second(s) till the game starts!");
+			if (clock == 0)
+				startGame(); // start game
+			if (clock > 0)
+				clock--;
 			break;
 		case MOVING:
 			if (Bukkit.getOnlinePlayers().isEmpty()) {
-				Lobby.broadcast("Players moved successfully!"); // Shutdown
+				Lobby.broadcast("Players moved successfully!");
+				Bukkit.shutdown();
 			} else {
 				if (clock > 10) {
 					Lobby.broadcast("There was an error moving you to the game server!");
@@ -45,16 +54,23 @@ public class Clock {
 			break;
 		default:
 			break;
-		
+
 		}
-		
+
 	}
 
 	public void startGame() {
 		Lobby.getPlugin().setGameState(LobbyState.MOVING);
 		Lobby.broadcast("Moving players!");
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			// Transfer Players
+			ByteArrayOutputStream out = new ByteArrayOutputStream();
+			try {
+			    out.write("Connect".getBytes("UTF-8"));
+			    out.write("game".getBytes("UTF-8"));
+			}catch(IOException e) {
+			    e.printStackTrace();
+			}
+			player.sendPluginMessage(Lobby.getPlugin(), "BungeeCord", out.toByteArray());
 		}
 
 	}

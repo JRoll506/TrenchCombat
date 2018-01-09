@@ -6,3 +6,5 @@ script:
     - mvn verify
     - cd ../Lobby
     - mvn verify
+    - cd ../Game
+    - mvn verify

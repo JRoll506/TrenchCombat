@@ -1,17 +1,13 @@
 package com.rbruno.trench;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import com.rbruno.trench.classes.ClassManager;
 import com.rbruno.trench.game.ColorTeam;
@@ -21,40 +17,29 @@ import com.rbruno.trench.map.EngineMap;
 import com.rbruno.trench.timer.Clock;
 import com.rbruno.trench.timer.GameState;
 
-public class Main extends JavaPlugin {
+public class Game extends JavaPlugin {
 
-	private static Main plugin;
+	private static Game plugin;
 
-	PluginDescriptionFile pdf = this.getDescription();
-
-	private static GameState gameState;
-
+	public static TrenchConfig trenchConfig;
+	private GameState gameState = GameState.PLAYING;
+	public static ClassManager classManager;
+	public static EngineGame game;
+	public static Clock clock;
 	private static EngineMap map;
 
-	private static Location spawn;
+	private HashMap<Player, ColorTeam> teamQueue = new HashMap<Player, ColorTeam>();
 
-	public static Clock clock;
-
-	ScoreboardManager manager = Bukkit.getScoreboardManager();
-	
-	public static ClassManager classManager;
-	
-	private HashMap<Player, ColorTeam> teamQue = new HashMap<Player, ColorTeam>();
-
-	public static EngineGame game;
-	public static TrenchConfig trenchConfig;
-	
-	public static ArrayList<Player> parkour = new ArrayList<Player>();
+	PluginDescriptionFile pdf = this.getDescription();
 
 	@Override
 	public void onEnable() {
 		plugin = this;
-		gameState = GameState.LOBBY;
+		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		getConfig().options().copyDefaults(true);
 	    saveConfig();
 		trenchConfig = new TrenchConfig();
 		map = new EngineMap("Map", trenchConfig.redSpawn, trenchConfig.blueSpawn);
-		spawn = trenchConfig.spawn;
 		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
 		new ListenerManager();
 		classManager = new ClassManager();
@@ -67,41 +52,30 @@ public class Main extends JavaPlugin {
 	}
 
 	public static void broadcast(String message) {
-		Main.getPlugin().getServer().broadcastMessage(message);
+		getPlugin().getServer().broadcastMessage(message);
 	}
 
 	public static ClassManager getClassManager() {
 		return classManager;
 	}
 
-	public static GameState getGameState() {
+	public GameState getGameState() {
 		return gameState;
 	}
-
-	public static Main getPlugin() {
-		return plugin;
-	}
-
-	public static EngineMap getMap() {
-		return map;
-	}
+	
 
 	public static EngineGame getGame() {
 		return game;
 	}
 
-	public static Location getSpawn() {
-		return spawn;
+	public HashMap<Player, ColorTeam> getTeamQueue() {
+		return teamQueue;
 	}
 
-	public static void setGameState(GameState gameState) {
-		Main.gameState = gameState;
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
 	}
 
-	public HashMap<Player, ColorTeam> getTeamQue() {
-		return teamQue;
-	}
-	
 	public ItemStack getGrenade() {
 		ItemStack granade = new ItemStack(Material.SLIME_BALL);
 		granade.setAmount(3);
@@ -110,7 +84,7 @@ public class Main extends JavaPlugin {
 		granade.setItemMeta(meta);
 		return granade;
 	}
-	
+
 	public ItemStack getSmoke() {
 		ItemStack smoke = new ItemStack(Material.SULPHUR);
 		smoke.setAmount(1);
@@ -120,4 +94,11 @@ public class Main extends JavaPlugin {
 		return smoke;
 	}
 
+	public static EngineMap getMap() {
+		return map;
+	}
+
+	public static Game getPlugin() {
+		return plugin;
+	}
 }

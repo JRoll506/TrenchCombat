@@ -13,7 +13,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.scheduler.BukkitScheduler;
 
 import com.rbruno.trench.Main;
-import com.rbruno.trench.game.Game;
+import com.rbruno.trench.game.EngineGame;
 import com.rbruno.trench.game.GameType;
 
 public class Clock {
@@ -59,7 +59,7 @@ public class Clock {
 		pregameClockIsRunning = false;
 		Main.parkour.clear();
 		pregameClock = Main.getPlugin().getConfig().getInt("pregameClock");
-		Main.game = new Game(GameType.DEATHMATCH);
+		Main.game = new EngineGame(GameType.DEATHMATCH);
 		Main.getGame().pickTeams();
 		Main.getGame().tpPlayers();
 		Main.getGame().giveItems();

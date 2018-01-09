@@ -6,21 +6,17 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import com.rbruno.trench.Main;
+import com.rbruno.trench.Game;
 import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.listener.EngineListner;
-import com.rbruno.trench.timer.GameState;
 
-public class EntityDamageByEntity extends EngineListner implements Listener{
+public class EntityDamageByEntity extends EngineListner implements Listener {
 	@EventHandler
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-		if (Main.getGameState() == GameState.LOBBY) return;
 		if (event.getDamager() instanceof Player) {
-			if (Main.getGameState() == GameState.LOBBY) {
-				event.setCancelled(true);
-			} else if (Main.game.getColorTeam((Player) event.getDamager()) == ColorTeam.RED) {
+			if (Game.game.getColorTeam((Player) event.getDamager()) == ColorTeam.RED) {
 				// attacker is red
-				if (Main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (Game.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
 					// victim is red
 					event.setCancelled(true);
 				} else {
@@ -30,7 +26,7 @@ public class EntityDamageByEntity extends EngineListner implements Listener{
 			} else {
 				// attacker is blue
 
-				if (Main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (Game.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
 					// victim is red
 					return;
 				} else {
@@ -41,11 +37,9 @@ public class EntityDamageByEntity extends EngineListner implements Listener{
 		} else if (event.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow) event.getDamager();
 			Player damager = (Player) arrow.getShooter();
-			if (Main.getGameState() == GameState.LOBBY) {
-				event.setCancelled(true);
-			} else if (Main.game.getColorTeam(damager) == ColorTeam.RED) {
+			if (Game.game.getColorTeam(damager) == ColorTeam.RED) {
 				// attacker is red
-				if (Main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (Game.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
 					// victim is red
 					event.setCancelled(true);
 				} else {
@@ -54,7 +48,7 @@ public class EntityDamageByEntity extends EngineListner implements Listener{
 				}
 			} else {
 				// attacker is blue
-				if (Main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (Game.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
 					// victim is red
 					return;
 

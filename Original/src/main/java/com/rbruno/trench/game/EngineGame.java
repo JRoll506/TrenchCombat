@@ -19,7 +19,7 @@ import org.bukkit.scoreboard.Score;
 
 import com.rbruno.trench.Main;
 
-public class Game {
+public class EngineGame {
 
 	private final GameType GAME_TYPE;
 
@@ -41,7 +41,7 @@ public class Game {
 	private ItemStack redwool = new ItemStack(Material.WOOL, 1, (byte) 14);
 	private ItemStack bluewool = new ItemStack(Material.WOOL, 1, (byte) 11);
 
-	public Game(GameType gameType) {
+	public EngineGame(GameType gameType) {
 		this.GAME_TYPE = gameType;
 		redTeam = new EngineTeam("Red", false, Color.RED, scoreBoardManager);
 		blueTeam = new EngineTeam("Blue", false, Color.BLUE, scoreBoardManager);
