@@ -1,13 +1,12 @@
 package com.rbruno.trench.timer;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.rbruno.trench.lobby.Lobby;
 
 public class Clock {
@@ -34,10 +33,8 @@ public class Clock {
 		case COUNTING:
 			if (clock % 10 == 0 && !(clock == 0))
 				Lobby.broadcast(ChatColor.YELLOW + "" + clock + ChatColor.WHITE + " second(s) till the game starts!");
-			if (clock <= 5 && clock != 0)
-				Lobby.broadcast(ChatColor.YELLOW + "" + clock + ChatColor.WHITE + " second(s) till the game starts!");
-			if (clock == 0)
-				startGame(); // start game
+			if (clock <= 5)
+				movePlayers(); // start game
 			if (clock > 0)
 				clock--;
 			break;
@@ -46,28 +43,25 @@ public class Clock {
 				Lobby.broadcast("Players moved successfully!");
 				Bukkit.shutdown();
 			} else {
-				if (clock > 10) {
+				if (clock <= 0) {
 					Lobby.broadcast("There was an error moving you to the game server!");
 				}
-				clock++;
+				clock--;
 			}
 			break;
 		}
 
 	}
 
-	public void startGame() {
+	public void movePlayers() {
 		Lobby.getPlugin().setGameState(LobbyState.MOVING);
 		Lobby.broadcast("Moving players!");
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			try {
-			    out.write("Connect".getBytes("UTF-8"));
-			    out.write("game".getBytes("UTF-8"));
-			}catch(IOException e) {
-			    e.printStackTrace();
-			}
-			player.sendPluginMessage(Lobby.getPlugin(), "BungeeCord", out.toByteArray());
+			  ByteArrayDataOutput out = ByteStreams.newDataOutput();
+			  out.writeUTF("Connect");
+			  out.writeUTF("Game");
+
+			  player.sendPluginMessage(Lobby.getPlugin(), "BungeeCord", out.toByteArray());
 		}
 
 	}

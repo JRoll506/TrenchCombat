@@ -14,6 +14,9 @@ public class PlayerQuit extends EngineListner implements Listener {
 
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
+		if (Lobby.getPlugin().getLobbyState() == LobbyState.MOVING) {
+			event.setQuitMessage(null);
+		}
 		if (Lobby.getPlugin().getLobbyState() != LobbyState.COUNTING) return;
 		if (Bukkit.getOnlinePlayers().size() - 1 < Lobby.trenchConfig.getMinPlayer()) {
 			Lobby.getPlugin().setGameState(LobbyState.WAITING);

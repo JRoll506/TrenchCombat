@@ -12,6 +12,7 @@ public class PlayerJoin extends EngineListner implements Listener {
 
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
+		event.setJoinMessage(null);
 		if (Game.getPlugin().getGameState() == GameState.LOADING) {
 			event.getPlayer().teleport(Game.getSpawn());
 		} else {
