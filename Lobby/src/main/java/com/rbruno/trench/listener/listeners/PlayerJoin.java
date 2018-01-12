@@ -1,5 +1,8 @@
 package com.rbruno.trench.listener.listeners;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -15,8 +18,17 @@ public class PlayerJoin extends EngineListner implements Listener {
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
 		if (Lobby.getPlugin().getLobbyState() == LobbyState.PLAYING
 				|| Lobby.getPlugin().getLobbyState() == LobbyState.MOVING) {
+			final Player player = event.getPlayer();
 			Lobby.sendToGame(event.getPlayer());
-			// TODO kick player
+			Bukkit.getScheduler().scheduleSyncDelayedTask(Lobby.getPlugin(), new Runnable() {
+				
+				@Override
+				public void run() {
+					if (player.isOnline()) {
+						player.kickPlayer(ChatColor.RED + "There was an error moving you to the game server!");
+					}
+				}
+			}, 20L);
 			return;
 		}
 		for (PotionEffect effect : event.getPlayer().getActivePotionEffects())

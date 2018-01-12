@@ -28,7 +28,7 @@ public class PlayerMove extends EngineListner implements Listener {
 			player.setFallDistance(0F);
 		}
 		Location location = player.getLocation();
-		if (Game.getPlugin().getGameState() == GameState.LOADING) {
+		if (Game.getPlugin().getGameState() != GameState.PLAYING) {
 			return;
 		}
 
