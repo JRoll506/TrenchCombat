@@ -5,8 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.rbruno.trench.lobby.Lobby;
 
 public class Clock {
@@ -26,6 +24,9 @@ public class Clock {
 
 	private void tick() {
 		switch (Lobby.getPlugin().getLobbyState()) {
+		case PLAYING:
+			// TODO
+			break;
 		case WAITING:
 			if (Bukkit.getOnlinePlayers().size() >= Lobby.trenchConfig.getMinPlayer())
 				Lobby.getPlugin().setGameState(LobbyState.COUNTING);
@@ -44,10 +45,13 @@ public class Clock {
 				Bukkit.shutdown();
 			} else {
 				if (clock <= 0) {
-					Lobby.broadcast("There was an error moving you to the game server!");
+					for (Player player : Bukkit.getOnlinePlayers())
+						player.kickPlayer(ChatColor.RED + "There was an error moving you to the game server!");
 				}
 				clock--;
 			}
+			break;
+		default:
 			break;
 		}
 
@@ -57,11 +61,7 @@ public class Clock {
 		Lobby.getPlugin().setGameState(LobbyState.MOVING);
 		Lobby.broadcast("Moving players!");
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			  ByteArrayDataOutput out = ByteStreams.newDataOutput();
-			  out.writeUTF("Connect");
-			  out.writeUTF("Game");
-
-			  player.sendPluginMessage(Lobby.getPlugin(), "BungeeCord", out.toByteArray());
+			Lobby.sendToGame(player);
 		}
 
 	}

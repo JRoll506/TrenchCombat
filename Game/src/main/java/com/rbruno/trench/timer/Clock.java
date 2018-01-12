@@ -11,8 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import com.rbruno.trench.Game;
 import com.rbruno.trench.game.EngineGame;
 import com.rbruno.trench.game.GameType;
@@ -68,10 +66,7 @@ public class Clock {
 			} else {
 				if (gameClock >= 5) {
 					for (Player player : Bukkit.getOnlinePlayers()) {
-						ByteArrayDataOutput out = ByteStreams.newDataOutput();
-						out.writeUTF("Connect");
-						out.writeUTF("Lobby");
-						player.sendPluginMessage(Game.getPlugin(), "BungeeCord", out.toByteArray());
+						Game.sendToLobby(player);
 					}
 				}
 
@@ -101,6 +96,7 @@ public class Clock {
 	}
 
 	public void endGame() {
+		Game.getPlugin().setGameState(GameState.ENDED);
 		if (Game.getGame().getBlueTeam().getScore() == Game.getGame().getRedTeam().getScore()) {
 			Game.broadcast("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.WHITE + "!");
 		} else if (Game.getGame().getBlueTeam().getScore() > Game.getGame().getRedTeam().getScore()) {

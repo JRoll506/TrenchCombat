@@ -7,6 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.rbruno.trench.listener.ListenerManager;
 import com.rbruno.trench.timer.Clock;
 import com.rbruno.trench.timer.LobbyState;
@@ -22,6 +24,8 @@ public class Lobby extends JavaPlugin {
 	public static ArrayList<Player> parkour = new ArrayList<Player>();
 
 	PluginDescriptionFile pdf = this.getDescription();
+	
+	public String lobbyName;
 
 	@Override
 	public void onEnable() {
@@ -39,6 +43,16 @@ public class Lobby extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
+	}
+	
+
+	public static void sendToGame(Player player) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("Connect");
+		broadcast(System.getenv("TRENCH_NAME") + "-Game");
+		out.writeUTF(System.getenv("TRENCH_NAME") + "-Game");
+
+		player.sendPluginMessage(Lobby.getPlugin(), "BungeeCord", out.toByteArray());	
 	}
 
 	public static void broadcast(String message) {
@@ -60,5 +74,6 @@ public class Lobby extends JavaPlugin {
 	public static Lobby getPlugin() {
 		return plugin;
 	}
+
 
 }

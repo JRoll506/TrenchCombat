@@ -2,11 +2,14 @@ package com.rbruno.trench;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.rbruno.trench.classes.ClassManager;
 import com.rbruno.trench.game.EngineGame;
 import com.rbruno.trench.listener.ListenerManager;
@@ -50,6 +53,14 @@ public class Game extends JavaPlugin {
 
 	public static void broadcast(String message) {
 		getPlugin().getServer().broadcastMessage(message);
+	}
+	
+	public static void sendToLobby(Player player) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF("Connect");
+		out.writeUTF(System.getenv("TRENCH_NAME") + "-Lobby");
+
+		player.sendPluginMessage(Game.getPlugin(), "BungeeCord", out.toByteArray());	
 	}
 
 	public static ClassManager getClassManager() {
