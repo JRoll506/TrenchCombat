@@ -14,6 +14,7 @@ import com.rbruno.trench.classes.ClassManager;
 import com.rbruno.trench.game.EngineGame;
 import com.rbruno.trench.listener.ListenerManager;
 import com.rbruno.trench.map.EngineMap;
+import com.rbruno.trench.net.Pinger;
 import com.rbruno.trench.timer.Clock;
 import com.rbruno.trench.timer.GameState;
 
@@ -34,6 +35,7 @@ public class Game extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
+		new Pinger();
 		getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
 		getConfig().options().copyDefaults(true);
 	    saveConfig();

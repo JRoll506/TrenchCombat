@@ -50,9 +50,9 @@ public class EngineGame {
 
 	public void pickTeams() {
 		Collection<? extends Player> onlinePlayers = (Bukkit.getOnlinePlayers());
-		Set<Player> playerSet = Main.getPlugin().getTeamQue().keySet();
+		Set<Player> playerSet = Main.getPlugin().getTeamQueue().keySet();
 		for (Player player : playerSet) {
-			ColorTeam team = Main.getPlugin().getTeamQue().get(player);
+			ColorTeam team = Main.getPlugin().getTeamQueue().get(player);
 			if (team.equals(ColorTeam.BLUE)) {
 				if (blueTeam.getPlayers().size() < onlinePlayers.size() / 2) {
 					blueTeam.addPlayer(player);

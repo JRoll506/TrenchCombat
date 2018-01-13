@@ -9,10 +9,11 @@ import org.bukkit.craftbukkit.Main;
 public class LobbyBootStrap {
 
 	public static void main(String[] args) throws InterruptedException {
-		while(pingGame("game2")) {
+		System.out.println("Wating for game to end");
+		while(pingGame(System.getenv("TRENCH_GAME_HOST"))) {
 			Thread.sleep(500L);
 		}
-
+		
 		Main.main(args);
 	}
 

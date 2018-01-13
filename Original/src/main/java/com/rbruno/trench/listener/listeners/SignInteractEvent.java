@@ -35,10 +35,10 @@ public class SignInteractEvent extends EngineListner {
 						player.sendMessage(line.replace("&", "§"));
 					}
 				} else if (sign.getLine(0).contains("[Team]")) {
-					if (Main.getPlugin().getTeamQue().containsKey(player)) Main.getPlugin().getTeamQue().remove(player);
-					player.sendMessage("You have qued for the " + sign.getLine(1) + ChatColor.WHITE + " team");
-					if (sign.getLine(1).contains("Red")) Main.getPlugin().getTeamQue().put(player, ColorTeam.RED);
-					if (sign.getLine(1).contains("Blue")) Main.getPlugin().getTeamQue().put(player, ColorTeam.BLUE);
+					if (Main.getPlugin().getTeamQueue().containsKey(player)) Main.getPlugin().getTeamQueue().remove(player);
+					player.sendMessage("You have queued for the " + sign.getLine(1) + ChatColor.WHITE + " team");
+					if (sign.getLine(1).contains("Red")) Main.getPlugin().getTeamQueue().put(player, ColorTeam.RED);
+					if (sign.getLine(1).contains("Blue")) Main.getPlugin().getTeamQueue().put(player, ColorTeam.BLUE);
 				} else if (sign.getLine(0).contains("[Parkour]")) {
 					if (!(Main.parkour.contains(player))) {
 						Main.broadcast(player.getName() + " knows how to use the spacebar!");

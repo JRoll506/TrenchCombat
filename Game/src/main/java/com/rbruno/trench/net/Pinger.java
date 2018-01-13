@@ -6,6 +6,9 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import com.rbruno.trench.Game;
+import com.rbruno.trench.timer.GameState;
+
 public class Pinger implements Runnable {
 
 	private Socket socket;
@@ -32,7 +35,8 @@ public class Pinger implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 				try {
-					if (serverSocket != null) serverSocket.close();
+					if (serverSocket != null)
+						serverSocket.close();
 				} catch (IOException e1) {
 				}
 			}
@@ -40,15 +44,17 @@ public class Pinger implements Runnable {
 		} else {
 			try {
 				OutputStream out = socket.getOutputStream();
-				
+
 				byte[] buffer = new byte[4];
 				InputStream in = socket.getInputStream();
 				in.read(buffer);
-				
+
 				buffer = "PONG".getBytes();
+				if (Game.getPlugin().getGameState() == GameState.ENDED)
+					buffer = "DONE".getBytes();
 				out.write(buffer);
 				out.flush();
-				
+
 				socket.close();
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -58,7 +64,7 @@ public class Pinger implements Runnable {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 
 	}

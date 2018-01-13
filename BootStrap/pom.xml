@@ -1,0 +1,36 @@
+<project>
+	<modelVersion>4.0.0</modelVersion>
+	
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <outputDirectory>../Docker/Lobby/</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+	</build>
+
+    <repositories>
+        <repository>
+            <id>spigot-repo</id>
+            <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.8-R0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+	<groupId>com.rbruno.trench</groupId>
+	<artifactId>TCBootstrap</artifactId>
+	<version>v1.3.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+</project>

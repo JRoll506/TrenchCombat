@@ -39,7 +39,7 @@ public class Main extends JavaPlugin {
 	
 	public static ClassManager classManager;
 	
-	private HashMap<Player, ColorTeam> teamQue = new HashMap<Player, ColorTeam>();
+	private HashMap<Player, ColorTeam> teamQueue = new HashMap<Player, ColorTeam>();
 
 	public static EngineGame game;
 	public static TrenchConfig trenchConfig;
@@ -98,8 +98,8 @@ public class Main extends JavaPlugin {
 		Main.gameState = gameState;
 	}
 
-	public HashMap<Player, ColorTeam> getTeamQue() {
-		return teamQue;
+	public HashMap<Player, ColorTeam> getTeamQueue() {
+		return teamQueue;
 	}
 	
 	public ItemStack getGrenade() {
