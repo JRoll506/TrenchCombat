@@ -12,7 +12,7 @@ public class Clock {
 	private int clock = Lobby.trenchConfig.getPregameCountdown();
 
 	public Clock() {
-		Lobby.getPlugin().setGameState(LobbyState.PLAYING);
+		Lobby.getPlugin().setGameState(LobbyState.WAITING);
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		scheduler.scheduleSyncRepeatingTask(Lobby.getPlugin(), new Runnable() {
 			@Override
@@ -24,11 +24,6 @@ public class Clock {
 
 	private void tick() {
 		switch (Lobby.getPlugin().getLobbyState()) {
-		case PLAYING:
-			// TODO Contact Game Server
-			// if game serve is not in PLAYING
-			// Change to waiting
-			break;
 		case WAITING:
 			if (Bukkit.getOnlinePlayers().size() >= Lobby.trenchConfig.getMinPlayer())
 				Lobby.getPlugin().setGameState(LobbyState.COUNTING);
