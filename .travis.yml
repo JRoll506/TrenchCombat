@@ -1,2 +1,6 @@
 language: java
-script: mvn clean verify
+jdk:
+    - openjdk7
+script:
+    - cd plugin/
+    - mvn verify
