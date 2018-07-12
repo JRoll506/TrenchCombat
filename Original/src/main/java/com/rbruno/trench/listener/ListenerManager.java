@@ -30,6 +30,8 @@ public class ListenerManager {
 		this.listners.add(new SignInteractEvent(main));
 		this.listners.add(new GrenadeListener(main));
 		this.listners.add(new SmokeListener(main));
+		this.listners.add(new ClassSignInteract(main));
+		this.listners.add(new TeamSignInteract(main));
 
 		for (EngineListner listner : listners)
 			Bukkit.getPluginManager().registerEvents(listner, main);

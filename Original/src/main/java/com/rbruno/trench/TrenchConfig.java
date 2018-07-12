@@ -24,13 +24,8 @@ public class TrenchConfig {
 	int pregameCountdown;
 	int gameClock;
 
-	public int redFlagX;
-	public int redFlagY;
-	public int redFlagZ;
-
-	public int blueFlagX;
-	public int blueFlagY;
-	public int blueFlagZ;
+	public Location redFlag;
+	public Location blueFlag;
 
 	public int fortRed;
 	public int fortBlue;
@@ -83,13 +78,13 @@ public class TrenchConfig {
 		pregameCountdown = plugin.getConfig().getInt("pregameCountdown");
 		gameClock = plugin.getConfig().getInt("gameClock");
 
-		redFlagX = plugin.getConfig().getInt("flag.red.x");
-		redFlagY = plugin.getConfig().getInt("flag.red.y");
-		redFlagZ = plugin.getConfig().getInt("flag.red.z");
+		redFlag = new Location(Bukkit.getServer().getWorld(plugin.getConfig().getString("spawn.world")),
+				plugin.getConfig().getInt("flag.red.x"), plugin.getConfig().getInt("flag.red.y"),
+				plugin.getConfig().getInt("flag.red.z"));
 
-		blueFlagX = plugin.getConfig().getInt("flag.blue.x");
-		blueFlagY = plugin.getConfig().getInt("flag.blue.y");
-		blueFlagZ = plugin.getConfig().getInt("flag.blue.z");
+		blueFlag = new Location(Bukkit.getServer().getWorld(plugin.getConfig().getString("spawn.world")),
+				plugin.getConfig().getInt("flag.blue.x"), plugin.getConfig().getInt("flag.blue.y"),
+				plugin.getConfig().getInt("flag.blue.z"));
 
 		fortRed = plugin.getConfig().getInt("fort.red");
 		fortBlue = plugin.getConfig().getInt("fort.blue");

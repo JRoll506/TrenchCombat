@@ -29,13 +29,12 @@ public class PlayerMove extends EngineListner implements Listener {
 			return;
 		if (player.getLocation().getBlockY() < 0) {
 			player.removePotionEffect(PotionEffectType.JUMP);
-			player.teleport(main.getSpawn());
+			player.teleport(main.trenchConfig.getSpawn());
 			player.setFallDistance(0F);
 		}
 		Location location = player.getLocation();
-		if (!(main.getGameState() == GameState.IN_GAME)) {
-			return;
-		}
+		if (!(main.getGameState() == GameState.IN_GAME)) return;
+		
 		if (main.game.getColorTeam(player) == ColorTeam.BLUE) {
 			if (location.getBlockX() <= main.trenchConfig.fortRed)
 				player.teleport(new Location(player.getWorld(), main.trenchConfig.fortRed + 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
@@ -43,7 +42,8 @@ public class PlayerMove extends EngineListner implements Listener {
 			if (location.getBlockX() >= main.trenchConfig.fortBlue)
 				player.teleport(new Location(player.getWorld(), main.trenchConfig.fortBlue - 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
 		}
-		if (main.game.getColorTeam(player) == ColorTeam.BLUE && location.getBlockX() == main.trenchConfig.redFlagX && location.getBlockY() == main.trenchConfig.redFlagY && location.getBlockZ() == main.trenchConfig.redFlagZ) {
+		
+		if (main.game.getColorTeam(player) == ColorTeam.BLUE && location.distance(main.trenchConfig.redFlag) <= 1) {
 			if (!(main.game.getRedTeam().getFlagHolder() == null))
 				return;
 			Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
@@ -55,7 +55,7 @@ public class PlayerMove extends EngineListner implements Listener {
 			}
 			main.game.getRedTeam().setFlagHolder(player);
 		}
-		if (main.game.getColorTeam(player) == ColorTeam.RED && location.getBlockX() == main.trenchConfig.blueFlagX && location.getBlockY() == main.trenchConfig.blueFlagY && location.getBlockZ() == main.trenchConfig.blueFlagZ) {
+		if (main.game.getColorTeam(player) == ColorTeam.RED && location.distance(main.trenchConfig.blueFlag) <= 1) {
 			if (!(main.game.getBlueTeam().getFlagHolder() == null))
 				return;
 			Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
@@ -68,7 +68,7 @@ public class PlayerMove extends EngineListner implements Listener {
 			main.game.getBlueTeam().setFlagHolder(player);
 		}
 
-		if (main.game.getRedTeam().getFlagHolder() == player && location.getBlockX() == main.trenchConfig.blueFlagX && location.getBlockY() == main.trenchConfig.blueFlagY && location.getBlockZ() == main.trenchConfig.blueFlagZ) {
+		if (main.game.getRedTeam().getFlagHolder() == player && location.distance(main.trenchConfig.blueFlag) <= 1) {
 			if (!(main.game.getBlueTeam().getFlagHolder() == null))
 				return;
 			main.game.getRedTeam().setFlagHolder(null);
@@ -84,7 +84,7 @@ public class PlayerMove extends EngineListner implements Listener {
 			}
 		}
 
-		if (main.game.getBlueTeam().getFlagHolder() == player && location.getBlockX() == main.trenchConfig.redFlagX && location.getBlockY() == main.trenchConfig.redFlagY && location.getBlockZ() == main.trenchConfig.redFlagZ) {
+		if (main.game.getBlueTeam().getFlagHolder() == player && location.distance(main.trenchConfig.redFlag) <= 1) {
 			if (!(main.game.getRedTeam().getFlagHolder() == null))
 				return;
 			main.game.getBlueTeam().setFlagHolder(null);

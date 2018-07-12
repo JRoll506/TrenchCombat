@@ -61,7 +61,6 @@ public class Clock {
 	public void startGame() {
 		gameClock = main.trenchConfig.getGameClock() * 60;
 		pregameClock = main.trenchConfig.getPregameCountdown();
-		main.parkour.clear();
 		pregameClock = main.getConfig().getInt("pregameClock");
 		main.game = new EngineGame(main);
 		main.getGame().pickTeams();
@@ -91,7 +90,7 @@ public class Clock {
 			player.getInventory().clear();
 			for (PotionEffect effect : player.getActivePotionEffects())
 				player.removePotionEffect(effect.getType());
-			player.teleport(main.getSpawn());
+			player.teleport(main.trenchConfig.getSpawn());
 		}
 
 		main.setGameState(GameState.WAITING);

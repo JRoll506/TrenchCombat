@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -53,6 +54,14 @@ public class SmokeListener extends EngineListner implements Listener {
 				}
 			}, 20L, 5L);
 		}
+	}
+	
+	@EventHandler
+	public void onPlayerMoveEvent(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		if (player.isDead())
+			return;
+		// Hide Player
 	}
 
 }

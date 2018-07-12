@@ -17,15 +17,15 @@ public class PlayerJoin extends EngineListner implements Listener {
 
 	@EventHandler
 	public void onPlayerJoinEvent(PlayerJoinEvent event) {
-		if (!(main.getGameState() == GameState.IN_GAME)) {
+		if (main.getGameState() == GameState.IN_GAME) {
+			main.getGame().addPlayer(event.getPlayer());
+		} else {
 			for (PotionEffect effect : event.getPlayer().getActivePotionEffects())
 				event.getPlayer().removePotionEffect(effect.getType());
 			event.getPlayer().getInventory().setArmorContents(null);
 			event.getPlayer().getInventory().clear();
-			event.getPlayer().teleport(main.getSpawn());
-			// main.messagePlayer(event.getPlayer(), "The game will begin shortly!");
-		} else if (main.getGameState() == GameState.IN_GAME) {
-			main.getGame().addPlayer(event.getPlayer());
+			event.getPlayer().teleport(main.trenchConfig.getSpawn());
+			event.getPlayer().sendMessage("The game will begin shortly!");
 		}
 	}
 

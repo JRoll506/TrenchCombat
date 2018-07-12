@@ -15,23 +15,16 @@ import com.rbruno.trench.Main;
 import com.rbruno.trench.classes.EngineClass;
 
 public class Gunner extends EngineClass {
-	
-	private Main main;
 
 	private ArrayList<Player> cooldown = new ArrayList<Player>();
 
 	public Gunner(Main main) {
-		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), main.getGrenade() }, "Gunner", main);
-		String[] description = { 
-				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
-				"&f&lGunner Class",
-				"&7Fully-automatic machine gun.",
-				"",
-				"&f&lMachine Gun",
-				"&eRight-Click &7to use gun.",
+		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), main.getGrenade() },
+				"Gunner", main);
+		String[] description = { "&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", "&f&lGunner Class",
+				"&7Fully-automatic machine gun.", "", "&f&lMachine Gun", "&eRight-Click &7to use gun.",
 				"&7Equipped with &aIron Sword &7and &a3 grenades",
-				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
-			};
+				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" };
 		this.setDescription(description);
 		main.getServer().getPluginManager().registerEvents(this, main);
 	}
@@ -42,21 +35,16 @@ public class Gunner extends EngineClass {
 		final Player player = event.getPlayer();
 		if (event.getMaterial().name() == "ARROW") {
 			event.setCancelled(true);
-			if (cooldown.toArray().length == 0) {
+			if (!(cooldown.contains(player))) {
 				cooldown.add(player);
 				player.launchProjectile(Arrow.class);
-			} else {
-				if (!(cooldown.contains(player))) {
-					cooldown.add(player);
-					player.launchProjectile(Arrow.class);
-				}
+				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+				scheduler.scheduleSyncDelayedTask(main, new Runnable() {
+					public void run() {
+						cooldown.remove(player);
+					}
+				}, 2L);
 			}
-			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(main, new Runnable() {
-				public void run() {
-					cooldown.remove(player);
-				}
-			}, 2L);
 
 		}
 	}
