@@ -26,10 +26,14 @@ import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
 public class GrenadeListener extends EngineListner implements Listener {
+	
+	public GrenadeListener(Main main) {
+		super(main);
+	}
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		if (Main.getGameState() == GameState.LOBBY) return;
+		if (!(main.getGameState() == GameState.IN_GAME)) return;
 
 		final Player player = (Player) event.getPlayer();
 
@@ -44,28 +48,28 @@ public class GrenadeListener extends EngineListner implements Listener {
 			// Throws grenade
 			grenade.setVelocity(player.getLocation().getDirection().multiply(1.2));
 			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+			scheduler.scheduleSyncDelayedTask(main, new Runnable() {
 				@Override
 				public void run() {
 					grenade.remove();
 					grenade.getWorld().createExplosion(grenade.getLocation().getX(), grenade.getLocation().getY(), grenade.getLocation().getZ(), 5F, false, false);
 
-					if (grenade.getLocation().getX() <= Main.trenchConfig.fortRed || grenade.getLocation().getX() >= Main.trenchConfig.fortBlue) return;
+					if (grenade.getLocation().getX() <= main.trenchConfig.fortRed || grenade.getLocation().getX() >= main.trenchConfig.fortBlue) return;
 
 					List<Entity> players;
 					players = grenade.getNearbyEntities(2, 2, 2);
 					for (Entity victum : players) {
 						if (victum instanceof Player) {
 							Player victumPlayer = (Player) victum;
-							if (Main.game.getColorTeam(player) == ColorTeam.RED) {
-								if (Main.game.getColorTeam(victumPlayer) == ColorTeam.BLUE) {
+							if (main.game.getColorTeam(player) == ColorTeam.RED) {
+								if (main.game.getColorTeam(victumPlayer) == ColorTeam.BLUE) {
 									double inital = victumPlayer.getHealth();
 									victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 									victumPlayer.setHealth(0);
 								}
 
 							} else {
-								if (Main.game.getColorTeam(victumPlayer) == ColorTeam.RED) {
+								if (main.game.getColorTeam(victumPlayer) == ColorTeam.RED) {
 									double inital = victumPlayer.getHealth();
 									victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 									victumPlayer.setHealth(0);

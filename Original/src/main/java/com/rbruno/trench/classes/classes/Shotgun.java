@@ -15,31 +15,25 @@ import com.rbruno.trench.classes.EngineClass;
 
 public class Shotgun extends EngineClass {
 
-	public Shotgun() {
-		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE), Main.getPlugin().getGrenade() }, "shotgun");
-		String[] description = { 
-				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
-				"&f&lShotgun Class",
-				"&7Pump action shotgun.",
-				"&66 bullets per round.",
-				"",
-				"&f&lShotgun",
-				"&eRight-Click &7to use Shotgun.",
-				"&7Equipped with &aIron Sword &7and &a3 grenades&7.",
-				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
-			};
+	public Shotgun(Main main) {
+		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE), main.getGrenade() },
+				"shotgun", main);
+		String[] description = { "&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", "&f&lShotgun Class",
+				"&7Pump action shotgun.", "&66 bullets per round.", "", "&f&lShotgun",
+				"&eRight-Click &7to use Shotgun.", "&7Equipped with &aIron Sword &7and &a3 grenades&7.",
+				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=" };
 		this.setDescription(description);
-		Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+		main.getServer().getPluginManager().registerEvents(this, main);
 	}
 
 	@EventHandler
 	public void onInteract(PlayerInteractEvent event) {
 		final Player player = (Player) event.getPlayer();
 		if (event.getMaterial().name() == "BONE") {
-			if (Main.game.cooldownShotgun.toArray().length == 0) {
+			if (main.game.cooldownShotgun.toArray().length == 0) {
 				fireArrow(player);
 			} else {
-				if (!(Main.game.cooldownShotgun.contains(player))) {
+				if (!(main.game.cooldownShotgun.contains(player))) {
 					fireArrow(player);
 				}
 			}
@@ -47,9 +41,9 @@ public class Shotgun extends EngineClass {
 
 		}
 	}
-	
+
 	public void fireArrow(final Player player) {
-		Main.game.cooldownShotgun.add(player);
+		main.game.cooldownShotgun.add(player);
 		Arrow arrow = (Arrow) player.launchProjectile(Arrow.class);
 		arrow.setVelocity(arrow.getVelocity().multiply(2));
 		Vector velocity = arrow.getVelocity();
@@ -63,12 +57,14 @@ public class Shotgun extends EngineClass {
 		for (int i = 0; i < arrowCount; i++) {
 			Arrow arrow2 = player.launchProjectile(Arrow.class);
 			arrow2.setVelocity(arrow.getVelocity().multiply(2));
-			arrow2.setVelocity(new Vector(direction.getX() + (Math.random() - 0.5) / spray, direction.getY() + (Math.random() - 0.5) / spray, direction.getZ() + (Math.random() - 0.5) / spray).normalize().multiply(speed));
+			arrow2.setVelocity(new Vector(direction.getX() + (Math.random() - 0.5) / spray,
+					direction.getY() + (Math.random() - 0.5) / spray, direction.getZ() + (Math.random() - 0.5) / spray)
+							.normalize().multiply(speed));
 		}
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+		scheduler.scheduleSyncDelayedTask(main, new Runnable() {
 			public void run() {
-				Main.game.cooldownShotgun.remove(player);
+				main.game.cooldownShotgun.remove(player);
 
 			}
 		}, 20L);

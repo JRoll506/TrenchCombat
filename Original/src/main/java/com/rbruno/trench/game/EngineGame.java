@@ -21,8 +21,6 @@ import com.rbruno.trench.Main;
 
 public class EngineGame {
 
-	private final GameType GAME_TYPE;
-
 	private EngineTeam redTeam;
 	private EngineTeam blueTeam;
 
@@ -41,8 +39,10 @@ public class EngineGame {
 	private ItemStack redwool = new ItemStack(Material.WOOL, 1, (byte) 14);
 	private ItemStack bluewool = new ItemStack(Material.WOOL, 1, (byte) 11);
 
-	public EngineGame(GameType gameType) {
-		this.GAME_TYPE = gameType;
+	private Main main;
+
+	public EngineGame(Main main) {
+		this.main = main;
 		redTeam = new EngineTeam("Red", false, Color.RED, scoreBoardManager);
 		blueTeam = new EngineTeam("Blue", false, Color.BLUE, scoreBoardManager);
 		setScoreBoard();
@@ -50,9 +50,9 @@ public class EngineGame {
 
 	public void pickTeams() {
 		Collection<? extends Player> onlinePlayers = (Bukkit.getOnlinePlayers());
-		Set<Player> playerSet = Main.getPlugin().getTeamQueue().keySet();
+		Set<Player> playerSet = main.getTeamQueue().keySet();
 		for (Player player : playerSet) {
-			ColorTeam team = Main.getPlugin().getTeamQueue().get(player);
+			ColorTeam team = main.getTeamQueue().get(player);
 			if (team.equals(ColorTeam.BLUE)) {
 				if (blueTeam.getPlayers().size() < onlinePlayers.size() / 2) {
 					blueTeam.addPlayer(player);
@@ -88,30 +88,30 @@ public class EngineGame {
 	public void tpPlayers() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (getColorTeam(player) == ColorTeam.RED) {
-				player.teleport(Main.trenchConfig.getRed());
+				player.teleport(main.trenchConfig.getRed());
 			} else {
-				player.teleport(Main.trenchConfig.getBlue());
+				player.teleport(main.trenchConfig.getBlue());
 			}
 		}
 	}
 
 	public void giveItems() {
-		for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) {
+		for (Player player : Bukkit.getOnlinePlayers()) {
 			player.getInventory().clear();
 			for (PotionEffect effect : player.getActivePotionEffects())
 				player.removePotionEffect(effect.getType());
-			if (Main.game.getColorTeam(player) == ColorTeam.RED) {
+			if (main.game.getColorTeam(player) == ColorTeam.RED) {
 				player.getInventory().setHelmet(redwool);
 			} else {
 				player.getInventory().setHelmet(bluewool);
 			}
-			if (Main.getClassManager().getClass(player) == null) {
-				player.getInventory().addItem(Main.getClassManager().getEngineClass("Gunner").getItems());
-				player.addPotionEffect(Main.getClassManager().getEngineClass("Gunner").getEffect());
+			if (main.getClassManager().getClass(player) == null) {
+				player.getInventory().addItem(main.getClassManager().getEngineClass("Gunner").getItems());
+				player.addPotionEffect(main.getClassManager().getEngineClass("Gunner").getEffect());
 				continue;
 			}
-			player.getInventory().addItem(Main.getClassManager().getEngineClass(Main.getClassManager().getClass(player)).getItems());
-			player.addPotionEffect(Main.getClassManager().getEngineClass(Main.getClassManager().getClass(player)).getEffect());
+			player.getInventory().addItem(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getItems());
+			player.addPotionEffect(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getEffect());
 		}
 	}
 
@@ -119,10 +119,10 @@ public class EngineGame {
 		score[0].setScore(0);
 		score[1].setScore(0);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-		String second = Main.clock.getGameClock() % 60 + "";
-		if (Main.clock.getGameClock() % 60 <= 9)
+		String second = main.clock.getGameClock() % 60 + "";
+		if (main.clock.getGameClock() % 60 <= 9)
 			second = "0" + second;
-		String time = (Main.clock.getGameClock() - (Main.clock.getGameClock() % 60)) / 60 + ":" + second;
+		String time = (main.clock.getGameClock() - (main.clock.getGameClock() % 60)) / 60 + ":" + second;
 		objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
 
 		Collection<? extends Player> onlinePlayers = (Bukkit.getOnlinePlayers());
@@ -142,20 +142,20 @@ public class EngineGame {
 		player.getInventory().clear();
 		for (PotionEffect effect : player.getActivePotionEffects())
 			player.removePotionEffect(effect.getType());
-		if (Main.game.getColorTeam(player) == ColorTeam.RED) {
+		if (main.game.getColorTeam(player) == ColorTeam.RED) {
 			player.getInventory().setHelmet(redwool);
 		} else {
 			player.getInventory().setHelmet(bluewool);
 		}
-		if (Main.getClassManager().getClass(player) == null) {
-			player.getInventory().addItem(Main.getClassManager().getEngineClass("Gunner").getItems());
-			player.addPotionEffect(Main.getClassManager().getEngineClass("Gunner").getEffect());
+		if (main.getClassManager().getClass(player) == null) {
+			player.getInventory().addItem(main.getClassManager().getEngineClass("Gunner").getItems());
+			player.addPotionEffect(main.getClassManager().getEngineClass("Gunner").getEffect());
 			return;
 		}
-		player.getInventory().addItem(Main.getClassManager().getEngineClass(Main.getClassManager().getClass(player)).getItems());
-		Main.getPlugin().getServer().getScheduler().scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+		player.getInventory().addItem(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getItems());
+		Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
 			public void run() {
-				player.addPotionEffect(Main.getClassManager().getEngineClass(Main.getClassManager().getClass(player)).getEffect());
+				player.addPotionEffect(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getEffect());
 			}
 		}, 20);
 	}
@@ -166,25 +166,25 @@ public class EngineGame {
 			Random random = new Random();
 			switch (random.nextInt(2)) {
 			case 0:
-				player.teleport(Main.getMap().getBlueSpawn());
+				player.teleport(main.getMap().getBlueSpawn());
 				giveItems(player);
 				blueTeam.addPlayer(player);
 				return;
 			case 1:
-				player.teleport(Main.getMap().getRedSpawn());
+				player.teleport(main.getMap().getRedSpawn());
 				redTeam.addPlayer(player);
 				giveItems(player);
 				return;
 			}
-			player.teleport(Main.getMap().getRedSpawn());
+			player.teleport(main.getMap().getRedSpawn());
 			redTeam.addPlayer(player);
 			giveItems(player);
 		} else if (redTeam.getPlayers().toArray().length < blueTeam.getPlayers().toArray().length) {
-			player.teleport(Main.getMap().getRedSpawn());
+			player.teleport(main.getMap().getRedSpawn());
 			redTeam.addPlayer(player);
 			giveItems(player);
 		} else {
-			player.teleport(Main.getMap().getBlueSpawn());
+			player.teleport(main.getMap().getBlueSpawn());
 			giveItems(player);
 			blueTeam.addPlayer(player);
 		}
@@ -206,10 +206,6 @@ public class EngineGame {
 			return getBlueTeam();
 		}
 		return null;
-	}
-
-	public GameType getGameType() {
-		return GAME_TYPE;
 	}
 
 	public EngineTeam getRedTeam() {

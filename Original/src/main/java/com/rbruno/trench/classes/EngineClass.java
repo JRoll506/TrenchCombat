@@ -7,7 +7,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import com.rbruno.trench.Main;
+
 public class EngineClass implements Listener {
+	
+	public Main main;
+	
 	private String name;
 	private String premission;
 
@@ -17,26 +22,30 @@ public class EngineClass implements Listener {
 	
 	private String[] description = {};
 
-	public EngineClass(ItemStack[] items, PotionEffect effect, String name, String permssion) {
+	public EngineClass(ItemStack[] items, PotionEffect effect, String name, String permssion, Main main) {
+		this.main = main;
 		this.setItems(items);
 		this.setEffect(effect);
 		this.setName(name);
 		this.setPremission(permssion);
 	}
 	
-	public EngineClass(ItemStack[] items, PotionEffect effect, String name) {
+	public EngineClass(ItemStack[] items, PotionEffect effect, String name, Main main) {
+		this.main = main;
 		this.setItems(items);
 		this.setEffect(effect);
 		this.setName(name);
 	}
 
-	public EngineClass(ItemStack[] items, String name, String permssion) {
+	public EngineClass(ItemStack[] items, String name, String permssion, Main main) {
+		this.main = main;
 		this.setItems(items);
 		this.setName(name);
 		this.setPremission(permssion);
 	}
 
-	public EngineClass(ItemStack[] items, String name) {
+	public EngineClass(ItemStack[] items, String name, Main main) {
+		this.main = main;
 		this.setItems(items);
 		this.setName(name);
 	}

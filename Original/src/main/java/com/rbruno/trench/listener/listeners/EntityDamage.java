@@ -9,9 +9,14 @@ import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
 public class EntityDamage extends EngineListner implements Listener{
+	
+	public EntityDamage(Main main) {
+		super(main);
+	}
+	
 	@EventHandler
 	public void onEntityDamageEvent(EntityDamageEvent event) {
-		if(Main.getGameState() == GameState.LOBBY){
+		if(!(main.getGameState() == GameState.IN_GAME)){
 			event.setCancelled(true);
 		}
 	}

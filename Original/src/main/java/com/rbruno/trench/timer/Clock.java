@@ -14,18 +14,22 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.rbruno.trench.Main;
 import com.rbruno.trench.game.EngineGame;
-import com.rbruno.trench.game.GameType;
 
 public class Clock {
+	
+	private Main main;
 
-	private int pregameClock = Main.trenchConfig.getPregameCountdown();
-	private int gameClock = Main.trenchConfig.getGameClock() * 60;
+	private int pregameClock;
+	private int gameClock;
 
-	private boolean pregameClockIsRunning = false;
-
-	public Clock() {
+	public Clock(Main main) {
+		this.main = main;
+		
+		pregameClock = main.trenchConfig.getPregameCountdown();
+		gameClock = main.trenchConfig.getGameClock() * 60;
+		
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		scheduler.scheduleSyncRepeatingTask(Main.getPlugin(), new Runnable() {
+		scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
 			@Override
 			public void run() {
 				tick();
@@ -34,70 +38,70 @@ public class Clock {
 	}
 
 	private void tick() {
-		if (Main.getGameState() == GameState.LOBBY) {
-			if (!pregameClockIsRunning && Bukkit.getOnlinePlayers().size() >= Main.trenchConfig.getMinPlayer()) pregameClockIsRunning = true;
-			if (pregameClock % 10 == 0 && pregameClockIsRunning && !(pregameClock == 0)) Main.broadcast(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
-			if (pregameClock <= 5 && pregameClock != 0 && pregameClockIsRunning) Main.broadcast(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
+		if (main.getGameState() == GameState.WAITING) {
+			if (Bukkit.getOnlinePlayers().size() >= main.trenchConfig.getMinPlayer()) main.setGameState(GameState.COUNTING);
+		} else if (main.getGameState() == GameState.COUNTING) {
+			if (pregameClock % 10 == 0 && !(pregameClock == 0)) Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
+			if (pregameClock <= 5 && pregameClock != 0) Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "" + pregameClock + ChatColor.WHITE + " second(s) till the game starts!");
+			pregameClock--;
 			if (pregameClock == 0) startGame();// start game
-			if (pregameClockIsRunning) pregameClock--;
-		} else if (Main.getGameState() == GameState.IN_GAME) {
+		} else if (main.getGameState() == GameState.IN_GAME) {
 			spawnFirework();
 			// end game & rebuild map
 			if (gameClock > 0) gameClock--;
-			String second = Main.clock.getGameClock() % 60 + "";
-			if (Main.clock.getGameClock() % 60 <= 9) second = "0" + second;
-			String time = (Main.clock.getGameClock() - (Main.clock.getGameClock() % 60)) / 60 + ":" + second;
-			if (Main.getGame() != null) Main.getGame().objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
-			if (gameClock % 60 == 0 && gameClock != 0) Main.broadcast(ChatColor.YELLOW + "" + (gameClock / 60) + ChatColor.WHITE + " minutes left in game!");
+			String second = main.clock.getGameClock() % 60 + "";
+			if (main.clock.getGameClock() % 60 <= 9) second = "0" + second;
+			String time = (main.clock.getGameClock() - (main.clock.getGameClock() % 60)) / 60 + ":" + second;
+			if (main.getGame() != null) main.getGame().objective.setDisplayName(ChatColor.YELLOW + "Time: " + ChatColor.WHITE + time);
+			if (gameClock % 60 == 0 && gameClock != 0) Bukkit.getServer().broadcastMessage(ChatColor.YELLOW + "" + (gameClock / 60) + ChatColor.WHITE + " minutes left in game!");
 			if (gameClock <= 0) endGame();
 		}
 	}
 
 	public void startGame() {
-		gameClock = Main.trenchConfig.getGameClock() * 60;
-		pregameClock = Main.trenchConfig.getPregameCountdown();
-		pregameClockIsRunning = false;
-		Main.parkour.clear();
-		pregameClock = Main.getPlugin().getConfig().getInt("pregameClock");
-		Main.game = new EngineGame(GameType.DEATHMATCH);
-		Main.getGame().pickTeams();
-		Main.getGame().tpPlayers();
-		Main.getGame().giveItems();
-		Main.broadcast("The war has begun!");
-		Main.setGameState(GameState.IN_GAME);
+		gameClock = main.trenchConfig.getGameClock() * 60;
+		pregameClock = main.trenchConfig.getPregameCountdown();
+		main.parkour.clear();
+		pregameClock = main.getConfig().getInt("pregameClock");
+		main.game = new EngineGame(main);
+		main.getGame().pickTeams();
+		main.getGame().tpPlayers();
+		main.getGame().giveItems();
+		Bukkit.getServer().broadcastMessage("The war has begun!");
+		main.setGameState(GameState.IN_GAME);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			Main.game.kills.put(player, 0);
+			main.game.kills.put(player, 0);
 		}
 
 	}
 
 	public void endGame() {
-		gameClock = Main.trenchConfig.getGameClock() * 60;
-		pregameClock = Main.trenchConfig.getPregameCountdown();
-		if (Main.getGame().getBlueTeam().getScore() == Main.getGame().getRedTeam().getScore()) {
-			Main.broadcast("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.WHITE + "!");
-		} else if (Main.getGame().getBlueTeam().getScore() > Main.getGame().getRedTeam().getScore()) {
-			Main.broadcast("The game had ended and the  " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "team won!");
+		gameClock = main.trenchConfig.getGameClock() * 60;
+		pregameClock = main.trenchConfig.getPregameCountdown();
+		if (main.getGame().getBlueTeam().getScore() == main.getGame().getRedTeam().getScore()) {
+			Bukkit.getServer().broadcastMessage("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.WHITE + "!");
+		} else if (main.getGame().getBlueTeam().getScore() > main.getGame().getRedTeam().getScore()) {
+			Bukkit.getServer().broadcastMessage("The game had ended and the  " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "team won!");
 		} else {
-			Main.broadcast("The game had ended and the  " + ChatColor.RED + "Red " + ChatColor.WHITE + "team won!");
+			Bukkit.getServer().broadcastMessage("The game had ended and the  " + ChatColor.RED + "Red " + ChatColor.WHITE + "team won!");
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.sendMessage("You got " + ChatColor.RED + (Main.getGame().kills.get(player) == null ? "0" : Main.getGame().kills.get(player)) + ChatColor.WHITE + " Kills!");
+			player.sendMessage("You got " + ChatColor.RED + (main.getGame().kills.get(player) == null ? "0" : main.getGame().kills.get(player)) + ChatColor.WHITE + " Kills!");
 			player.getInventory().setArmorContents(null);
 			player.getInventory().clear();
 			for (PotionEffect effect : player.getActivePotionEffects())
 				player.removePotionEffect(effect.getType());
-			player.teleport(Main.getSpawn());
+			player.teleport(main.getSpawn());
 		}
 
-		Main.setGameState(GameState.LOBBY);
-		Main.game = null;
-		Main.classManager.getClassMap().clear();
+		main.setGameState(GameState.WAITING);
+		main.game = null;
+		main.classManager.getClassMap().clear();
 	}
 
 	private void spawnFirework() {
-		if (!(Main.getGame().getRedTeam().getFlagHolder() == null)) {
-			Firework firework = (Firework) Main.getGame().getRedTeam().getFlagHolder().getWorld().spawnEntity(Main.getGame().getRedTeam().getFlagHolder().getLocation(), EntityType.FIREWORK);
+		if (!(main.getGame().getRedTeam().getFlagHolder() == null)) {
+			Firework firework = (Firework) main.getGame().getRedTeam().getFlagHolder().getWorld().spawnEntity(main.getGame().getRedTeam().getFlagHolder().getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkMeta = firework.getFireworkMeta();
 			FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.RED).with(Type.BALL_LARGE).trail(true).build();
 			fireworkMeta.addEffect(effect);
@@ -105,8 +109,8 @@ public class Clock {
 			firework.setFireworkMeta(fireworkMeta);
 
 		}
-		if (!(Main.getGame().getBlueTeam().getFlagHolder() == null)) {
-			Firework firework = (Firework) Main.getGame().getBlueTeam().getFlagHolder().getWorld().spawnEntity(Main.getGame().getBlueTeam().getFlagHolder().getLocation(), EntityType.FIREWORK);
+		if (!(main.getGame().getBlueTeam().getFlagHolder() == null)) {
+			Firework firework = (Firework) main.getGame().getBlueTeam().getFlagHolder().getWorld().spawnEntity(main.getGame().getBlueTeam().getFlagHolder().getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkMeta = firework.getFireworkMeta();
 			FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.BLUE).with(Type.BALL_LARGE).trail(true).build();
 			fireworkMeta.addEffect(effect);

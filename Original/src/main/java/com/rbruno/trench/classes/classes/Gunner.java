@@ -15,11 +15,13 @@ import com.rbruno.trench.Main;
 import com.rbruno.trench.classes.EngineClass;
 
 public class Gunner extends EngineClass {
+	
+	private Main main;
 
 	private ArrayList<Player> cooldown = new ArrayList<Player>();
 
-	public Gunner() {
-		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), Main.getPlugin().getGrenade() }, "Gunner");
+	public Gunner(Main main) {
+		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), main.getGrenade() }, "Gunner", main);
 		String[] description = { 
 				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
 				"&f&lGunner Class",
@@ -31,7 +33,7 @@ public class Gunner extends EngineClass {
 				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-="
 			};
 		this.setDescription(description);
-		Main.getPlugin().getServer().getPluginManager().registerEvents(this, Main.getPlugin());
+		main.getServer().getPluginManager().registerEvents(this, main);
 	}
 
 	@Override
@@ -50,7 +52,7 @@ public class Gunner extends EngineClass {
 				}
 			}
 			BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.scheduleSyncDelayedTask(Main.getPlugin(), new Runnable() {
+			scheduler.scheduleSyncDelayedTask(main, new Runnable() {
 				public void run() {
 					cooldown.remove(player);
 				}

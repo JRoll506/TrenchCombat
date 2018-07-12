@@ -10,8 +10,8 @@ import com.rbruno.trench.classes.EngineClass;
 
 public class Scout extends EngineClass {
 
-	public Scout() {
-		super(new ItemStack[] { new ItemStack(Material.DIAMOND_SWORD) , Main.getPlugin().getGrenade(), Main.getPlugin().getSmoke()}, new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1), "Scout");
+	public Scout(Main main) {
+		super(new ItemStack[] { new ItemStack(Material.DIAMOND_SWORD) , main.getGrenade(), main.getSmoke()}, new PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, 1), "Scout", main);
 		String[] description = { 
 				"&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", 
 				"&f&lScout Class",

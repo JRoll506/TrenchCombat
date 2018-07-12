@@ -11,20 +11,25 @@ import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
 
-public class PlayerRespawn extends EngineListner implements Listener{
+public class PlayerRespawn extends EngineListner implements Listener {
+	
+	public PlayerRespawn(Main main) {
+		super(main);
+	}
+	
 	@EventHandler
 	public void onPlayerRespawnEvent(PlayerRespawnEvent event) {
 		Player player = (Player) event.getPlayer();
-		if (Main.getGameState() == GameState.IN_GAME) {
-			if (Main.game.getColorTeam(player) == ColorTeam.RED) {
-				event.setRespawnLocation(Main.getMap().getRedSpawn());
-				Main.game.giveItems(player);
+		if (main.getGameState() == GameState.IN_GAME) {
+			if (main.game.getColorTeam(player) == ColorTeam.RED) {
+				event.setRespawnLocation(main.getMap().getRedSpawn());
+				main.game.giveItems(player);
 			} else {
-				event.setRespawnLocation(Main.getMap().getBlueSpawn());
-				Main.game.giveItems(player);
+				event.setRespawnLocation(main.getMap().getBlueSpawn());
+				main.game.giveItems(player);
 			}
 		} else {
-			event.setRespawnLocation(Main.getSpawn());
+			event.setRespawnLocation(main.getSpawn());
 			player.getInventory().clear();
 		}
 	}

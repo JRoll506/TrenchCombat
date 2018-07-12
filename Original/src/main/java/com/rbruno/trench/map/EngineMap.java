@@ -10,20 +10,23 @@ public class EngineMap {
 
 	private Location redSpawn;
 	private Location blueSpawn;
+	
+	private Main main;
 
-	public EngineMap(String name, Location redSpawn, Location blueSpawn) {
+	public EngineMap(String name, Location redSpawn, Location blueSpawn, Main main) {
 		this.name = name;
 		this.redSpawn = redSpawn;
 		this.blueSpawn = blueSpawn;
+		this.main = main;
 	}
 	
 	public void spawnPlayers(){
-		for (Player player : Main.getPlugin().getServer().getOnlinePlayers()) 
+		for (Player player : main.getServer().getOnlinePlayers()) 
 			repawnPlayer(player);
 	}
 
 	public void repawnPlayer(Player player){
-		switch (Main.getGame().getColorTeam(player)) {
+		switch (main.getGame().getColorTeam(player)) {
 		case RED:
 			player.teleport(redSpawn);
 		case BLUE:

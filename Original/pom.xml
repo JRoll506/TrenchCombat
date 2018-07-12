@@ -6,9 +6,6 @@
       			<plugin>
         			<groupId>org.apache.maven.plugins</groupId>
         			<artifactId>maven-jar-plugin</artifactId>
-                    <configuration>
-                        <outputDirectory>../Docker/Original/plugins</outputDirectory>
-                    </configuration>
                     <version>2.3</version>
       			</plugin>
     		</plugins>

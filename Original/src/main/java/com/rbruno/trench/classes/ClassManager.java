@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
+import com.rbruno.trench.Main;
 import com.rbruno.trench.classes.classes.*;
 
 public class ClassManager {
@@ -13,10 +14,10 @@ public class ClassManager {
 
 	private HashMap<Player, String> classMap = new HashMap<Player, String>();
 
-	public ClassManager() {
-		this.classes.add(new Gunner());
-		this.classes.add(new Shotgun());
-		this.classes.add(new Scout());
+	public ClassManager(Main main) {
+		this.classes.add(new Gunner(main));
+		this.classes.add(new Shotgun(main));
+		this.classes.add(new Scout(main));
 	}
 
 	public String getClass(Player player) {

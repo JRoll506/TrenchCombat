@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.ScoreboardManager;
 
@@ -23,79 +22,66 @@ import com.rbruno.trench.timer.GameState;
 
 public class Main extends JavaPlugin {
 
-	private static Main plugin;
+	private GameState gameState;
 
-	PluginDescriptionFile pdf = this.getDescription();
+	private EngineMap map;
 
-	private static GameState gameState;
+	private Location spawn;
 
-	private static EngineMap map;
-
-	private static Location spawn;
-
-	public static Clock clock;
+	public Clock clock;
 
 	ScoreboardManager manager = Bukkit.getScoreboardManager();
 	
-	public static ClassManager classManager;
+	public ClassManager classManager;
 	
 	private HashMap<Player, ColorTeam> teamQueue = new HashMap<Player, ColorTeam>();
 
-	public static EngineGame game;
-	public static TrenchConfig trenchConfig;
+	public EngineGame game;
+	public TrenchConfig trenchConfig;
 	
-	public static ArrayList<Player> parkour = new ArrayList<Player>();
+	public ArrayList<Player> parkour = new ArrayList<Player>();
 
 	@Override
 	public void onEnable() {
-		plugin = this;
-		gameState = GameState.LOBBY;
+		gameState = GameState.WAITING;
 		getConfig().options().copyDefaults(true);
 	    saveConfig();
-		trenchConfig = new TrenchConfig();
-		map = new EngineMap("Map", trenchConfig.redSpawn, trenchConfig.blueSpawn);
+		trenchConfig = new TrenchConfig(this);
+		map = new EngineMap("Map", trenchConfig.redSpawn, trenchConfig.blueSpawn, this);
 		spawn = trenchConfig.spawn;
-		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
-		new ListenerManager();
-		classManager = new ClassManager();
-		clock = new Clock();
+		getLogger().info(this.getDescription().getName() + " made by " + this.getDescription().getAuthors());
+		new ListenerManager(this);
+		classManager = new ClassManager(this);
+		clock = new Clock(this);
 	}
 
 	@Override
 	public void onDisable() {
-		getLogger().info(pdf.getName() + " made by " + pdf.getAuthors());
+		getLogger().info(this.getDescription().getName() + " made by " + this.getDescription().getAuthors());
 	}
-
-	public static void broadcast(String message) {
-		Main.getPlugin().getServer().broadcastMessage(message);
-	}
-
-	public static ClassManager getClassManager() {
+	
+	public ClassManager getClassManager() {
 		return classManager;
 	}
 
-	public static GameState getGameState() {
+	public GameState getGameState() {
 		return gameState;
 	}
 
-	public static Main getPlugin() {
-		return plugin;
-	}
-
-	public static EngineMap getMap() {
+	public EngineMap getMap() {
 		return map;
 	}
 
-	public static EngineGame getGame() {
+	public EngineGame getGame() {
 		return game;
 	}
 
-	public static Location getSpawn() {
+	public Location getSpawn() {
 		return spawn;
 	}
 
-	public static void setGameState(GameState gameState) {
-		Main.gameState = gameState;
+	public void setGameState(GameState gameState) {
+		this.gameState = gameState;
 	}
 
 	public HashMap<Player, ColorTeam> getTeamQueue() {

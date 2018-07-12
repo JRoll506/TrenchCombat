@@ -1,5 +1,6 @@
 package com.rbruno.trench.listener.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,11 @@ import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
 public class PlayerMove extends EngineListner implements Listener {
+	
+	public PlayerMove(Main main) {
+		super(main);
+	}
+	
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -23,90 +29,90 @@ public class PlayerMove extends EngineListner implements Listener {
 			return;
 		if (player.getLocation().getBlockY() < 0) {
 			player.removePotionEffect(PotionEffectType.JUMP);
-			player.teleport(Main.getSpawn());
+			player.teleport(main.getSpawn());
 			player.setFallDistance(0F);
 		}
 		Location location = player.getLocation();
-		if (Main.getGameState() == GameState.LOBBY) {
+		if (!(main.getGameState() == GameState.IN_GAME)) {
 			return;
 		}
-		if (Main.game.getColorTeam(player) == ColorTeam.BLUE) {
-			if (location.getBlockX() <= Main.trenchConfig.fortRed)
-				player.teleport(new Location(player.getWorld(), Main.trenchConfig.fortRed + 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+		if (main.game.getColorTeam(player) == ColorTeam.BLUE) {
+			if (location.getBlockX() <= main.trenchConfig.fortRed)
+				player.teleport(new Location(player.getWorld(), main.trenchConfig.fortRed + 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
 		} else {
-			if (location.getBlockX() >= Main.trenchConfig.fortBlue)
-				player.teleport(new Location(player.getWorld(), Main.trenchConfig.fortBlue - 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+			if (location.getBlockX() >= main.trenchConfig.fortBlue)
+				player.teleport(new Location(player.getWorld(), main.trenchConfig.fortBlue - 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
 		}
-		if (Main.game.getColorTeam(player) == ColorTeam.BLUE && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
-			if (!(Main.game.getRedTeam().getFlagHolder() == null))
+		if (main.game.getColorTeam(player) == ColorTeam.BLUE && location.getBlockX() == main.trenchConfig.redFlagX && location.getBlockY() == main.trenchConfig.redFlagY && location.getBlockZ() == main.trenchConfig.redFlagZ) {
+			if (!(main.game.getRedTeam().getFlagHolder() == null))
 				return;
-			Main.broadcast(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
+			Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
 			player.getInventory().clear();
 			ItemStack[] kit = { new ItemStack(Material.WOOL, 1, (byte) 14) };
 			kit[0].setAmount(64);
 			for (int i = 0; i < 9; i++) {
 				player.getInventory().addItem(kit);
 			}
-			Main.game.getRedTeam().setFlagHolder(player);
+			main.game.getRedTeam().setFlagHolder(player);
 		}
-		if (Main.game.getColorTeam(player) == ColorTeam.RED && location.getBlockX() == Main.trenchConfig.blueFlagX && location.getBlockY() == Main.trenchConfig.blueFlagY && location.getBlockZ() == Main.trenchConfig.blueFlagZ) {
-			if (!(Main.game.getBlueTeam().getFlagHolder() == null))
+		if (main.game.getColorTeam(player) == ColorTeam.RED && location.getBlockX() == main.trenchConfig.blueFlagX && location.getBlockY() == main.trenchConfig.blueFlagY && location.getBlockZ() == main.trenchConfig.blueFlagZ) {
+			if (!(main.game.getBlueTeam().getFlagHolder() == null))
 				return;
-			Main.broadcast(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
+			Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
 			player.getInventory().clear();
 			ItemStack[] kit = { new ItemStack(Material.WOOL, 1, (byte) 11) };
 			kit[0].setAmount(64);
 			for (int i = 0; i < 9; i++) {
 				player.getInventory().addItem(kit);
 			}
-			Main.game.getBlueTeam().setFlagHolder(player);
+			main.game.getBlueTeam().setFlagHolder(player);
 		}
 
-		if (Main.game.getRedTeam().getFlagHolder() == player && location.getBlockX() == Main.trenchConfig.blueFlagX && location.getBlockY() == Main.trenchConfig.blueFlagY && location.getBlockZ() == Main.trenchConfig.blueFlagZ) {
-			if (!(Main.game.getBlueTeam().getFlagHolder() == null))
+		if (main.game.getRedTeam().getFlagHolder() == player && location.getBlockX() == main.trenchConfig.blueFlagX && location.getBlockY() == main.trenchConfig.blueFlagY && location.getBlockZ() == main.trenchConfig.blueFlagZ) {
+			if (!(main.game.getBlueTeam().getFlagHolder() == null))
 				return;
-			Main.game.getRedTeam().setFlagHolder(null);
-			Main.game.getBlueTeam().setScore(Main.game.getBlueTeam().getScore() + 1);
-			Main.game.score[0].setScore(Main.game.getBlueTeam().getScore());
-			if (Main.game.getBlueTeam().getScore() >= 3) {
-				Main.broadcast(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.BLUE + "Blue");
-				Main.clock.endGame();
+			main.game.getRedTeam().setFlagHolder(null);
+			main.game.getBlueTeam().setScore(main.game.getBlueTeam().getScore() + 1);
+			main.game.score[0].setScore(main.game.getBlueTeam().getScore());
+			if (main.game.getBlueTeam().getScore() >= 3) {
+				Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.BLUE + "Blue");
+				main.clock.endGame();
 			} else {
-				Main.broadcast(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.BLUE + "Blue");
-				Main.game.giveItems(player);
+				Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.BLUE + "Blue");
+				main.game.giveItems(player);
 
 			}
 		}
 
-		if (Main.game.getBlueTeam().getFlagHolder() == player && location.getBlockX() == Main.trenchConfig.redFlagX && location.getBlockY() == Main.trenchConfig.redFlagY && location.getBlockZ() == Main.trenchConfig.redFlagZ) {
-			if (!(Main.game.getRedTeam().getFlagHolder() == null))
+		if (main.game.getBlueTeam().getFlagHolder() == player && location.getBlockX() == main.trenchConfig.redFlagX && location.getBlockY() == main.trenchConfig.redFlagY && location.getBlockZ() == main.trenchConfig.redFlagZ) {
+			if (!(main.game.getRedTeam().getFlagHolder() == null))
 				return;
-			Main.game.getBlueTeam().setFlagHolder(null);
-			Main.game.getRedTeam().setScore(Main.game.getRedTeam().getScore() + 1);
-			Main.game.score[1].setScore(Main.game.getRedTeam().getScore());		
-			if (Main.game.getRedTeam().getScore() >= 3) {
-				Main.broadcast(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.RED + "Red");
-				Main.clock.endGame();
+			main.game.getBlueTeam().setFlagHolder(null);
+			main.game.getRedTeam().setScore(main.game.getRedTeam().getScore() + 1);
+			main.game.score[1].setScore(main.game.getRedTeam().getScore());		
+			if (main.game.getRedTeam().getScore() >= 3) {
+				Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.RED + "Red");
+				main.clock.endGame();
 			} else {
-				Main.broadcast(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.RED + "Red");
-				Main.game.giveItems(player);
+				Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.RED + "Red");
+				main.game.giveItems(player);
 
 			}
 		}
-		if (Main.getGameState() == GameState.LOBBY || player.isOp())
+		if (player.isOp())
 			return;
 
-		if (location.getBlockX() >= Main.trenchConfig.maxX) {
-			player.teleport(new Location(location.getWorld(), Main.trenchConfig.maxX - 1, location.getBlockY(), location.getZ(), location.getYaw(), location.getPitch()));
+		if (location.getBlockX() >= main.trenchConfig.maxX) {
+			player.teleport(new Location(location.getWorld(), main.trenchConfig.maxX - 1, location.getBlockY(), location.getZ(), location.getYaw(), location.getPitch()));
 		}
-		if (location.getBlockX() <= Main.trenchConfig.minX) {
-			player.teleport(new Location(location.getWorld(), Main.trenchConfig.minX + 1, location.getBlockY(), location.getZ(), location.getYaw(), location.getPitch()));
+		if (location.getBlockX() <= main.trenchConfig.minX) {
+			player.teleport(new Location(location.getWorld(), main.trenchConfig.minX + 1, location.getBlockY(), location.getZ(), location.getYaw(), location.getPitch()));
 		}
-		if (location.getBlockZ() <= Main.trenchConfig.minZ) {
-			player.teleport(new Location(location.getWorld(), location.getX(), location.getBlockY(), Main.trenchConfig.minZ + 1, location.getYaw(), location.getPitch()));
+		if (location.getBlockZ() <= main.trenchConfig.minZ) {
+			player.teleport(new Location(location.getWorld(), location.getX(), location.getBlockY(), main.trenchConfig.minZ + 1, location.getYaw(), location.getPitch()));
 		}
-		if (location.getBlockZ() >= Main.trenchConfig.maxZ) {
-			player.teleport(new Location(location.getWorld(), location.getX(), location.getBlockY(), Main.trenchConfig.maxZ - 1, location.getYaw(), location.getPitch()));
+		if (location.getBlockZ() >= main.trenchConfig.maxZ) {
+			player.teleport(new Location(location.getWorld(), location.getX(), location.getBlockY(), main.trenchConfig.maxZ - 1, location.getYaw(), location.getPitch()));
 		}
 	}
 }

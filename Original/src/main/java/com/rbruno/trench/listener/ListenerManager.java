@@ -2,6 +2,8 @@ package com.rbruno.trench.listener;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
+
 import com.rbruno.trench.Main;
 import com.rbruno.trench.listener.listeners.*;
 
@@ -9,28 +11,28 @@ public class ListenerManager {
 
 	public ArrayList<EngineListner> listners = new ArrayList<EngineListner>();
 
-	public ListenerManager() {
+	public ListenerManager(Main main) {
 		this.listners.add(new InventoryClick());
 		this.listners.add(new DropItem());
-		this.listners.add(new EntityDamage());
+		this.listners.add(new EntityDamage(main));
 		this.listners.add(new FoodLevelChange());
 		this.listners.add(new BlockBreak());
 		this.listners.add(new BlockPlace());
-		this.listners.add(new EntityDamageByEntity());
-		this.listners.add(new PlayerDeath());
-		this.listners.add(new CannonListener());
-		this.listners.add(new PlayerJoin());
-		this.listners.add(new PlayerMove());
-		this.listners.add(new PlayerQuit());
-		this.listners.add(new PlayerRespawn());
+		this.listners.add(new EntityDamageByEntity(main));
+		this.listners.add(new PlayerDeath(main));
+		this.listners.add(new CannonListener(main));
+		this.listners.add(new PlayerJoin(main));
+		this.listners.add(new PlayerMove(main));
+		this.listners.add(new PlayerQuit(main));
+		this.listners.add(new PlayerRespawn(main));
 		this.listners.add(new SignCreation());
 		this.listners.add(new PlayerPickUpItem());
-		this.listners.add(new SignInteractEvent());
-		this.listners.add(new GrenadeListener());
-		this.listners.add(new SmokeListener());
+		this.listners.add(new SignInteractEvent(main));
+		this.listners.add(new GrenadeListener(main));
+		this.listners.add(new SmokeListener(main));
 
 		for (EngineListner listner : listners)
-			Main.getPlugin().getServer().getPluginManager().registerEvents(listner, Main.getPlugin());
+			Bukkit.getPluginManager().registerEvents(listner, main);
 	}
 
 }

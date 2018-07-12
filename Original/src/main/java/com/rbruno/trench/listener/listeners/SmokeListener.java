@@ -16,10 +16,14 @@ import com.rbruno.trench.particalLib.ParticleEffect;
 import com.rbruno.trench.timer.GameState;
 
 public class SmokeListener extends EngineListner implements Listener {
+	
+	public SmokeListener(Main main) {
+		super(main);
+	}
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		if (Main.getGameState() == GameState.LOBBY) return;
+		if (!(main.getGameState() == GameState.IN_GAME)) return;
 
 		final Player player = (Player) event.getPlayer();
 		
@@ -35,7 +39,7 @@ public class SmokeListener extends EngineListner implements Listener {
 			smoke.setVelocity(player.getLocation().getDirection().multiply(1.2));
 			// Makes smoke
 			final BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-			scheduler.runTaskTimer(Main.getPlugin(), new Runnable() {
+			scheduler.runTaskTimer(main, new Runnable() {
 				int i = 0;
 
 				@Override
