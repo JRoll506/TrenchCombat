@@ -2,9 +2,5 @@ language: java
 jdk:
     - openjdk7
 script:
-    - cd Original/
-    - mvn verify
-    - cd ../Lobby
-    - mvn verify
-    - cd ../Game
+    - cd plugin/
     - mvn verify
