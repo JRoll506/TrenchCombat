@@ -1,5 +1,7 @@
 package com.rbruno.trench.classes.classes;
 
+import java.util.ArrayList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Arrow;
@@ -14,6 +16,8 @@ import com.rbruno.trench.Main;
 import com.rbruno.trench.classes.EngineClass;
 
 public class Shotgun extends EngineClass {
+
+	private ArrayList<Player> cooldown = new ArrayList<Player>();
 
 	public Shotgun(Main main) {
 		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE), main.getGrenade() },
@@ -30,20 +34,15 @@ public class Shotgun extends EngineClass {
 	public void onInteract(PlayerInteractEvent event) {
 		final Player player = (Player) event.getPlayer();
 		if (event.getMaterial().name() == "BONE") {
-			if (main.game.cooldownShotgun.toArray().length == 0) {
+			if (!(cooldown.contains(player))) {
 				fireArrow(player);
-			} else {
-				if (!(main.game.cooldownShotgun.contains(player))) {
-					fireArrow(player);
-				}
 			}
 			event.setCancelled(true);
-
 		}
 	}
 
 	public void fireArrow(final Player player) {
-		main.game.cooldownShotgun.add(player);
+		cooldown.add(player);
 		Arrow arrow = (Arrow) player.launchProjectile(Arrow.class);
 		arrow.setVelocity(arrow.getVelocity().multiply(2));
 		Vector velocity = arrow.getVelocity();
@@ -64,8 +63,7 @@ public class Shotgun extends EngineClass {
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(main, new Runnable() {
 			public void run() {
-				main.game.cooldownShotgun.remove(player);
-
+				cooldown.remove(player);
 			}
 		}, 20L);
 	}

@@ -69,7 +69,7 @@ public class Clock {
 		Bukkit.getServer().broadcastMessage("The war has begun!");
 		main.setGameState(GameState.IN_GAME);
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			main.game.kills.put(player, 0);
+			//main.game.kills.put(player, 0);
 		}
 
 	}
@@ -85,7 +85,7 @@ public class Clock {
 			Bukkit.getServer().broadcastMessage("The game had ended and the  " + ChatColor.RED + "Red " + ChatColor.WHITE + "team won!");
 		}
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			player.sendMessage("You got " + ChatColor.RED + (main.getGame().kills.get(player) == null ? "0" : main.getGame().kills.get(player)) + ChatColor.WHITE + " Kills!");
+			//player.sendMessage("You got " + ChatColor.RED + (main.getGame().kills.get(player) == null ? "0" : main.getGame().kills.get(player)) + ChatColor.WHITE + " Kills!");
 			player.getInventory().setArmorContents(null);
 			player.getInventory().clear();
 			for (PotionEffect effect : player.getActivePotionEffects())

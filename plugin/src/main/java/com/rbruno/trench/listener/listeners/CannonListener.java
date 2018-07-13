@@ -1,5 +1,6 @@
 package com.rbruno.trench.listener.listeners;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -28,6 +29,8 @@ import com.rbruno.trench.timer.GameState;
 
 public class CannonListener extends EngineListner implements Listener {
 	
+	public ArrayList<Player> cooldown = new ArrayList<Player>();
+
 	public CannonListener(Main main) {
 		super(main);
 	}
@@ -42,8 +45,8 @@ public class CannonListener extends EngineListner implements Listener {
 		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
 			if (blockStandingOn.getBlock().getType() == Material.SPONGE) {
 				// Player Fired Cannon
-				if (!(main.game.cooldownCannon.contains(player))) {
-					main.game.cooldownCannon.add(player);
+				if (!(cooldown.contains(player))) {
+					cooldown.add(player);
 					if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
 						// Lobed tnt
 						fireCannon(player, true);
@@ -118,7 +121,7 @@ public class CannonListener extends EngineListner implements Listener {
 		}, tnt.getFuseTicks());
 		scheduler.scheduleSyncDelayedTask(main, new Runnable() {
 			public void run() {
-				main.game.cooldownCannon.remove(player);
+				cooldown.remove(player);
 			}
 		}, 60L);
 	}

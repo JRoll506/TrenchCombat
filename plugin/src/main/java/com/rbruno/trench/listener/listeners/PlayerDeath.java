@@ -5,7 +5,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.rbruno.trench.Main;
@@ -25,26 +24,19 @@ public class PlayerDeath extends EngineListner implements Listener {
 		Player player = (Player) event.getEntity();
 		event.getDrops().clear();
 		if (main.getGameState() == GameState.IN_GAME) {
-			EntityDamageEvent damageCause = player.getLastDamageCause();
 			Player killer = (Player) player.getKiller();
-			ChatColor color = getChatColor(player);
-			ChatColor killerColor = getChatColor(killer);
 
-			switch (damageCause.getCause()) {
+			String weapon = "hand";
+			switch (player.getLastDamageCause().getCause()) {
 			case BLOCK_EXPLOSION:
-				killer = (Player) damageCause.getEntity();
-				killerColor = getChatColor(killer);
-				killer.sendMessage("You have killed " + color + player.getName() + ChatColor.WHITE + " with your cannon!");
-				player.sendMessage(killerColor + killer.getName() + ChatColor.WHITE + " has killed you with their cannon!");
+				killer = (Player) player.getLastDamageCause().getEntity();
+				weapon = "cannon";
 				break;
 			case ENTITY_EXPLOSION:
-				killer = (Player) damageCause.getEntity();
-				killerColor = getChatColor(killer);
-				player.sendMessage(killerColor + killer.getName() + ChatColor.WHITE + " has killed you with their grenade!");
-				killer.sendMessage("You have killed " + color + player.getName() + ChatColor.WHITE + " with your grenade!");
+				killer = (Player) player.getLastDamageCause().getEntity();
+				weapon = "grenade";
 				break;
 			default:
-				String weapon = "";
 				if (killer == null) break;
 				switch (killer.getInventory().getItemInHand().getType()) {
 				case ARROW:
@@ -60,10 +52,15 @@ public class PlayerDeath extends EngineListner implements Listener {
 				default:
 					weapon = "hand";
 				}
-				player.sendMessage(killerColor + killer.getName() + ChatColor.WHITE + " has killed you with their " + weapon + "!");
-				killer.sendMessage("You have killed " + color + player.getName() + ChatColor.WHITE + " with your " + weapon + "!");
 				break;
 			}
+			if (!player.equals(killer) && killer != null) {
+				Bukkit.broadcastMessage(getChatColor(killer) + killer.getName() + ChatColor.WHITE + " has killed " + getChatColor(player) + player.getName() + ChatColor.WHITE + " with their " + weapon + "!");
+				// TODO Stats
+			} else {
+				Bukkit.broadcastMessage(getChatColor(player) + player.getName() + ChatColor.WHITE + " has died!");
+			}
+
 			if (main.game.getColorTeam(player) == ColorTeam.RED) {
 				if (!(main.game.getBlueTeam().getFlagHolder() == null)) {
 					if (main.game.getBlueTeam().getFlagHolder() == player) {
@@ -79,8 +76,6 @@ public class PlayerDeath extends EngineListner implements Listener {
 					}
 				}
 			}
-			if (!(killer == null)) main.getGame().kills.put(killer, main.getGame().kills.get(killer) + 1);
-
 		}
 	}
 

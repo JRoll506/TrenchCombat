@@ -1,8 +1,6 @@
 package com.rbruno.trench.game;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Set;
 
@@ -25,16 +23,10 @@ public class EngineGame {
 	private EngineTeam blueTeam;
 
 	public ScoreBoardManager scoreBoardManager = new ScoreBoardManager();
-
 	public Objective objective = scoreBoardManager.registerNewObjective("Score", "dummy");
-
 	public Score[] score = { objective.getScore(ChatColor.BLUE + "Blue"), objective.getScore(ChatColor.RED + "Red") };
 
-	public HashMap<Player, Integer> kills = new HashMap<Player, Integer>();
-	public ArrayList<Player> cooldownShotgun = new ArrayList<Player>();
-	public ArrayList<Player> cooldownGunner = new ArrayList<Player>();
-	public ArrayList<Player> cooldownTeamSwitch = new ArrayList<Player>();
-	public ArrayList<Player> cooldownCannon = new ArrayList<Player>();
+	public Stats stats;
 
 	private ItemStack redwool = new ItemStack(Material.WOOL, 1, (byte) 14);
 	private ItemStack bluewool = new ItemStack(Material.WOOL, 1, (byte) 11);
@@ -43,6 +35,7 @@ public class EngineGame {
 
 	public EngineGame(Main main) {
 		this.main = main;
+		stats = new Stats();
 		redTeam = new EngineTeam("Red", false, Color.RED, scoreBoardManager);
 		blueTeam = new EngineTeam("Blue", false, Color.BLUE, scoreBoardManager);
 		setScoreBoard();
@@ -88,8 +81,10 @@ public class EngineGame {
 	public void tpPlayers() {
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			if (getColorTeam(player) == ColorTeam.RED) {
+				player.setFallDistance(0);
 				player.teleport(main.trenchConfig.getRed());
 			} else {
+				player.setFallDistance(0);
 				player.teleport(main.trenchConfig.getBlue());
 			}
 		}
@@ -110,8 +105,10 @@ public class EngineGame {
 				player.addPotionEffect(main.getClassManager().getEngineClass("Gunner").getEffect());
 				continue;
 			}
-			player.getInventory().addItem(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getItems());
-			player.addPotionEffect(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getEffect());
+			player.getInventory()
+					.addItem(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getItems());
+			player.addPotionEffect(
+					main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getEffect());
 		}
 	}
 
@@ -152,10 +149,12 @@ public class EngineGame {
 			player.addPotionEffect(main.getClassManager().getEngineClass("Gunner").getEffect());
 			return;
 		}
-		player.getInventory().addItem(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getItems());
+		player.getInventory()
+				.addItem(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getItems());
 		Bukkit.getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
 			public void run() {
-				player.addPotionEffect(main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getEffect());
+				player.addPotionEffect(
+						main.getClassManager().getEngineClass(main.getClassManager().getClass(player)).getEffect());
 			}
 		}, 20);
 	}
@@ -166,25 +165,25 @@ public class EngineGame {
 			Random random = new Random();
 			switch (random.nextInt(2)) {
 			case 0:
-				player.teleport(main.getMap().getBlueSpawn());
+				player.teleport(main.trenchConfig.blueSpawn);
 				giveItems(player);
 				blueTeam.addPlayer(player);
 				return;
 			case 1:
-				player.teleport(main.getMap().getRedSpawn());
+				player.teleport(main.trenchConfig.redSpawn);
 				redTeam.addPlayer(player);
 				giveItems(player);
 				return;
 			}
-			player.teleport(main.getMap().getRedSpawn());
+			player.teleport(main.trenchConfig.redSpawn);
 			redTeam.addPlayer(player);
 			giveItems(player);
 		} else if (redTeam.getPlayers().toArray().length < blueTeam.getPlayers().toArray().length) {
-			player.teleport(main.getMap().getRedSpawn());
+			player.teleport(main.trenchConfig.redSpawn);
 			redTeam.addPlayer(player);
 			giveItems(player);
 		} else {
-			player.teleport(main.getMap().getBlueSpawn());
+			player.teleport(main.trenchConfig.blueSpawn);
 			giveItems(player);
 			blueTeam.addPlayer(player);
 		}
@@ -197,12 +196,12 @@ public class EngineGame {
 			return ColorTeam.BLUE;
 		return ColorTeam.NONE;
 	}
-	
+
 	public EngineTeam getTeam(Player player) {
 		if (redTeam.isPlayer(player)) {
 			return getRedTeam();
 		}
-		if (blueTeam.isPlayer(player)){
+		if (blueTeam.isPlayer(player)) {
 			return getBlueTeam();
 		}
 		return null;

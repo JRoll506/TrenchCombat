@@ -12,7 +12,6 @@ import com.rbruno.trench.classes.ClassManager;
 import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.game.EngineGame;
 import com.rbruno.trench.listener.ListenerManager;
-import com.rbruno.trench.map.EngineMap;
 import com.rbruno.trench.timer.Clock;
 import com.rbruno.trench.timer.GameState;
 
@@ -20,7 +19,6 @@ public class Main extends JavaPlugin {
 
 	private GameState gameState;
 
-	private EngineMap map;
 	public Clock clock;
 	public ClassManager classManager;
 	public EngineGame game;
@@ -34,7 +32,6 @@ public class Main extends JavaPlugin {
 		getConfig().options().copyDefaults(true);
 	    saveConfig();
 		trenchConfig = new TrenchConfig(this);
-		map = new EngineMap("Map", trenchConfig.redSpawn, trenchConfig.blueSpawn, this);
 		getLogger().info(this.getDescription().getName() + " made by " + this.getDescription().getAuthors());
 		new ListenerManager(this);
 		classManager = new ClassManager(this);
@@ -52,10 +49,6 @@ public class Main extends JavaPlugin {
 
 	public GameState getGameState() {
 		return gameState;
-	}
-
-	public EngineMap getMap() {
-		return map;
 	}
 
 	public EngineGame getGame() {

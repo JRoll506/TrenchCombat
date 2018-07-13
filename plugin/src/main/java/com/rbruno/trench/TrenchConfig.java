@@ -16,9 +16,9 @@ public class TrenchConfig {
 	public int trenchLocationRed;
 	public int trenchLocationBlue;
 
-	Location spawn;
-	Location redSpawn;
-	Location blueSpawn;
+	public Location spawn;
+	public Location redSpawn;
+	public Location blueSpawn;
 
 	int minPlayer;
 	int pregameCountdown;

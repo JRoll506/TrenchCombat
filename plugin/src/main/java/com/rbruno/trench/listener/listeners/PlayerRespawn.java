@@ -23,10 +23,10 @@ public class PlayerRespawn extends EngineListner implements Listener {
 		if (main.getGameState() == GameState.IN_GAME) {
 			// Send to player's team spawn
 			if (main.game.getColorTeam(player) == ColorTeam.RED) {
-				event.setRespawnLocation(main.getMap().getRedSpawn());
+				event.setRespawnLocation(main.trenchConfig.redSpawn);
 				main.game.giveItems(player);
 			} else {
-				event.setRespawnLocation(main.getMap().getBlueSpawn());
+				event.setRespawnLocation(main.trenchConfig.blueSpawn);
 				main.game.giveItems(player);
 			}
 		} else {
