@@ -11,13 +11,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.rbruno.trench.classes.ClassManager;
 import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.game.EngineGame;
-import com.rbruno.trench.listener.ListenerManager;
+import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.Clock;
 import com.rbruno.trench.timer.GameState;
 
 public class Main extends JavaPlugin {
 
-	private GameState gameState;
+	private GameState gameState = GameState.WAITING;
 
 	public Clock clock;
 	public ClassManager classManager;
@@ -28,14 +28,16 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		gameState = GameState.WAITING;
 		getConfig().options().copyDefaults(true);
 	    saveConfig();
+	    
 		trenchConfig = new TrenchConfig(this);
-		getLogger().info(this.getDescription().getName() + " made by " + this.getDescription().getAuthors());
-		new ListenerManager(this);
 		classManager = new ClassManager(this);
 		clock = new Clock(this);
+		
+		EngineListner.register(this);
+		
+		getLogger().info(this.getDescription().getName() + " made by " + this.getDescription().getAuthors());
 	}
 
 	@Override

@@ -13,7 +13,7 @@ import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
 public class PlayerDeath extends EngineListner implements Listener {
-	
+
 	public PlayerDeath(Main main) {
 		super(main);
 	}
@@ -37,7 +37,8 @@ public class PlayerDeath extends EngineListner implements Listener {
 				weapon = "grenade";
 				break;
 			default:
-				if (killer == null) break;
+				if (killer == null)
+					break;
 				switch (killer.getInventory().getItemInHand().getType()) {
 				case ARROW:
 					weapon = "gun";
@@ -54,26 +55,23 @@ public class PlayerDeath extends EngineListner implements Listener {
 				}
 				break;
 			}
-			if (!player.equals(killer) && killer != null) {
+			if (killer != null && !player.equals(killer)) {
 				Bukkit.broadcastMessage(getChatColor(killer) + killer.getName() + ChatColor.WHITE + " has killed " + getChatColor(player) + player.getName() + ChatColor.WHITE + " with their " + weapon + "!");
 				// TODO Stats
 			} else {
 				Bukkit.broadcastMessage(getChatColor(player) + player.getName() + ChatColor.WHITE + " has died!");
 			}
 
-			if (main.game.getColorTeam(player) == ColorTeam.RED) {
-				if (!(main.game.getBlueTeam().getFlagHolder() == null)) {
-					if (main.game.getBlueTeam().getFlagHolder() == player) {
-						main.game.getBlueTeam().setFlagHolder(null);
-						Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
-					}
+			if (main.game.getColorTeam(player).getName().equals("Red")) {
+				if (main.game.blueTeam.flagHolder == player) {
+					main.game.blueTeam.flagHolder = null;
+					Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
 				}
+
 			} else {
-				if (!(main.game.getRedTeam().getFlagHolder() == null)) {
-					if (main.game.getRedTeam().getFlagHolder() == player) {
-						main.game.getRedTeam().setFlagHolder(null);
-						Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
-					}
+				if (main.game.redTeam.flagHolder == player) {
+					main.game.redTeam.flagHolder = null;
+					Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
 				}
 			}
 		}

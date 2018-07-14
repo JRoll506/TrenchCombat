@@ -6,7 +6,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 import com.rbruno.trench.Main;
-import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
@@ -22,7 +21,7 @@ public class PlayerRespawn extends EngineListner implements Listener {
 		Player player = (Player) event.getPlayer();
 		if (main.getGameState() == GameState.IN_GAME) {
 			// Send to player's team spawn
-			if (main.game.getColorTeam(player) == ColorTeam.RED) {
+			if (main.game.getColorTeam(player).getName().equals("Red")) {
 				event.setRespawnLocation(main.trenchConfig.redSpawn);
 				main.game.giveItems(player);
 			} else {

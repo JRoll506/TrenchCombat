@@ -20,10 +20,6 @@ public class TrenchConfig {
 	public Location redSpawn;
 	public Location blueSpawn;
 
-	int minPlayer;
-	int pregameCountdown;
-	int gameClock;
-
 	public Location redFlag;
 	public Location blueFlag;
 
@@ -40,18 +36,6 @@ public class TrenchConfig {
 
 	public Location getBlue() {
 		return blueSpawn;
-	}
-
-	public int getMinPlayer() {
-		return minPlayer;
-	}
-
-	public int getPregameCountdown() {
-		return pregameCountdown;
-	}
-
-	public int getGameClock() {
-		return gameClock;
 	}
 
 	public TrenchConfig(Main main) {
@@ -73,10 +57,6 @@ public class TrenchConfig {
 		blueSpawn = new Location(Bukkit.getServer().getWorld(plugin.getConfig().getString("blue.world")),
 				plugin.getConfig().getInt("blue.x"), plugin.getConfig().getInt("blue.y"),
 				plugin.getConfig().getInt("blue.z"), 90F, 0F);
-
-		minPlayer = plugin.getConfig().getInt("minPlayer");
-		pregameCountdown = plugin.getConfig().getInt("pregameCountdown");
-		gameClock = plugin.getConfig().getInt("gameClock");
 
 		redFlag = new Location(Bukkit.getServer().getWorld(plugin.getConfig().getString("spawn.world")),
 				plugin.getConfig().getInt("flag.red.x"), plugin.getConfig().getInt("flag.red.y"),

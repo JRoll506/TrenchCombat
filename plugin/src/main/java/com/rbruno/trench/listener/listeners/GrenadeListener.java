@@ -21,7 +21,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import com.rbruno.trench.Main;
-import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
@@ -61,15 +60,15 @@ public class GrenadeListener extends EngineListner implements Listener {
 					for (Entity victum : players) {
 						if (victum instanceof Player) {
 							Player victumPlayer = (Player) victum;
-							if (main.game.getColorTeam(player) == ColorTeam.RED) {
-								if (main.game.getColorTeam(victumPlayer) == ColorTeam.BLUE) {
+							if (main.game.getColorTeam(player).getName().equals("Red")) {
+								if (main.game.getColorTeam(victumPlayer).getName().equals("Red")) {
 									double inital = victumPlayer.getHealth();
 									victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 									victumPlayer.setHealth(0);
 								}
 
 							} else {
-								if (main.game.getColorTeam(victumPlayer) == ColorTeam.RED) {
+								if (main.game.getColorTeam(victumPlayer).getName().equals("Red")) {
 									double inital = victumPlayer.getHealth();
 									victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 									victumPlayer.setHealth(0);

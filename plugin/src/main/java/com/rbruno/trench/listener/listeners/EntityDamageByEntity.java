@@ -22,9 +22,9 @@ public class EntityDamageByEntity extends EngineListner implements Listener {
 		if (!(main.getGameState() == GameState.IN_GAME))
 			return;
 		if (event.getDamager() instanceof Player) {
-			if (main.game.getColorTeam((Player) event.getDamager()) == ColorTeam.RED) {
+			if (main.game.getColorTeam((Player) event.getDamager()).getName().equals("Red")) {
 				// attacker is red
-				if (main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (main.game.getColorTeam((Player) event.getEntity()).getName().equals("Red")) {
 					// victim is red
 					event.setCancelled(true);
 				} else {
@@ -34,7 +34,7 @@ public class EntityDamageByEntity extends EngineListner implements Listener {
 			} else {
 				// attacker is blue
 
-				if (main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (main.game.getColorTeam((Player) event.getEntity()).getName().equals("Red")) {
 					// victim is red
 					return;
 				} else {
@@ -45,9 +45,9 @@ public class EntityDamageByEntity extends EngineListner implements Listener {
 		} else if (event.getDamager() instanceof Arrow) {
 			Arrow arrow = (Arrow) event.getDamager();
 			Player damager = (Player) arrow.getShooter();
-			if (main.game.getColorTeam(damager) == ColorTeam.RED) {
+			if (main.game.getColorTeam(damager).getName().equals("Red")) {
 				// attacker is red
-				if (main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (main.game.getColorTeam((Player) event.getEntity()).getName().equals("Red")) {
 					// victim is red
 					event.setCancelled(true);
 				} else {
@@ -56,7 +56,7 @@ public class EntityDamageByEntity extends EngineListner implements Listener {
 				}
 			} else {
 				// attacker is blue
-				if (main.game.getColorTeam((Player) event.getEntity()) == ColorTeam.RED) {
+				if (main.game.getColorTeam((Player) event.getEntity()).getName().equals("Red")) {
 					// victim is red
 					return;
 

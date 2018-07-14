@@ -23,7 +23,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Functions;
 import com.google.common.collect.ImmutableMap;
 import com.rbruno.trench.Main;
-import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
@@ -51,17 +50,17 @@ public class CannonListener extends EngineListner implements Listener {
 						// Lobed tnt
 						fireCannon(player, true);
 					} else {
-						// Threw tnt
+						// Throw tnt
 						fireCannon(player, false);
 					}
 					player.sendMessage("Reloading cannon...");
 				}
 			} else {
 				// Trench Hoping
-				if (main.game.getColorTeam(player) == ColorTeam.RED && player.getLocation().getBlockX() == main.trenchConfig.trenchLocationRed && location.getPitch() == -90 && player.isOnGround()) {
+				if (main.game.getColorTeam(player).getName().equals("Red") && player.getLocation().getBlockX() == main.trenchConfig.trenchLocationRed && location.getPitch() == -90 && player.isOnGround()) {
 					player.setVelocity(player.getLocation().getDirection().multiply(1.2));
 				}
-				if (main.game.getColorTeam(player) == ColorTeam.BLUE && player.getLocation().getBlockX() == main.trenchConfig.trenchLocationBlue && location.getPitch() == -90 && player.isOnGround()) {
+				if (main.game.getColorTeam(player).getName().equals("Blue") && player.getLocation().getBlockX() == main.trenchConfig.trenchLocationBlue && location.getPitch() == -90 && player.isOnGround()) {
 					player.setVelocity(player.getLocation().getDirection().multiply(1.2));
 				}
 
@@ -82,7 +81,7 @@ public class CannonListener extends EngineListner implements Listener {
 			@Override
 			public void run() {
 				if (tnt.getLocation().getX() <= main.trenchConfig.fortRed || tnt.getLocation().getX() >= main.trenchConfig.fortBlue) return;
-				if (main.game.getColorTeam(player) == ColorTeam.RED) {
+				if (main.game.getColorTeam(player).getName().equals("Red")) {
 					// red
 					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 					List<Entity> players;
@@ -90,7 +89,7 @@ public class CannonListener extends EngineListner implements Listener {
 					for (int i = 0; i < players.toArray().length; i++) {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
-							if (main.game.getColorTeam(victum) == ColorTeam.BLUE) {
+							if (main.game.getColorTeam(victum).getName().equals("Blue")) {
 								double inital = victum.getHealth();
 								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 								victum.damage(20F);
@@ -107,7 +106,7 @@ public class CannonListener extends EngineListner implements Listener {
 					for (int i = 0; i < players.toArray().length; i++) {
 						if (players.get(i) instanceof Player) {
 							Player victum = (Player) players.get(i);
-							if (main.game.getColorTeam(victum) == ColorTeam.RED) {
+							if (main.game.getColorTeam(victum).getName().equals("Red")) {
 								double inital = victum.getHealth();
 								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
 								victum.damage(20F);

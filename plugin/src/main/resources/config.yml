@@ -1,7 +1,7 @@
 minPlayer: 1
-pregameCountdown: 60
+pregameCountdown: 10
 #in seconds
-gameClock: 10
+gameClock: 5
 #in minutes
 spawn:
    world: "TrenchWarfare"
