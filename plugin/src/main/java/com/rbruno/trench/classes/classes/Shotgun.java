@@ -20,7 +20,7 @@ public class Shotgun extends EngineClass {
 	private ArrayList<Player> cooldown = new ArrayList<Player>();
 
 	public Shotgun(Main main) {
-		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE), main.getGrenade() },
+		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.BONE), main.getGrenade() }, null,
 				"shotgun", main);
 		String[] description = { "&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", "&f&lShotgun Class",
 				"&7Pump action shotgun.", "&66 bullets per round.", "", "&f&lShotgun",

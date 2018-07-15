@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
 import com.rbruno.trench.Main;
-import com.rbruno.trench.game.ColorTeam;
 import com.rbruno.trench.game.EngineTeam;
 import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
@@ -26,50 +25,35 @@ public class PlayerMove extends EngineListner implements Listener {
 	@EventHandler
 	public void onPlayerMoveEvent(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
-		//if (player.isDead()) return;
-		
-		if (player.getLocation().getBlockY() < 0) {
+
+		if (!(main.getGameState() == GameState.IN_GAME) && player.getLocation().getBlockY() < 0) {
 			player.removePotionEffect(PotionEffectType.JUMP);
 			player.teleport(main.trenchConfig.getSpawn());
 			player.setFallDistance(0F);
 		}
-		Location location = player.getLocation();
-		if (!(main.getGameState() == GameState.IN_GAME))
-			return;
-
-
-
-
-
-		if (main.game.redTeam.flagHolder == player && location.distance(main.trenchConfig.blueFlag) <= 1) {
-			if (!(main.game.blueTeam.flagHolder == null))
-				return;
-			main.game.redTeam.flagHolder = null;
-			main.game.blueTeam.score.setScore(main.game.blueTeam.score.getScore() + 1);
-			if (main.game.blueTeam.score.getScore() >= 3) {
-				Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.BLUE + "Blue");
-				main.clock.endGame();
-			} else {
-				Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.BLUE + "Blue");
-				main.game.giveItems(player);
-			}
-		}
-
-		if (main.game.blueTeam.flagHolder == player && location.distance(main.trenchConfig.redFlag) <= 1) {
-			if (!(main.game.redTeam.flagHolder == null))
-				return;
-			main.game.blueTeam.flagHolder = null;
-			main.game.redTeam.score.setScore(main.game.redTeam.score.getScore() + 1);
-			if (main.game.redTeam.score.getScore() >= 3) {
-				Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag and won the game for " + ChatColor.RED + "Red");
-				main.clock.endGame();
-			} else {
-				Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getName() + ChatColor.WHITE + " has captured the flag for " + ChatColor.RED + "Red");
-				main.game.giveItems(player);
-
+	}
+	
+	@EventHandler
+	public void onPlayerCaptureFlag(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		
+		if (main.getGameState() != GameState.IN_GAME) return;
+		
+		EngineTeam team = main.game.getColorTeam(player);
+		
+		if (player.getLocation().distance(team.flag) <= 1) {
+			for (EngineTeam targetTeam : main.game.teams) {
+				if (targetTeam.flagHolder == player) {
+					targetTeam.flagHolder = null;
+					team.score.setScore(team.score.getScore() + 1);
+					Bukkit.getServer().broadcastMessage(team.color + player.getName() + ChatColor.WHITE + " has captured " + targetTeam.color + targetTeam.team.getName() + ChatColor.WHITE +  "'s flag!");
+					main.game.giveItems(player);
+				}
 			}
 		}
 	}
+	
+	
 	
 	@EventHandler
 	public void onPlayerPickUpFlag(PlayerMoveEvent event) {
@@ -77,46 +61,27 @@ public class PlayerMove extends EngineListner implements Listener {
 		
 		if (main.getGameState() != GameState.IN_GAME) return;
 		
-		
-		
-		if (main.game.getColorTeam(player).getName().equals("Blue") && location.distance(main.trenchConfig.redFlag) <= 1) {
-			if (!(main.game.redTeam.flagHolder == null)) return;
-			Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
-			player.getInventory().clear();
-			ItemStack[] kit = { new ItemStack(Material.WOOL, 1, (byte) 14) };
-			kit[0].setAmount(64);
-			for (int i = 0; i < 9; i++) {
-				player.getInventory().addItem(kit);
-			}
-			main.game.redTeam.flagHolder = player;
-		}
-		if (main.game.getColorTeam(player).getName().equals("Red") && location.distance(main.trenchConfig.blueFlag) <= 1) {
-			if (!(main.game.blueTeam.flagHolder == null))
-				return;
-			Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has taken the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
-			player.getInventory().clear();
-			ItemStack[] kit = { new ItemStack(Material.WOOL, 1, (byte) 11) };
-			kit[0].setAmount(64);
-			for (int i = 0; i < 9; i++) {
-				player.getInventory().addItem(kit);
-			}
-			main.game.blueTeam.flagHolder = player;
-		}
-		
-		
 		EngineTeam team = main.game.getColorTeam(player);
 		
-		if (player.getLocation().distance(team.team.getName().equals("Red") ? main.trenchConfig.blueFlag : main.trenchConfig.redFlag) <= 1) {
-			// TODO
-			
+		for (EngineTeam targetTeam : main.game.teams) {
+			if (team != targetTeam && player.getLocation().distance(targetTeam.flag) <= 1 && targetTeam.flagHolder == null) {
+				targetTeam.flagHolder = player;
+				Bukkit.getServer().broadcastMessage(team.color + player.getName() + ChatColor.WHITE + " has taken the " + targetTeam.team.getPrefix() + targetTeam.team.getName() + " " + ChatColor.WHITE + "flag");
+				
+				player.getInventory().clear();
+				// TODO Fix
+				ItemStack[] kit = { new ItemStack(Material.WOOL, 1, (byte) 11)};
+				kit[0].setAmount(64);
+				for (int i = 0; i < 9; i++) {
+					player.getInventory().addItem(kit);
+				}
+			}
 		}
 	}
 
 	@EventHandler
 	public void onPlayerMoveOutofBounds(PlayerMoveEvent event) {
-		Player player = event.getPlayer();
-		//if (player.isDead()) return;
-		
+		Player player = event.getPlayer();		
 
 		Location location = player.getLocation();
 

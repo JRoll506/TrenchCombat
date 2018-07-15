@@ -19,7 +19,7 @@ public class Gunner extends EngineClass {
 	private ArrayList<Player> cooldown = new ArrayList<Player>();
 
 	public Gunner(Main main) {
-		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), main.getGrenade() },
+		super(new ItemStack[] { new ItemStack(Material.IRON_SWORD), new ItemStack(Material.ARROW), main.getGrenade() }, null,
 				"Gunner", main);
 		String[] description = { "&2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=", "&f&lGunner Class",
 				"&7Fully-automatic machine gun.", "", "&f&lMachine Gun", "&eRight-Click &7to use gun.",

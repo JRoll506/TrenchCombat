@@ -30,7 +30,7 @@ public class EngineListner implements Listener {
 		Bukkit.getPluginManager().registerEvents(new GrenadeListener(main), main);
 		Bukkit.getPluginManager().registerEvents(new SmokeListener(main), main);
 		Bukkit.getPluginManager().registerEvents(new ClassSignInteract(main), main);
-		Bukkit.getPluginManager().registerEvents(new TeamSignInteract(main), main);
+		//Bukkit.getPluginManager().registerEvents(new TeamSignInteract(main), main);
 	}
 
 	public EngineListner() {

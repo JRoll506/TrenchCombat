@@ -14,6 +14,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 import com.rbruno.trench.Main;
 import com.rbruno.trench.game.EngineGame;
+import com.rbruno.trench.game.EngineTeam;
 
 public class Clock {
 	
@@ -78,17 +79,20 @@ public class Clock {
 
 	public void endGame() {
 		gameClock = main.getConfig().getInt("gameClock") * 60;
+		EngineTeam team = null;
 		
-		if (main.getGame().blueTeam.score == main.getGame().redTeam.score) {
-			Bukkit.getServer().broadcastMessage("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.WHITE + "!");
-		} else if (main.getGame().blueTeam.score > main.getGame().redTeam.score) {
-			Bukkit.getServer().broadcastMessage("The game had ended and the  " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "team won!");
+		for (EngineTeam targetTeam : main.game.teams) {
+			if (team == null || targetTeam.score.getScore() >= team.score.getScore()) 
+				team = targetTeam;
+		}
+		
+		if (team == null) {
+			Bukkit.getServer().broadcastMessage("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.RESET + "!");
 		} else {
-			Bukkit.getServer().broadcastMessage("The game had ended and the  " + ChatColor.RED + "Red " + ChatColor.WHITE + "team won!");
+			Bukkit.getServer().broadcastMessage("The game had ended and the " + team.color + team.team.getName() + ChatColor.RESET + " team won!");
 		}
 		
 		for (Player player : Bukkit.getOnlinePlayers()) {
-			//player.sendMessage("You got " + ChatColor.RED + (main.getGame().kills.get(player) == null ? "0" : main.getGame().kills.get(player)) + ChatColor.WHITE + " Kills!");
 			player.getInventory().setArmorContents(null);
 			player.getInventory().clear();
 			for (PotionEffect effect : player.getActivePotionEffects())
@@ -98,27 +102,20 @@ public class Clock {
 
 		main.setGameState(GameState.WAITING);
 		main.game = null;
-		main.classManager.getClassMap().clear();
+		main.classManager.classMap.clear();
 	}
 
 	private void spawnFirework() {
-		if (!(main.getGame().redTeam.flagHolder == null)) {
-			Firework firework = (Firework) main.getGame().redTeam.flagHolder.getWorld().spawnEntity(main.getGame().redTeam.flagHolder.getLocation(), EntityType.FIREWORK);
+		for (EngineTeam targetTeam : main.game.teams) {
+			if (targetTeam.flagHolder != null) {
+			Firework firework = (Firework) targetTeam.flagHolder.getLocation().getWorld().spawnEntity(targetTeam.flagHolder.getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkMeta = firework.getFireworkMeta();
+			// TODO
 			FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.RED).with(Type.BALL_LARGE).trail(true).build();
 			fireworkMeta.addEffect(effect);
 			fireworkMeta.setPower(1);
 			firework.setFireworkMeta(fireworkMeta);
-
 		}
-		if (!(main.getGame().blueTeam.flagHolder == null)) {
-			Firework firework = (Firework) main.getGame().blueTeam.flagHolder.getWorld().spawnEntity(main.getGame().blueTeam.flagHolder.getLocation(), EntityType.FIREWORK);
-			FireworkMeta fireworkMeta = firework.getFireworkMeta();
-			FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.BLUE).with(Type.BALL_LARGE).trail(true).build();
-			fireworkMeta.addEffect(effect);
-			fireworkMeta.setPower(1);
-			firework.setFireworkMeta(fireworkMeta);
-
 		}
 	}
 }

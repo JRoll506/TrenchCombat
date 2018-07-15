@@ -55,25 +55,14 @@ public class GrenadeListener extends EngineListner implements Listener {
 
 					if (grenade.getLocation().getX() <= main.trenchConfig.fortRed || grenade.getLocation().getX() >= main.trenchConfig.fortBlue) return;
 
-					List<Entity> players;
-					players = grenade.getNearbyEntities(2, 2, 2);
+					List<Entity> players = grenade.getNearbyEntities(2, 2, 2);
 					for (Entity victum : players) {
 						if (victum instanceof Player) {
-							Player victumPlayer = (Player) victum;
-							if (main.game.getColorTeam(player).getName().equals("Red")) {
-								if (main.game.getColorTeam(victumPlayer).getName().equals("Red")) {
-									double inital = victumPlayer.getHealth();
-									victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
-									victumPlayer.setHealth(0);
-								}
+							Player target = (Player) victum;		
+							double inital = target.getHealth();
 
-							} else {
-								if (main.game.getColorTeam(victumPlayer).getName().equals("Red")) {
-									double inital = victumPlayer.getHealth();
-									victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
-									victumPlayer.setHealth(0);
-								}
-							}
+							victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
+							target.damage(20F);
 						}
 					}
 

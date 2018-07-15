@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 
 import com.rbruno.trench.Main;
-import com.rbruno.trench.game.ColorTeam;
+import com.rbruno.trench.game.EngineTeam;
 import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
@@ -55,42 +55,21 @@ public class PlayerDeath extends EngineListner implements Listener {
 				}
 				break;
 			}
+			
+			EngineTeam team = main.game.getColorTeam(player);
+			
 			if (killer != null && !player.equals(killer)) {
-				Bukkit.broadcastMessage(getChatColor(killer) + killer.getName() + ChatColor.WHITE + " has killed " + getChatColor(player) + player.getName() + ChatColor.WHITE + " with their " + weapon + "!");
+				Bukkit.broadcastMessage(main.game.getColorTeam(killer).color + killer.getName() + ChatColor.WHITE + " has killed " + team.color + player.getName() + ChatColor.WHITE + " with their " + weapon + "!");
 				// TODO Stats
 			} else {
-				Bukkit.broadcastMessage(getChatColor(player) + player.getName() + ChatColor.WHITE + " has died!");
+				Bukkit.broadcastMessage(team.color + player.getName() + ChatColor.WHITE + " has died!");
 			}
 
-			if (main.game.getColorTeam(player).getName().equals("Red")) {
-				if (main.game.blueTeam.flagHolder == player) {
-					main.game.blueTeam.flagHolder = null;
-					Bukkit.getServer().broadcastMessage(ChatColor.RED + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.BLUE + "Blue " + ChatColor.WHITE + "flag");
-				}
-
-			} else {
-				if (main.game.redTeam.flagHolder == player) {
-					main.game.redTeam.flagHolder = null;
-					Bukkit.getServer().broadcastMessage(ChatColor.BLUE + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + ChatColor.RED + "Red " + ChatColor.WHITE + "flag");
+			for (EngineTeam targetTeam : main.game.teams) {
+				if (team.flagHolder == player) {
+					Bukkit.getServer().broadcastMessage(team.color + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + targetTeam.color + targetTeam.team.getName() + ChatColor.WHITE + " flag");
 				}
 			}
 		}
-	}
-
-	private ChatColor getChatColor(Player player) {
-		ChatColor color;
-		switch (main.getGame().getColorTeam(player)) {
-		case BLUE:
-			color = ChatColor.BLUE;
-			break;
-		case RED:
-			color = ChatColor.RED;
-			break;
-		default:
-			color = ChatColor.YELLOW;
-			break;
-
-		}
-		return color;
 	}
 }

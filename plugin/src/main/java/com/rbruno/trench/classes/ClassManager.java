@@ -1,42 +1,33 @@
 package com.rbruno.trench.classes;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 
 import com.rbruno.trench.Main;
-import com.rbruno.trench.classes.classes.*;
+import com.rbruno.trench.classes.classes.Gunner;
+import com.rbruno.trench.classes.classes.Scout;
+import com.rbruno.trench.classes.classes.Shotgun;
 
 public class ClassManager {
 
-	private ArrayList<EngineClass> classes = new ArrayList<EngineClass>();
+	
+	public EngineClass[] classes;
 
-	private HashMap<Player, String> classMap = new HashMap<Player, String>();
+	public HashMap<Player, EngineClass> classMap = new HashMap<Player, EngineClass>();
 
 	public ClassManager(Main main) {
-		this.classes.add(new Gunner(main));
-		this.classes.add(new Shotgun(main));
-		this.classes.add(new Scout(main));
+		this.classes = new EngineClass[3];
+		
+		this.classes[0] = new Gunner(main);
+		this.classes[1] = new Shotgun(main);
+		this.classes[2] = new Scout(main);
 	}
 
-	public String getClass(Player player) {
-		return classMap.get(player);
-	}
-
-	public EngineClass getEngineClass(String name) {
+	public EngineClass getClass(String name) {
 		for (EngineClass engineClass : classes) {
 			if (engineClass.getName().equalsIgnoreCase(name)) return engineClass;
 		}
 		return null;
 	}
-
-	public void setClass(Player player, String string) {
-		classMap.put(player, string);
-	}
-	
-	public HashMap<Player, String> getClassMap(){
-		return classMap;
-	}
-
 }

@@ -17,7 +17,6 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
@@ -34,7 +33,6 @@ public class CannonListener extends EngineListner implements Listener {
 		super(main);
 	}
 
-	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		if (!(main.getGameState() == GameState.IN_GAME)) return;
@@ -47,78 +45,43 @@ public class CannonListener extends EngineListner implements Listener {
 				if (!(cooldown.contains(player))) {
 					cooldown.add(player);
 					if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-						// Lobed tnt
+						// Lobed TNT
 						fireCannon(player, true);
 					} else {
-						// Throw tnt
+						// Throw TNT
 						fireCannon(player, false);
 					}
 					player.sendMessage("Reloading cannon...");
 				}
-			} else {
-				// Trench Hoping
-				if (main.game.getColorTeam(player).getName().equals("Red") && player.getLocation().getBlockX() == main.trenchConfig.trenchLocationRed && location.getPitch() == -90 && player.isOnGround()) {
-					player.setVelocity(player.getLocation().getDirection().multiply(1.2));
-				}
-				if (main.game.getColorTeam(player).getName().equals("Blue") && player.getLocation().getBlockX() == main.trenchConfig.trenchLocationBlue && location.getPitch() == -90 && player.isOnGround()) {
-					player.setVelocity(player.getLocation().getDirection().multiply(1.2));
-				}
-
-			}
+			} 
 		}
 	}
 
 	public void fireCannon(final Player player, final boolean rightClick) {
 		final TNTPrimed tnt = player.getWorld().spawn(player.getEyeLocation(), TNTPrimed.class);
-		if (rightClick) {
-			tnt.setVelocity(player.getLocation().getDirection().multiply(1.5));
-		} else {
-			tnt.setVelocity(player.getLocation().getDirection().multiply(3));
-		}
+		
+		tnt.setVelocity(player.getLocation().getDirection().multiply(rightClick ? 1.5 : 3));
 		tnt.setYield(0);
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		scheduler.scheduleSyncDelayedTask(main, new Runnable() {
+		
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
 			@Override
 			public void run() {
 				if (tnt.getLocation().getX() <= main.trenchConfig.fortRed || tnt.getLocation().getX() >= main.trenchConfig.fortBlue) return;
-				if (main.game.getColorTeam(player).getName().equals("Red")) {
-					// red
-					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
-					List<Entity> players;
-					players = tnt.getNearbyEntities(4, 4, 4);
-					for (int i = 0; i < players.toArray().length; i++) {
-						if (players.get(i) instanceof Player) {
-							Player victum = (Player) players.get(i);
-							if (main.game.getColorTeam(victum).getName().equals("Blue")) {
-								double inital = victum.getHealth();
-								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
-								victum.damage(20F);
-							}
+				tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);				
 
-						}
+				List<Entity> players = tnt.getNearbyEntities(2, 2, 2);
+				for (Entity victum : players) {
+					if (victum instanceof Player) {
+						Player target = (Player) victum;		
+						double inital = target.getHealth();
 
-					}
-				} else {
-					// blue
-					tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
-					List<Entity> players;
-					players = tnt.getNearbyEntities(4, 4, 4);
-					for (int i = 0; i < players.toArray().length; i++) {
-						if (players.get(i) instanceof Player) {
-							Player victum = (Player) players.get(i);
-							if (main.game.getColorTeam(victum).getName().equals("Red")) {
-								double inital = victum.getHealth();
-								victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
-								victum.damage(20F);
-							}
-						}
-
+						victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
+						target.damage(20F);
 					}
 				}
-
 			}
 		}, tnt.getFuseTicks());
-		scheduler.scheduleSyncDelayedTask(main, new Runnable() {
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
 			public void run() {
 				cooldown.remove(player);
 			}
