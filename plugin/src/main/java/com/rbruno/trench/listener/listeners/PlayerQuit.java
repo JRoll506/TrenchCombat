@@ -2,6 +2,7 @@ package com.rbruno.trench.listener.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -19,11 +20,17 @@ public class PlayerQuit extends EngineListner implements Listener {
 
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
+		Player player = event.getPlayer();
+
+		main.classManager.classMap.remove(player);
 		if (main.getGameState() == GameState.IN_GAME) {
+			EngineTeam team = main.game.getColorTeam(player);
 			for (EngineTeam targetTeam : main.game.teams)
-				if (targetTeam.flagHolder == event.getPlayer())
-					targetTeam.flag = null;
-			main.game.getColorTeam(event.getPlayer()).team.removeEntry(event.getPlayer().getName());
+				if (targetTeam.flagHolder == player) {
+					targetTeam.flagHolder = null;
+					Bukkit.getServer().broadcastMessage(team.color + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + targetTeam.color + targetTeam.team.getName() + ChatColor.WHITE + " flag");
+				}
+			team.team.removeEntry(player.getName());
 		} else {
 			if (Bukkit.getOnlinePlayers().size() - 1 < main.getConfig().getInt("minPlayer")) {
 				main.setGameState(GameState.WAITING);

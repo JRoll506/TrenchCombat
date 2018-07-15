@@ -1,32 +1,22 @@
 package com.rbruno.trench.listener.listeners;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import com.google.common.base.Function;
-import com.google.common.base.Functions;
-import com.google.common.collect.ImmutableMap;
 import com.rbruno.trench.Main;
 import com.rbruno.trench.listener.EngineListner;
 import com.rbruno.trench.timer.GameState;
 
 public class CannonListener extends EngineListner implements Listener {
-	
+
 	public ArrayList<Player> cooldown = new ArrayList<Player>();
 
 	public CannonListener(Main main) {
@@ -35,16 +25,15 @@ public class CannonListener extends EngineListner implements Listener {
 
 	@EventHandler
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
-		if (!(main.getGameState() == GameState.IN_GAME)) return;
-		final Player player = (Player) event.getPlayer();
-		Location location = player.getLocation();
-		Location blockStandingOn = new Location(location.getWorld(), location.getX(), location.getY() - 1, location.getZ());
+		if (!(main.getGameState() == GameState.IN_GAME))
+			return;
+		Player player = event.getPlayer();
 		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
-			if (blockStandingOn.getBlock().getType() == Material.SPONGE) {
+			if (player.getLocation().subtract(0, 1, 0).getBlock().getType() == Material.SPONGE) {
 				// Player Fired Cannon
 				if (!(cooldown.contains(player))) {
 					cooldown.add(player);
-					if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK) || event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+					if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
 						// Lobed TNT
 						fireCannon(player, true);
 					} else {
@@ -53,32 +42,22 @@ public class CannonListener extends EngineListner implements Listener {
 					}
 					player.sendMessage("Reloading cannon...");
 				}
-			} 
+			}
 		}
 	}
 
 	public void fireCannon(final Player player, final boolean rightClick) {
 		final TNTPrimed tnt = player.getWorld().spawn(player.getEyeLocation(), TNTPrimed.class);
-		
+
 		tnt.setVelocity(player.getLocation().getDirection().multiply(rightClick ? 1.5 : 3));
 		tnt.setYield(0);
-		
+
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {
 			@Override
 			public void run() {
-				if (tnt.getLocation().getX() <= main.trenchConfig.fortRed || tnt.getLocation().getX() >= main.trenchConfig.fortBlue) return;
-				tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);				
-
-				List<Entity> players = tnt.getNearbyEntities(2, 2, 2);
-				for (Entity victum : players) {
-					if (victum instanceof Player) {
-						Player target = (Player) victum;		
-						double inital = target.getHealth();
-
-						victum.setLastDamageCause(new EntityDamageEvent(player, DamageCause.BLOCK_EXPLOSION, new EnumMap<DamageModifier, Double>(ImmutableMap.of(DamageModifier.BASE, inital)), new EnumMap<DamageModifier, Function<? super Double, Double>>(ImmutableMap.of(DamageModifier.BASE, Functions.constant(-0.0)))));
-						target.damage(20F);
-					}
-				}
+				if (tnt.getLocation().getX() <= main.trenchConfig.fortRed || tnt.getLocation().getX() >= main.trenchConfig.fortBlue)
+					return;
+				tnt.getWorld().createExplosion(tnt.getLocation().getX(), tnt.getLocation().getY(), tnt.getLocation().getZ(), 5F, false, false);
 			}
 		}, tnt.getFuseTicks());
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(main, new Runnable() {

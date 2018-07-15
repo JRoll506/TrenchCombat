@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import com.rbruno.trench.Main;
 import com.rbruno.trench.game.EngineGame;
 import com.rbruno.trench.game.EngineTeam;
+import com.rbruno.trench.listener.listeners.SmokeListener;
 
 public class Clock {
 	
@@ -36,6 +37,12 @@ public class Clock {
 				tick();
 			}
 		}, 0L, 20L);
+		scheduler.scheduleSyncRepeatingTask(main, new Runnable() {
+			@Override
+			public void run() {
+				SmokeListener.handleSmoke();
+			}
+		}, 0L, 5L);
 	}
 
 	private void tick() {

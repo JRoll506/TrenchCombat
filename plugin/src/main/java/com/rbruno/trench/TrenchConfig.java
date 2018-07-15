@@ -13,9 +13,6 @@ public class TrenchConfig {
 	public int minZ;
 	public int maxZ;
 
-	public int trenchLocationRed;
-	public int trenchLocationBlue;
-
 	public Location spawn;
 	public Location redSpawn;
 	public Location blueSpawn;
@@ -44,9 +41,6 @@ public class TrenchConfig {
 		maxX = plugin.getConfig().getInt("mapBounderies.maxX");
 		minZ = plugin.getConfig().getInt("mapBounderies.minZ");
 		maxZ = plugin.getConfig().getInt("mapBounderies.maxZ");
-
-		trenchLocationRed = plugin.getConfig().getInt("trenchLocation.red");
-		trenchLocationBlue = plugin.getConfig().getInt("trenchLocation.blue");
 
 		spawn = new Location(Bukkit.getServer().getWorld(plugin.getConfig().getString("spawn.world")),
 				plugin.getConfig().getInt("spawn.x"), plugin.getConfig().getInt("spawn.y"),

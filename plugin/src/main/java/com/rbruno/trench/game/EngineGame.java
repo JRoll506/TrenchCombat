@@ -92,10 +92,10 @@ public class EngineGame {
 	public void addPlayer(Player player) {
 		player.setScoreboard(board);
 
-		EngineTeam team = teams[(int) Math.round(Math.random() * teams.length)];
+		EngineTeam team = teams[(int) Math.round(Math.random() * (teams.length - 1))];
 		team.team.addEntry(player.getName());
 
-		player.teleport(main.trenchConfig.blueSpawn);
+		player.teleport(team.spawn);
 		giveItems(player);
 	}
 
