@@ -48,9 +48,8 @@ public class Shotgun extends EngineClass {
 		Vector velocity = arrow.getVelocity();
 		double speed = velocity.length();
 		Vector direction = new Vector(velocity.getX() / speed, velocity.getY() / speed, velocity.getZ() / speed);
-		// you can tune the following value for different spray. Higher number
-		// means less spray.
-		double spray = 4.5D;
+		// Higher number means less spray.
+		double spray = 6D;
 
 		int arrowCount = 5;
 		for (int i = 0; i < arrowCount; i++) {

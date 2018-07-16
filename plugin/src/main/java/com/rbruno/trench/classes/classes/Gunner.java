@@ -37,7 +37,9 @@ public class Gunner extends EngineClass {
 			event.setCancelled(true);
 			if (!(cooldown.contains(player))) {
 				cooldown.add(player);
-				player.launchProjectile(Arrow.class);
+				Arrow arrow = player.launchProjectile(Arrow.class);
+				arrow.setVelocity(player.getLocation().getDirection().multiply(4));
+				
 				BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 				scheduler.scheduleSyncDelayedTask(main, new Runnable() {
 					public void run() {

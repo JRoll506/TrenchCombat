@@ -36,6 +36,16 @@ public class EngineGame {
 
 	public void pickTeams() {
 		Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+		
+		for (EngineTeam team : teams) {
+			for (Player player : main.teamQueue.keySet()) {
+				if (team.team.getEntries().size() >= Bukkit.getOnlinePlayers().size() / 2 && main.teamQueue.get(player).equalsIgnoreCase(team.team.getName())) {
+					team.team.addEntry(player.getName());
+					players.remove(player);
+				}
+			}
+		}
+		
 		int i = 0;
 		for (Player player : players) {
 			teams[i % teams.length].team.addEntry(player.getName());

@@ -13,6 +13,4 @@ public class SignCreation extends EngineListner implements Listener{
 			event.setLine(i, event.getLine(i).replace("&", "§"));
 		}
 	}
-
-
 }

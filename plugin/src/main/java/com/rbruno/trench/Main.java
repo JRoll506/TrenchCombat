@@ -1,6 +1,9 @@
 package com.rbruno.trench;
 
+import java.util.HashMap;
+
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +22,8 @@ public class Main extends JavaPlugin {
 	public ClassManager classManager;
 	public EngineGame game;
 	public TrenchConfig trenchConfig;
+	
+	public HashMap<Player, String> teamQueue = new HashMap<Player, String>();
 
 	@Override
 	public void onEnable() {

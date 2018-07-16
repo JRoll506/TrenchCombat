@@ -1,6 +1,4 @@
-= TODO =
-- [ ] Better team queueing
-- [ ] Improve gunner's arrows
+# TODO
 - [ ] Randomize time
 - [ ] Game stats
 - [ ] Stop game if everyone leaves

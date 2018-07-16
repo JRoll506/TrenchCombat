@@ -31,6 +31,9 @@ public class PlayerQuit extends EngineListner implements Listener {
 					Bukkit.getServer().broadcastMessage(team.color + player.getDisplayName() + ChatColor.WHITE + " has dropped the " + targetTeam.color + targetTeam.team.getName() + ChatColor.WHITE + " flag");
 				}
 			team.team.removeEntry(player.getName());
+			if (Bukkit.getOnlinePlayers().size() == 1) {
+				main.clock.endGame();
+			}
 		} else {
 			if (Bukkit.getOnlinePlayers().size() - 1 < main.getConfig().getInt("minPlayer")) {
 				main.setGameState(GameState.WAITING);

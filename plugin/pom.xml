@@ -28,6 +28,6 @@
 
 	<groupId>com.rbruno.trench</groupId>
 	<artifactId>TrenchCombat</artifactId>
-	<version>v1.3.1-SNAPSHOT</version>
+	<version>v1.4.0-RELEASE</version>
 	<packaging>jar</packaging>
 </project>
