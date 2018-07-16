@@ -93,7 +93,7 @@ public class Clock {
 				team = targetTeam;
 		}
 		
-		if (team == null) {
+		if (main.game.teams[0].score.getScore() == main.game.teams[1].score.getScore()) {
 			Bukkit.getServer().broadcastMessage("The game ended in a " + ChatColor.YELLOW + "Tie" + ChatColor.RESET + "!");
 		} else {
 			Bukkit.getServer().broadcastMessage("The game had ended and the " + team.color + team.team.getName() + ChatColor.RESET + " team won!");
@@ -118,7 +118,7 @@ public class Clock {
 			Firework firework = (Firework) targetTeam.flagHolder.getLocation().getWorld().spawnEntity(targetTeam.flagHolder.getLocation(), EntityType.FIREWORK);
 			FireworkMeta fireworkMeta = firework.getFireworkMeta();
 			// TODO
-			FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(Color.RED).with(Type.BALL_LARGE).trail(true).build();
+			FireworkEffect effect = FireworkEffect.builder().flicker(false).withColor(targetTeam.color == ChatColor.RED ? Color.RED : Color.BLUE).with(Type.BALL_LARGE).trail(true).build();
 			fireworkMeta.addEffect(effect);
 			fireworkMeta.setPower(1);
 			firework.setFireworkMeta(fireworkMeta);

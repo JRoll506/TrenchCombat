@@ -102,7 +102,11 @@ public class EngineGame {
 	public void addPlayer(Player player) {
 		player.setScoreboard(board);
 
-		EngineTeam team = teams[(int) Math.round(Math.random() * (teams.length - 1))];
+		EngineTeam team = teams[0];
+		for (EngineTeam target : teams)
+			if (target.team.getEntries().size() < team.team.getEntries().size())
+				team = target;
+		
 		team.team.addEntry(player.getName());
 
 		player.teleport(team.spawn);
