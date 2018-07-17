@@ -31,18 +31,20 @@ public class CannonListener extends EngineListner implements Listener {
 		if (event.getMaterial().name() == "IRON_SWORD" || event.getMaterial().name() == "DIAMOND_SWORD") {
 			if (player.getLocation().subtract(0, 1, 0).getBlock().getType() == Material.SPONGE) {
 				// Player Fired Cannon
-				if (!(cooldown.contains(player))) {
-					cooldown.add(player);
-					if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
-						// Lobed TNT
-						fireCannon(player, true);
-					} else {
-						// Throw TNT
-						fireCannon(player, false);
-					}
-					player.sendMessage("Reloading cannon...");
+				if (cooldown.contains(player))
+					return;
+				cooldown.add(player);
+				
+				if (event.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+					// Lobed TNT
+					fireCannon(player, true);
+				} else {
+					// Throw TNT
+					fireCannon(player, false);
 				}
+				player.sendMessage("Reloading cannon...");
 			}
+
 		}
 	}
 
