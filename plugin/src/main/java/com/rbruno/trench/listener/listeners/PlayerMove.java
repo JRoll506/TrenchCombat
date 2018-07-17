@@ -40,10 +40,10 @@ public class PlayerMove extends EngineListner implements Listener {
 			/* Move out of other team's fort */
 			if (main.game.getColorTeam(player).team.getName().equals("Blue")) {
 				if (location.getBlockX() <= main.trenchConfig.fortRed)
-					player.teleport(new Location(player.getWorld(), main.trenchConfig.fortRed + 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+					player.teleport(location.add(1, 0, 0));
 			} else {
 				if (location.getBlockX() >= main.trenchConfig.fortBlue)
-					player.teleport(new Location(player.getWorld(), main.trenchConfig.fortBlue - 1, location.getY(), location.getZ(), location.getYaw(), location.getPitch()));
+					player.teleport(location.subtract(1, 0, 0));
 			}
 			
 			/* Keep players in bounds */
